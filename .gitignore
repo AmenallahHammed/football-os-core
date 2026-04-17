@@ -1,0 +1,16 @@
+# football-os-core/.gitignore
+target/
+bin/
+**/bin/
+*.class
+*.jar
+!**/src/main/**/*.jar
+.env
+.project
+.settings/
+.idea/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+*.log

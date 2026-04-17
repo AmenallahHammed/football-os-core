@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/fos_governance}
+    username: ${POSTGRES_USER:fos}
+    password: ${POSTGRES_PASSWORD:fos}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: fos_identity
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    default-schema: public
+
+fos:
+  canonical:
+    service-url: ${CANONICAL_SERVICE_URL:http://localhost:8081}
+  identity:
+    keycloak:
+      webhook:
+        secret: ${KEYCLOAK_WEBHOOK_SECRET:dev-keycloak-webhook-secret}

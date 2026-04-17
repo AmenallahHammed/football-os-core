@@ -41,3 +41,5 @@ fos:
     enabled: ${FOS_SECURITY_ENABLED:true}
   governance:
     url: ${GOVERNANCE_URL:http://localhost:8081}
+  workspace:
+    url: ${WORKSPACE_URL:http://localhost:8082}

@@ -1,0 +1,54 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: fos-workspace-service
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/fos_workspace}
+      auto-index-creation: false
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: fos-workspace
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWKS_URI:http://localhost:8180/realms/fos/protocol/openid-connect/certs}
+
+mongock:
+  migration-scan-package: com.fos.workspace.db.migration
+  enabled: true
+
+fos:
+  security:
+    enabled: ${FOS_SECURITY_ENABLED:true}
+  policy:
+    service-url: ${GOVERNANCE_URL:http://localhost:8081}
+  canonical:
+    service-url: ${GOVERNANCE_URL:http://localhost:8081}
+  storage:
+    provider: ${STORAGE_PROVIDER:minio}
+
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:minioadmin}
+  secret-key: ${MINIO_SECRET_KEY:minioadmin}
+  bucket: ${MINIO_BUCKET:fos-workspace}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never

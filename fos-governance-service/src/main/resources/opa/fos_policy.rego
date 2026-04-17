@@ -6,11 +6,13 @@ default allow = false
 allow {
     input.actor.role != ""
     input.resource.state == "ACTIVE"
+    not startswith(input.resource.action, "workspace.document.")
 }
 
 # Allow DRAFT resource operations for CLUB_ADMIN and OPERATOR
 allow {
     input.resource.state == "DRAFT"
+    not startswith(input.resource.action, "workspace.document.")
     role := input.actor.role
     role_can_access_draft[role]
 }

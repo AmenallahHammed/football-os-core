@@ -124,7 +124,7 @@ class Phase0SmokeTest extends FosTestContainersBase {
                 Duration.ofMinutes(10));
         storage.confirmUpload("fos-smoke", objectKey);
 
-        assertThat(upload.url()).contains(objectKey);
+        assertThat(upload.uploadUrl()).contains(objectKey);
         assertThat(upload.objectKey()).isEqualTo(objectKey);
 
         // 4) Signal intake to trigger async audit pipeline

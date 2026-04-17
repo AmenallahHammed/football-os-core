@@ -70,4 +70,30 @@ class ActorIntegrationTest extends FosTestContainersBase {
 
         assertThat(fetched.state()).isEqualTo(ResourceState.ARCHIVED);
     }
+
+    @Test
+    void should_update_actor() {
+        ActorRequest createRequest = new ActorRequest(
+                "update@testclub.com", "Old", "Name",
+                ActorRole.PLAYER, UUID.randomUUID());
+
+        ActorResponse created = restTemplate.postForObject(
+                "/api/v1/actors", createRequest, ActorResponse.class);
+
+        ActorRequest updateRequest = new ActorRequest(
+                "updated@testclub.com", "New", "Name",
+                ActorRole.HEAD_COACH, created.clubId());
+
+        ResponseEntity<ActorResponse> updated = restTemplate.exchange(
+                "/api/v1/actors/" + created.resourceId(),
+                org.springframework.http.HttpMethod.PUT,
+                new org.springframework.http.HttpEntity<>(updateRequest),
+                ActorResponse.class);
+
+        assertThat(updated.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(updated.getBody()).isNotNull();
+        assertThat(updated.getBody().email()).isEqualTo("updated@testclub.com");
+        assertThat(updated.getBody().firstName()).isEqualTo("New");
+        assertThat(updated.getBody().role()).isEqualTo(ActorRole.HEAD_COACH);
+    }
 }

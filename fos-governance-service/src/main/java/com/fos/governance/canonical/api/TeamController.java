@@ -29,6 +29,11 @@ public class TeamController {
         return TeamService.toDTO(teamService.getTeam(id));
     }
 
+    @PutMapping("/{id}")
+    public TeamDTO updateTeam(@PathVariable UUID id, @Valid @RequestBody TeamRequest request) {
+        return TeamService.toDTO(teamService.updateTeam(id, request));
+    }
+
     @GetMapping("/find")
     public TeamDTO findByName(
             @RequestParam String name,

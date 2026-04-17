@@ -70,6 +70,15 @@ public class Player {
         this.currentTeamId = teamId;
     }
 
+    public void updateProfile(String name, String position, String nationality,
+                              LocalDate dateOfBirth, UUID currentTeamId) {
+        this.name = name;
+        this.position = position;
+        this.nationality = nationality;
+        this.dateOfBirth = dateOfBirth;
+        this.currentTeamId = currentTeamId;
+    }
+
     // Getters
     public UUID getPlayerId()         { return playerId; }
     public String getName()           { return name; }

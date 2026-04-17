@@ -64,6 +64,33 @@ public class ActorService {
                 .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Actor not found: " + id));
     }
 
+    public Actor updateActor(UUID id, ActorRequest request) {
+        Actor actor = getActor(id);
+        actor.updateProfile(
+                request.email(),
+                request.firstName(),
+                request.lastName(),
+                request.role(),
+                request.clubId());
+        Actor saved = actorRepository.save(actor);
+
+        kafkaProducer.emit(SignalEnvelope.builder()
+                .type(SignalType.FACT)
+                .topic(KafkaTopics.IDENTITY_ACTOR_UPDATED)
+                .actorRef(CanonicalRef.of(
+                        CanonicalType.CLUB,
+                        saved.getClubId() != null ? saved.getClubId() : UUID.randomUUID()).toString())
+                .payload(objectMapper.valueToTree(Map.of(
+                        "actorId", saved.getResourceId().toString(),
+                        "email", saved.getEmail(),
+                        "role", saved.getRole().name(),
+                        "state", saved.getState().name()
+                )))
+                .build());
+
+        return saved;
+    }
+
     public Actor deactivateActor(UUID id) {
         Actor actor = getActor(id);
         actor.deactivate();

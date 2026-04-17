@@ -29,6 +29,7 @@ class CorrelationIdFilterTest {
 
         WebTestClient.ResponseSpec response = webTestClient.get()
                 .uri("/test/resource")
+                .header("X-FOS-Actor-Id", "corr-test-actor-1")
                 .exchange();
 
         verify(getRequestedFor(anyUrl())
@@ -41,6 +42,7 @@ class CorrelationIdFilterTest {
 
         webTestClient.get()
                 .uri("/test/resource")
+                .header("X-FOS-Actor-Id", "corr-test-actor-2")
                 .header("X-FOS-Request-Id", "client-provided-id-001")
                 .exchange();
 

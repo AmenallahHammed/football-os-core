@@ -4,44 +4,20 @@ import com.fos.governance.canonical.api.PlayerRequest;
 import com.fos.governance.canonical.api.TeamRequest;
 import com.fos.sdk.canonical.PlayerDTO;
 import com.fos.sdk.canonical.TeamDTO;
+import com.fos.sdk.test.FosTestContainersBase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.KafkaContainer;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CanonicalIntegrationTest {
-
-    @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
-            DockerImageName.parse("postgres:16-alpine"))
-            .withDatabaseName("fos_governance");
-
-    @Container
-    static KafkaContainer kafka = new KafkaContainer(
-            DockerImageName.parse("confluentinc/cp-kafka:7.7.0"));
-
-    @DynamicPropertySource
-    static void configure(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url",      postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
-        registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
-    }
+class CanonicalIntegrationTest extends FosTestContainersBase {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -94,5 +70,47 @@ class CanonicalIntegrationTest {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().name()).isEqualTo("Test FC");
+    }
+
+    @Test
+    void should_update_player() {
+        PlayerRequest createRequest = new PlayerRequest(
+                "Update Player", "CM", "PT", LocalDate.of(1998, 1, 10), null);
+
+        PlayerDTO created = restTemplate.postForObject("/api/v1/players", createRequest, PlayerDTO.class);
+
+        PlayerRequest updateRequest = new PlayerRequest(
+                "Updated Player", "LW", "PT", LocalDate.of(1998, 1, 10), null);
+
+        ResponseEntity<PlayerDTO> updated = restTemplate.exchange(
+                "/api/v1/players/" + created.id(),
+                org.springframework.http.HttpMethod.PUT,
+                new org.springframework.http.HttpEntity<>(updateRequest),
+                PlayerDTO.class);
+
+        assertThat(updated.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(updated.getBody()).isNotNull();
+        assertThat(updated.getBody().name()).isEqualTo("Updated Player");
+        assertThat(updated.getBody().position()).isEqualTo("LW");
+    }
+
+    @Test
+    void should_update_team() {
+        TeamRequest createRequest = new TeamRequest("Old Name FC", "ONF", "FR", null);
+
+        TeamDTO created = restTemplate.postForObject("/api/v1/teams", createRequest, TeamDTO.class);
+
+        TeamRequest updateRequest = new TeamRequest("New Name FC", "NNF", "FR", null);
+
+        ResponseEntity<TeamDTO> updated = restTemplate.exchange(
+                "/api/v1/teams/" + created.id(),
+                org.springframework.http.HttpMethod.PUT,
+                new org.springframework.http.HttpEntity<>(updateRequest),
+                TeamDTO.class);
+
+        assertThat(updated.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(updated.getBody()).isNotNull();
+        assertThat(updated.getBody().name()).isEqualTo("New Name FC");
+        assertThat(updated.getBody().shortName()).isEqualTo("NNF");
     }
 }

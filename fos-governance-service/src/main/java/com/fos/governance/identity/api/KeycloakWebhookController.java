@@ -29,6 +29,9 @@ public class KeycloakWebhookController {
             ActorService actorService,
             @Value("${fos.identity.keycloak.webhook.secret}") String webhookSecret) {
         this.actorService = actorService;
+        if (webhookSecret == null || webhookSecret.isBlank()) {
+            throw new IllegalStateException("KEYCLOAK_WEBHOOK_SECRET must be configured");
+        }
         this.webhookSecret = webhookSecret;
     }
 

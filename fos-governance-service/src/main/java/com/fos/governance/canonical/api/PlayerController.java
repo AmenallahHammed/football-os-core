@@ -30,6 +30,11 @@ public class PlayerController {
         return PlayerService.toDTO(playerService.getPlayer(id));
     }
 
+    @PutMapping("/{id}")
+    public PlayerDTO updatePlayer(@PathVariable UUID id, @Valid @RequestBody PlayerRequest request) {
+        return PlayerService.toDTO(playerService.updatePlayer(id, request));
+    }
+
     @GetMapping("/find")
     public PlayerDTO findByIdentity(
             @RequestParam String name,

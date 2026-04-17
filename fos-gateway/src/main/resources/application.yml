@@ -23,7 +23,8 @@ spring:
           args:
             redis-rate-limiter:
               replenishRate: 100
-              burstCapacity: 120
+              requestedTokens: 60
+              burstCapacity: 100
             key-resolver: "#{@actorKeyResolver}"
 
 management:

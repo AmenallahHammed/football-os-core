@@ -28,6 +28,11 @@ public class ActorController {
         return ActorResponse.from(actorService.getActor(id));
     }
 
+    @PutMapping("/{id}")
+    public ActorResponse updateActor(@PathVariable UUID id, @Valid @RequestBody ActorRequest request) {
+        return ActorResponse.from(actorService.updateActor(id, request));
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deactivateActor(@PathVariable UUID id) {

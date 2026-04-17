@@ -60,6 +60,29 @@ public class TeamService {
                 .orElseThrow(() -> new EntityNotFoundException("Team not found: " + id));
     }
 
+    public Team updateTeam(UUID id, TeamRequest request) {
+        Team team = getTeam(id);
+        team.updateProfile(
+                request.name(),
+                request.shortName(),
+                request.country(),
+                request.clubId());
+        Team saved = teamRepository.save(team);
+
+        kafkaProducer.emit(SignalEnvelope.builder()
+                .type(SignalType.FACT)
+                .topic(KafkaTopics.CANONICAL_TEAM_UPDATED)
+                .actorRef(CanonicalRef.of(CanonicalType.TEAM, saved.getTeamId()).toString())
+                .payload(objectMapper.valueToTree(Map.of(
+                        "teamId", saved.getTeamId().toString(),
+                        "name", saved.getName(),
+                        "country", saved.getCountry() != null ? saved.getCountry() : ""
+                )))
+                .build());
+
+        return saved;
+    }
+
     @Transactional(readOnly = true)
     public Optional<Team> findByName(String name, String country) {
         return teamRepository.findByNameIgnoreCaseAndCountryIgnoreCase(name, country);

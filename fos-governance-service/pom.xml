@@ -44,6 +44,12 @@
       <artifactId>sdk-canonical</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.fos</groupId>
+      <artifactId>sdk-storage</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
 
     <!-- JPA + PostgreSQL + Flyway -->
     <dependency>

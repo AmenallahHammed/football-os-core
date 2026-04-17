@@ -63,6 +63,31 @@ public class PlayerService {
                 .orElseThrow(() -> new EntityNotFoundException("Player not found: " + id));
     }
 
+    public Player updatePlayer(UUID id, PlayerRequest request) {
+        Player player = getPlayer(id);
+        player.updateProfile(
+                request.name(),
+                request.position(),
+                request.nationality(),
+                request.dateOfBirth(),
+                request.currentTeamId());
+        Player saved = playerRepository.save(player);
+
+        kafkaProducer.emit(SignalEnvelope.builder()
+                .type(SignalType.FACT)
+                .topic(KafkaTopics.CANONICAL_PLAYER_UPDATED)
+                .actorRef(CanonicalRef.of(CanonicalType.PLAYER, saved.getPlayerId()).toString())
+                .payload(objectMapper.valueToTree(Map.of(
+                        "playerId", saved.getPlayerId().toString(),
+                        "name", saved.getName(),
+                        "position", saved.getPosition() != null ? saved.getPosition() : "",
+                        "nationality", saved.getNationality() != null ? saved.getNationality() : ""
+                )))
+                .build());
+
+        return saved;
+    }
+
     @Transactional(readOnly = true)
     public Optional<Player> findByIdentity(String name,
                                            java.time.LocalDate dob,

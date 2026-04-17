@@ -21,4 +21,4 @@ fos:
   identity:
     keycloak:
       webhook:
-        secret: ${KEYCLOAK_WEBHOOK_SECRET:dev-keycloak-webhook-secret}
+        secret: ${KEYCLOAK_WEBHOOK_SECRET}

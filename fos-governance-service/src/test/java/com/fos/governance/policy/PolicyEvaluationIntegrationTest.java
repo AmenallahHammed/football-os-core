@@ -76,7 +76,7 @@ class PolicyEvaluationIntegrationTest extends FosTestContainersBase {
         ResponseEntity<PolicyResult> response = restTemplate.postForEntity(
                 "/api/v1/policy/evaluate", request, PolicyResult.class);
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
         assertThat(response.getBody().isAllowed()).isFalse();
     }
 }

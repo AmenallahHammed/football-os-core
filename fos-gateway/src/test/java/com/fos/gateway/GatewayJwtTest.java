@@ -65,13 +65,18 @@ class GatewayJwtTest {
         stubFor(get(urlPathMatching("/api/v1/players/.*"))
                 .willReturn(okJson("{\"id\":\"00000000-0000-0000-0000-000000000001\",\"name\":\"Test\"}")));
 
-        String jwt = generateValidJwt("actor-uuid-001");
+        String actorId = "actor-uuid-001";
+        String jwt = generateValidJwt(actorId);
 
         webTestClient.get()
                 .uri("/api/v1/players/00000000-0000-0000-0000-000000000001")
                 .header("Authorization", "Bearer " + jwt)
                 .exchange()
                 .expectStatus().isOk();
+
+        verify(getRequestedFor(urlPathMatching("/api/v1/players/.*"))
+                .withHeader("X-FOS-Actor-Id", equalTo(actorId))
+                .withHeader("X-FOS-Request-Id", matching(".+")));
     }
 
     @Test

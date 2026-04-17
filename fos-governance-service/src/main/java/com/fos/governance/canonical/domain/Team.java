@@ -57,6 +57,13 @@ public class Team {
         this.state = ResourceState.ACTIVE;
     }
 
+    public void updateProfile(String name, String shortName, String country, UUID clubId) {
+        this.name = name;
+        this.shortName = shortName;
+        this.country = country;
+        this.clubId = clubId;
+    }
+
     // Getters
     public UUID getTeamId()         { return teamId; }
     public String getName()         { return name; }

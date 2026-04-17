@@ -84,6 +84,17 @@ public class Actor {
         this.state = ResourceState.ARCHIVED;
     }
 
+    public void updateProfile(String email, String firstName, String lastName, ActorRole role, UUID clubId) {
+        if (this.state == ResourceState.ARCHIVED) {
+            throw new IllegalStateException("Cannot update deactivated actor");
+        }
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.role = role;
+        this.clubId = clubId;
+    }
+
     public void syncKeycloakId(String keycloakUserId) {
         this.keycloakUserId = keycloakUserId;
         if (this.state == ResourceState.DRAFT) {

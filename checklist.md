@@ -108,6 +108,6 @@ Release criteria:
 ---
 
 ## 8) Documentation/Traceability Closeout
-- [ ] Update implementation summary to reflect real status (remove "fully complete" claims if still pending)
-- [ ] Add known limitations + deferred items explicitly
-- [ ] Keep `issues.md` and this checklist in sync with DONE/TODO/BLOCKED states
+- [x] Update implementation summary to reflect real status (remove "fully complete" claims if still pending)
+- [x] Add known limitations + deferred items explicitly
+- [x] Keep `issues.md` and this checklist in sync with DONE/TODO/BLOCKED states

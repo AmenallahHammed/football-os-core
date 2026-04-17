@@ -19,6 +19,9 @@
 | 10 | `.gitignore` and tracked generated outputs | Build artifacts committed (`bin/**`, Eclipse metadata) | Add ignores (`bin/`, `**/bin/`, `.project`, `.settings/`) and remove generated files from workspace | DONE |
 | 11 | `fos-gateway/pom.xml` | WireMock classpath conflict (`spring-cloud-contract-wiremock` + `wiremock-standalone:3.5.4`) caused `NoSuchMethodError` | Remove direct `wiremock-standalone` test dependency and keep Spring Cloud Contract WireMock managed version | DONE |
 | 12 | Local Docker/Testcontainers runtime | Testcontainers cannot discover valid Docker API (Npipe strategy returns 400 / empty daemon info) | Fix local Docker/Testcontainers environment before integration tests can pass | BLOCKED |
+| 13 | `fos-gateway/src/test/java/com/fos/gateway/GatewayRateLimitTest.java` | Final `429` acceptance is not fully verified in current local environment | Re-run in healthy Testcontainers runtime after fixing item 12 | BLOCKED |
+| 14 | `fos-governance-service/src/test/**` | Governance integration and smoke tests cannot complete locally | Re-run full module tests after fixing item 12 | BLOCKED |
+| 15 | `checklist.md` Section 7 | Final verification matrix still has open checks | Complete Section 7 once Testcontainers environment is stable | TODO |
 
 ## Session Plan
 
@@ -41,6 +44,7 @@ Current result:
 - `docker-compose` smoke check: healthy.
 - `fos-gateway` tests: JWT + correlation tests pass after WireMock fix; rate-limit test still blocked by Testcontainers Docker detection.
 - `fos-governance-service` tests: integration/e2e tests blocked by same Testcontainers Docker detection.
+- `fos-sdk` tests: passing.
 
 ## Required Runtime Environment Variables
 - `KEYCLOAK_ADMIN`

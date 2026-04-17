@@ -99,9 +99,21 @@ This document provides a technical walkthrough of the work completed during Phas
 
 ---
 
-## 🏆 Current Architecture Result
-We now have a fully operational, production-ready foundation where:
-1.  **Traffic is Secure**: All entry is throttled and verified at the Gateway.
-2.  **Logic is Decoupled**: Domain services use SDKs to handle storage, messaging, and security.
-3.  **Traceability is Total**: Every action has a Correlation ID, an Actor ID, and a persistent Audit Log entry.
-4.  **Testing is Standardized**: Developers can write high-fidelity integration tests with zero infrastructure setup.
+## 🏆 Current Architecture Result (Real Status)
+Phase 0 implementation is **feature-complete in code** for Sprints 0.1-0.6, but **not fully release-complete** yet.
+
+What is currently true:
+1.  **Traffic is Secure**: Gateway JWT validation, correlation ID propagation, and actor ID enrichment are implemented and validated by tests.
+2.  **Logic is Decoupled**: Domain services use SDK boundaries for canonical, policy, storage, events, and security concerns.
+3.  **Traceability is Implemented**: Signal/audit pipeline is in place with correlation and actor linkage.
+4.  **Test Foundation Exists**: `sdk-test` utilities and smoke/integration tests are implemented.
+
+## ⚠️ Known Limitations (Current)
+1.  **Testcontainers Runtime Blocker**: Testcontainers on local Windows setup still fails with `Npipe ... Status 400` and cannot reliably connect to Docker daemon API during integration tests.
+2.  **Integration Verification Pending**: `fos-governance-service` integration suite and gateway rate-limit container-backed test are blocked by the runtime issue above.
+3.  **Release Gate Not Fully Green**: Root `mvn test` cannot complete end-to-end verification until Docker/Testcontainers connectivity is stabilized.
+
+## 📌 Deferred Items Until Runtime Fix
+1.  Re-run full verification matrix in `checklist.md` Section 7 and close remaining unchecked items.
+2.  Confirm `429` acceptance path for gateway rate-limit test in a healthy Testcontainers environment.
+3.  Re-run full Phase 0 smoke and integration suites, then mark Phase 0 release criteria complete.

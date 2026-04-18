@@ -41,6 +41,9 @@ public abstract class FosTestContainersBase {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("fos.security.enabled", () -> "false");
+        registry.add("fos.identity.keycloak.webhook.secret", () -> "test-keycloak-webhook-secret");
+
         if (USING_EXTERNAL_SERVICES) {
             registry.add("spring.datasource.url", () ->
                     Optional.ofNullable(System.getenv("POSTGRES_URL"))
@@ -51,7 +54,6 @@ public abstract class FosTestContainersBase {
                     Optional.ofNullable(System.getenv("POSTGRES_PASSWORD")).orElse("fos"));
             registry.add("spring.kafka.bootstrap-servers", () ->
                     Optional.ofNullable(System.getenv("KAFKA_BOOTSTRAP_SERVERS")).orElse("localhost:9092"));
-            registry.add("KEYCLOAK_WEBHOOK_SECRET", () -> "test-keycloak-webhook-secret");
             registry.add("spring.flyway.baseline-on-migrate", () -> "true");
             registry.add("spring.flyway.baseline-version", () -> "0");
             registry.add("spring.flyway.table", () -> "flyway_schema_history_test");

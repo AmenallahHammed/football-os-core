@@ -1,0 +1,3 @@
+fos:
+  security:
+    enabled: false

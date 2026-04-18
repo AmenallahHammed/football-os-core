@@ -1,6 +1,10 @@
 package com.fos.governance.signal.infrastructure.audit;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -33,8 +37,9 @@ public class AuditLogEntry {
     @Column(name = "topic")
     private String topic;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "payload", columnDefinition = "jsonb")
-    private String payload;
+    private JsonNode payload;
 
     @Column(name = "recorded_at", nullable = false)
     private Instant recordedAt = Instant.now();
@@ -42,7 +47,7 @@ public class AuditLogEntry {
     protected AuditLogEntry() {}
 
     public AuditLogEntry(UUID signalId, UUID actorId, String action,
-                          String resourceType, UUID resourceId, String topic, String payload) {
+                          String resourceType, UUID resourceId, String topic, JsonNode payload) {
         this.signalId = signalId;
         this.actorId = actorId;
         this.action = action;

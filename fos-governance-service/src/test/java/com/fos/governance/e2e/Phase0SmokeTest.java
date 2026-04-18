@@ -8,6 +8,7 @@ import com.fos.governance.policy.api.PolicyEvaluationRequest;
 import com.fos.governance.signal.infrastructure.audit.AuditLogRepository;
 import com.fos.sdk.canonical.CanonicalRef;
 import com.fos.sdk.canonical.CanonicalType;
+import com.fos.sdk.events.KafkaTopics;
 import com.fos.sdk.events.SignalEnvelope;
 import com.fos.sdk.events.SignalType;
 import com.fos.sdk.policy.PolicyResult;
@@ -46,6 +47,10 @@ import static org.awaitility.Awaitility.await;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class Phase0SmokeTest extends FosTestContainersBase {
 
+    private static String uniqueEmail(String prefix) {
+        return prefix + "+" + UUID.randomUUID() + "@fos.com";
+    }
+
     private static WireMockServer wireMock;
 
     @BeforeAll
@@ -78,10 +83,11 @@ class Phase0SmokeTest extends FosTestContainersBase {
     @Test
     void full_phase0_workflow_smoke_test() {
         long initialAuditCount = auditLogRepository.count();
+        String email = uniqueEmail("smoke-test");
 
         // 1) Actor created
         ActorRequest request = new ActorRequest(
-                "smoke-test@fos.com", "Smoke", "Test",
+                email, "Smoke", "Test",
                 ActorRole.CLUB_ADMIN, UUID.randomUUID());
 
         ResponseEntity<ActorResponse> actorResponse = restTemplate.postForEntity(
@@ -93,7 +99,7 @@ class Phase0SmokeTest extends FosTestContainersBase {
         TestActor testActor = MockActorFactory.clubAdmin();
         assertThat(testActor.authorizationHeader()).startsWith("Bearer ");
 
-        stubFor(post(urlEqualTo("/v1/data/fos/allow"))
+        wireMock.stubFor(post(urlEqualTo("/v1/data/fos/allow"))
                 .willReturn(okJson("{\"result\": true}")));
 
         PolicyEvaluationRequest policyRequest = new PolicyEvaluationRequest(
@@ -131,7 +137,7 @@ class Phase0SmokeTest extends FosTestContainersBase {
         SignalEnvelope signal = SignalEnvelope.builder()
                 .signalId(UUID.randomUUID())
                 .type(SignalType.FACT)
-                .topic("fos.smoke.test.event")
+                .topic(KafkaTopics.AUDIT_ALL)
                 .actorRef(CanonicalRef.of(CanonicalType.CLUB, actorId).toString())
                 .correlationId(UUID.randomUUID().toString())
                 .timestamp(Instant.now())

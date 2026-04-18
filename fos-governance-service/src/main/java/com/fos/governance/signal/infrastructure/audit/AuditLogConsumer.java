@@ -44,10 +44,6 @@ public class AuditLogConsumer extends AbstractFosConsumer {
         }
 
         try {
-            String payloadJson = envelope.payload() != null
-                    ? objectMapper.writeValueAsString(envelope.payload())
-                    : null;
-
             com.fos.sdk.canonical.CanonicalRef actorRef = envelope.actorRef() != null 
                     ? com.fos.sdk.canonical.CanonicalRef.parse(envelope.actorRef()) : null;
 
@@ -62,7 +58,7 @@ public class AuditLogConsumer extends AbstractFosConsumer {
                     resourceType,
                     actorId, // fallback for resource_id
                     envelope.topic(),
-                    payloadJson
+                    envelope.payload()
             );
 
             auditLogRepository.save(entry);

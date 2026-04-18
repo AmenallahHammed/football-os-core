@@ -130,8 +130,25 @@ services:
       timeout: 5s
       retries: 5
 
+  onlyoffice:
+    image: onlyoffice/documentserver:7.5
+    container_name: fos-onlyoffice
+    ports:
+      - "8090:80"
+    environment:
+      JWT_ENABLED: "true"
+      JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:-fos-onlyoffice-secret-key-change-in-production}
+    volumes:
+      - fos-onlyoffice-data:/var/www/onlyoffice/Data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 volumes:
   fos-pg-data:
   fos-mongo-data:
   fos-minio-data:
   fos-opensearch-data:
+  fos-onlyoffice-data:

@@ -37,6 +37,10 @@ fos:
     service-url: ${GOVERNANCE_URL:http://localhost:8081}
   storage:
     provider: ${STORAGE_PROVIDER:minio}
+  onlyoffice:
+    document-server-url: ${ONLYOFFICE_URL:http://localhost:8090}
+    jwt-secret: ${ONLYOFFICE_JWT_SECRET:fos-onlyoffice-secret-key-change-in-production}
+    token-expiry-minutes: 60
 
 minio:
   endpoint: ${MINIO_ENDPOINT:http://localhost:9000}

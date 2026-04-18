@@ -47,6 +47,28 @@ allow {
     input.actor.role == "ROLE_CLUB_ADMIN"
 }
 
+# Workspace Event Policies
+
+allow {
+    input.resource.action == "workspace.event.create"
+    event_manage_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.event.update"
+    event_manage_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.event.delete"
+    event_manage_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.event.read"
+    coaching_staff_roles[input.actor.role]
+}
+
 coaching_staff_roles := {
     "ROLE_HEAD_COACH",
     "ROLE_ASSISTANT_COACH",
@@ -65,4 +87,9 @@ report_upload_roles := {
     "ROLE_HEAD_COACH",
     "ROLE_CLUB_ADMIN",
     "ROLE_ANALYST"
+}
+
+event_manage_roles := {
+    "ROLE_HEAD_COACH",
+    "ROLE_CLUB_ADMIN"
 }

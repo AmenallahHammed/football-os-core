@@ -7,12 +7,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
 @SpringBootApplication(scanBasePackages = {"com.fos.workspace", "com.fos.sdk.events", "com.fos.sdk.security"})
 @EnableMongock
 @EnableMongoAuditing
+@EnableScheduling
 public class WorkspaceApp {
 
     public static void main(String[] args) {

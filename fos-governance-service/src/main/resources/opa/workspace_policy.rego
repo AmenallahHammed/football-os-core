@@ -69,6 +69,46 @@ allow {
     coaching_staff_roles[input.actor.role]
 }
 
+allow {
+    input.resource.action == "workspace.profile.tab.documents"
+    coaching_staff_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.profile.tab.reports"
+    coaching_staff_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.profile.tab.medical"
+    medical_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.profile.tab.admin"
+    input.actor.role == "ROLE_CLUB_ADMIN"
+}
+
+allow {
+    input.resource.action == "workspace.document.general.edit"
+    coaching_staff_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.document.report.edit"
+    report_upload_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.document.medical.edit"
+    input.actor.role == "ROLE_CLUB_ADMIN"
+}
+
+allow {
+    input.resource.action == "workspace.document.admin.edit"
+    input.actor.role == "ROLE_CLUB_ADMIN"
+}
+
 coaching_staff_roles := {
     "ROLE_HEAD_COACH",
     "ROLE_ASSISTANT_COACH",

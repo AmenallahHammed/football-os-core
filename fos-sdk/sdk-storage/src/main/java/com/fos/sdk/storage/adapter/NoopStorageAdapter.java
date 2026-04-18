@@ -4,13 +4,13 @@ import com.fos.sdk.storage.PresignedUploadUrl;
 import com.fos.sdk.storage.StoragePort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.time.Instant;
 
 @Component
-@ConditionalOnMissingBean(StoragePort.class)
+@ConditionalOnProperty(name = "fos.storage.provider", havingValue = "noop", matchIfMissing = true)
 public class NoopStorageAdapter implements StoragePort {
 
     private static final Logger log = LoggerFactory.getLogger(NoopStorageAdapter.class);

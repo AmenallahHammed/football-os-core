@@ -1,6 +1,7 @@
 package com.fos.workspace.document;
 
 import com.fos.sdk.test.FosTestContainersBase;
+import com.fos.sdk.events.FosKafkaProducer;
 import com.fos.workspace.document.api.DocumentController;
 import com.fos.workspace.document.api.DocumentResponse;
 import com.fos.workspace.document.api.InitiateUploadRequest;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
@@ -95,6 +97,9 @@ class DocumentIntegrationTest extends FosTestContainersBase {
 
     @Autowired
     private WorkspaceDocumentRepository repository;
+
+    @MockBean
+    private FosKafkaProducer kafkaProducer;
 
     @BeforeEach
     void setUp() {

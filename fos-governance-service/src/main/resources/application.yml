@@ -4,6 +4,11 @@ spring:
     username: ${POSTGRES_USER:fos}
     password: ${POSTGRES_PASSWORD:fos}
     driver-class-name: org.postgresql.Driver
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWKS_URI:http://localhost:8180/realms/fos/protocol/openid-connect/certs}
   jpa:
     hibernate:
       ddl-auto: validate

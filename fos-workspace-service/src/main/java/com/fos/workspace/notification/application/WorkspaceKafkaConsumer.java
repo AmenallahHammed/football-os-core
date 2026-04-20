@@ -8,6 +8,7 @@ import com.fos.workspace.notification.domain.WorkspaceNotification;
 import com.fos.workspace.notification.infrastructure.persistence.WorkspaceNotificationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -29,14 +30,6 @@ import java.util.UUID;
  * for the target actor to see in their inbox.
  */
 @Component
-@KafkaListener(
-    topics = {
-        "fos.workspace.event.document.missing",
-        "fos.workspace.document.uploaded",
-        "fos.workspace.event.created"
-    },
-    groupId = "fos-workspace-notifications"
-)
 public class WorkspaceKafkaConsumer extends AbstractFosConsumer {
 
     private static final Logger log = LoggerFactory.getLogger(WorkspaceKafkaConsumer.class);
@@ -47,6 +40,18 @@ public class WorkspaceKafkaConsumer extends AbstractFosConsumer {
                                    WorkspaceNotificationRepository notificationRepository) {
         super(objectMapper);
         this.notificationRepository = notificationRepository;
+    }
+
+    @KafkaListener(
+        topics = {
+            "fos.workspace.event.document.missing",
+            "fos.workspace.document.uploaded",
+            "fos.workspace.event.created"
+        },
+        groupId = "fos-workspace-notifications"
+    )
+    public void consume(ConsumerRecord<String, String> record) {
+        onMessage(record);
     }
 
     @Override
@@ -119,15 +124,23 @@ public class WorkspaceKafkaConsumer extends AbstractFosConsumer {
     private UUID extractActorId(String actorRefString) {
         if (actorRefString == null) return null;
         try {
+            String ref = actorRefString.trim();
+
             // Simple extraction: find the UUID pattern in the string
             // CanonicalRef.toString() -> "CanonicalRef[type=CLUB, id=<UUID>]"
             // We extract the UUID after "id="
-            int idIndex = actorRefString.indexOf("id=");
+            int idIndex = ref.indexOf("id=");
             if (idIndex == -1) {
+                // CanonicalRef compact format -> "CLUB:<UUID>"
+                int colonIndex = ref.indexOf(':');
+                if (colonIndex != -1 && colonIndex < ref.length() - 1) {
+                    return UUID.fromString(ref.substring(colonIndex + 1).trim());
+                }
+
                 // Try parsing directly as UUID (if the caller passed UUID.toString())
-                return UUID.fromString(actorRefString.trim());
+                return UUID.fromString(ref);
             }
-            String uuidPart = actorRefString.substring(idIndex + 3).replace("]", "").trim();
+            String uuidPart = ref.substring(idIndex + 3).replace("]", "").trim();
             return UUID.fromString(uuidPart);
         } catch (IllegalArgumentException e) {
             log.warn("Could not extract actorId from actorRef: {}", actorRefString);

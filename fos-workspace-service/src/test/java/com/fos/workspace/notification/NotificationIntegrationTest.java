@@ -1,17 +1,14 @@
 package com.fos.workspace.notification;
 
 import com.fos.sdk.test.FosTestContainersBase;
-import com.fos.workspace.notification.api.NotificationResponse;
-import com.fos.workspace.notification.application.NotificationService;
 import com.fos.workspace.notification.domain.NotificationType;
 import com.fos.workspace.notification.domain.WorkspaceNotification;
 import com.fos.workspace.notification.infrastructure.persistence.WorkspaceNotificationRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
@@ -40,6 +37,11 @@ class NotificationIntegrationTest extends FosTestContainersBase {
 
     private static final UUID TEST_ACTOR_ID = UUID.fromString(
             "00000000-0000-0000-0000-000000000001");
+
+    @BeforeEach
+    void cleanNotifications() {
+        notificationRepository.deleteAll();
+    }
 
     @Test
     void should_return_notifications_for_actor() {
@@ -100,5 +102,24 @@ class NotificationIntegrationTest extends FosTestContainersBase {
         WorkspaceNotification updated = notificationRepository
                 .findByResourceId(saved.getResourceId()).orElseThrow();
         assertThat(updated.isRead()).isTrue();
+    }
+
+    @Test
+    void should_mark_all_notifications_as_read() {
+        WorkspaceNotification first = WorkspaceNotification.create(
+                TEST_ACTOR_ID, null, NotificationType.GENERAL,
+                "First unread", "Body", null, null);
+        WorkspaceNotification second = WorkspaceNotification.create(
+                TEST_ACTOR_ID, null, NotificationType.DOCUMENT_MISSING,
+                "Second unread", "Body", null, null);
+        notificationRepository.save(first);
+        notificationRepository.save(second);
+
+        ResponseEntity<Void> response = restTemplate.postForEntity(
+                "/api/v1/notifications/mark-all-read", null, Void.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(notificationRepository.countByRecipientActorIdAndReadFalse(TEST_ACTOR_ID))
+                .isEqualTo(0);
     }
 }

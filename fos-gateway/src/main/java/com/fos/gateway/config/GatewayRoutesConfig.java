@@ -34,7 +34,8 @@ public class GatewayRoutesConfig {
                               "/api/v1/events/**",
                               "/api/v1/profiles/**",
                               "/api/v1/notifications/**",
-                              "/api/v1/search/**")
+                              "/api/v1/search/**",
+                              "/api/v1/onlyoffice/**")
                         .uri(workspaceUrl))
                 .build();
     }

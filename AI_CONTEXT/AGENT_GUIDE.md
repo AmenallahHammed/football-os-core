@@ -275,11 +275,6 @@ Check prerequisite gate
     │
     └── Gate passes
             │
-            ▼
-        Execute phase document task by task
-            │
-            ├── Known error encountered → apply auto-correction, inform user, continue
-            │
             ├── File not in map BUT task step names it explicitly
             │       → modify it, report as auto-correction, continue
             │

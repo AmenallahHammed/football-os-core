@@ -14,12 +14,12 @@ import com.fos.workspace.document.infrastructure.persistence.WorkspaceDocumentRe
 import com.fos.workspace.event.api.EventResponse;
 import com.fos.workspace.event.infrastructure.persistence.WorkspaceEventRepository;
 import com.fos.workspace.search.api.SearchResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,25 +38,33 @@ public class WorkspaceSearchService {
 
     private static final Duration DOWNLOAD_URL_EXPIRY = Duration.ofHours(1);
     private static final int MAX_SEARCH_RESULTS = 50;
+    private static final UUID FALLBACK_ACTOR_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final String FALLBACK_ROLE = "ROLE_CLUB_ADMIN";
 
     private final WorkspaceDocumentRepository documentRepository;
     private final WorkspaceEventRepository eventRepository;
     private final PolicyClient policyClient;
     private final StoragePort storagePort;
+    private final FosSecurityContext securityContext;
+    private final boolean securityEnabled;
 
     public WorkspaceSearchService(WorkspaceDocumentRepository documentRepository,
                                    WorkspaceEventRepository eventRepository,
                                    PolicyClient policyClient,
-                                   StoragePort storagePort) {
+                                   StoragePort storagePort,
+                                   FosSecurityContext securityContext,
+                                   @Value("${fos.security.enabled:true}") boolean securityEnabled) {
         this.documentRepository = documentRepository;
         this.eventRepository = eventRepository;
         this.policyClient = policyClient;
         this.storagePort = storagePort;
+        this.securityContext = securityContext;
+        this.securityEnabled = securityEnabled;
     }
 
     public SearchResponse search(String query) {
-        UUID actorId = UUID.fromString(FosSecurityContext.actorId());
-        String role = FosSecurityContext.roles().stream().findFirst().orElse("");
+        UUID actorId = currentActorId();
+        String role = currentActorRole();
 
         // -- Search documents ------------------------------------------------
         // Use the regex search method from WorkspaceDocumentRepository
@@ -98,5 +106,13 @@ public class WorkspaceSearchService {
         return policyClient.evaluate(PolicyRequest.of(
                 actorId, role, action,
                 CanonicalRef.of(CanonicalType.CLUB, actorId), "ACTIVE")).isAllowed();
+    }
+
+    private UUID currentActorId() {
+        return securityEnabled ? securityContext.getActorId() : FALLBACK_ACTOR_ID;
+    }
+
+    private String currentActorRole() {
+        return securityEnabled ? securityContext.getRole() : FALLBACK_ROLE;
     }
 }

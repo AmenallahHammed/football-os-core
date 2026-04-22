@@ -1,0 +1,74 @@
+# fos-governance-service/src/main/resources/application-staging.yml
+# ----------------------------------------------------------------------------
+# STAGING PROFILE - production-like QA environment.
+# ----------------------------------------------------------------------------
+
+spring:
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      maximum-pool-size: 15
+      minimum-idle: 3
+
+  jpa:
+    properties:
+      hibernate:
+        show_sql: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    default-schema: public
+    validate-on-migrate: true
+    baseline-on-migrate: false
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWKS_URI}
+
+fos:
+  security:
+    enabled: true
+  opa:
+    url: ${OPA_URL}
+  canonical:
+    service-url: ${CANONICAL_SERVICE_URL}
+  identity:
+    keycloak:
+      webhook:
+        secret: ${KEYCLOAK_WEBHOOK_SECRET}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: never
+    include-exception: false
+
+logging:
+  level:
+    root: WARN
+    com.fos.governance: INFO
+    com.fos.sdk: INFO
+    org.springframework.web: WARN
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+    org.flywaydb: INFO
+    org.springframework.kafka: WARN
+    org.springframework.web.client: WARN

@@ -1,0 +1,95 @@
+# fos-governance-service/src/main/resources/application-dev.yml
+# ----------------------------------------------------------------------------
+# DEV PROFILE - local development.
+#
+# Key differences:
+#   - Hardcoded local credentials (Docker container defaults)
+#   - Security disabled
+#   - SQL shown in logs for debugging queries
+#   - Flyway baseline-on-migrate=true (safe for first-time local setup)
+#   - All actuator endpoints exposed
+#   - DEBUG logging for everything FOS-related
+# ----------------------------------------------------------------------------
+
+spring:
+  datasource:
+    # Local Docker PostgreSQL - default credentials from docker-compose.yml
+    url: jdbc:postgresql://localhost:5432/fos_governance
+    username: fos
+    password: fos
+
+  jpa:
+    properties:
+      hibernate:
+        # Show every SQL query in the console - very useful for debugging
+        show_sql: true
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    default-schema: public
+    validate-on-migrate: true
+    # true = if DB has tables but no Flyway history, treat current state as v0
+    # This is safe for first-time local setup where you have an existing DB
+    baseline-on-migrate: true
+    baseline-version: 0
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8180/realms/fos/protocol/openid-connect/certs
+
+fos:
+  security:
+    enabled: false
+  opa:
+    url: http://localhost:8181
+  identity:
+    keycloak:
+      webhook:
+        secret: dev-keycloak-webhook-secret
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: always
+    include-exception: true
+
+logging:
+  level:
+    root: INFO
+    # All governance code - show DEBUG
+    com.fos.governance: DEBUG
+    # All SDK code used by governance
+    com.fos.sdk: DEBUG
+    # Spring Web MVC - show every HTTP request and response
+    org.springframework.web: DEBUG
+    # Spring Security - show auth chain decisions
+    org.springframework.security: DEBUG
+    # Hibernate SQL - already shown via show_sql=true but this adds parameter values
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+    # Spring Data JPA queries
+    org.springframework.data.jpa: DEBUG
+    # Flyway - show each migration script as it runs
+    org.flywaydb: DEBUG
+    # Kafka producer/consumer activity
+    org.springframework.kafka: DEBUG
+    org.apache.kafka: INFO
+    # OPA HTTP calls
+    org.springframework.web.client: DEBUG

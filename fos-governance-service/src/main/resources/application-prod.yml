@@ -1,0 +1,87 @@
+# fos-governance-service/src/main/resources/application-prod.yml
+# ----------------------------------------------------------------------------
+# PRODUCTION PROFILE
+#
+# SECURITY RULES:
+#   - NO defaults (no :fallback) for any sensitive value.
+#     Missing env vars = app fails to start. This is CORRECT behavior.
+#   - NO stack traces in responses.
+#   - NO SQL in logs.
+#   - Minimal logging - errors only.
+# ----------------------------------------------------------------------------
+
+spring:
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 600000
+      connection-timeout: 30000
+
+  jpa:
+    properties:
+      hibernate:
+        show_sql: false
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    default-schema: public
+    validate-on-migrate: true
+    baseline-on-migrate: false
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+    producer:
+      # In production: require ALL replicas to acknowledge before message is committed
+      acks: all
+      retries: 5
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWKS_URI}
+
+fos:
+  security:
+    enabled: true
+  opa:
+    url: ${OPA_URL}
+  canonical:
+    service-url: ${CANONICAL_SERVICE_URL}
+  identity:
+    keycloak:
+      webhook:
+        secret: ${KEYCLOAK_WEBHOOK_SECRET}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      show-details: never
+
+server:
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+logging:
+  level:
+    root: ERROR
+    com.fos.governance: WARN
+    com.fos.sdk: WARN
+    org.springframework: ERROR
+    org.hibernate: ERROR
+    org.flywaydb: WARN
+    org.springframework.kafka: ERROR
+    org.apache.kafka: ERROR

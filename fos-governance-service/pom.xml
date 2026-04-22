@@ -70,6 +70,13 @@
       <artifactId>flyway-database-postgresql</artifactId>
     </dependency>
 
+    <!-- JSON structured logging for staging and production profiles -->
+    <dependency>
+      <groupId>net.logstash.logback</groupId>
+      <artifactId>logstash-logback-encoder</artifactId>
+      <version>7.4</version>
+    </dependency>
+
     <dependency>
       <groupId>com.fos</groupId>
       <artifactId>sdk-test</artifactId>

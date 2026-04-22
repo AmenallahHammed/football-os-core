@@ -1,0 +1,64 @@
+# fos-gateway/src/main/resources/application-prod.yml
+# ----------------------------------------------------------------------------
+# PRODUCTION PROFILE
+#
+# RULES:
+#   - NO default values (no ":fallback" syntax) on any sensitive property.
+#     If an env var is missing, the app MUST fail to start. This is correct.
+#   - NO stack traces ever sent to API callers.
+#   - Minimal logging (errors only).
+# ----------------------------------------------------------------------------
+
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWKS_URI}
+
+  cloud:
+    gateway:
+      default-filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter:
+              replenishRate: 100
+              burstCapacity: 120
+            key-resolver: "#{@actorKeyResolver}"
+
+fos:
+  security:
+    enabled: true
+  governance:
+    url: ${GOVERNANCE_URL}
+  workspace:
+    url: ${WORKSPACE_URL}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  endpoint:
+    health:
+      show-details: never
+
+server:
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+logging:
+  level:
+    root: ERROR
+    com.fos.gateway: WARN
+    org.springframework.cloud.gateway: ERROR
+    org.springframework.security: ERROR
+    org.springframework.data.redis: ERROR

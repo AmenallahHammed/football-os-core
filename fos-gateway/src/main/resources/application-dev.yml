@@ -1,0 +1,76 @@
+# fos-gateway/src/main/resources/application-dev.yml
+# ----------------------------------------------------------------------------
+# DEV PROFILE - for local development on your machine.
+#
+# Key differences from base:
+#   - Security disabled: no JWT required, all requests pass through
+#   - Rate limiter set to very high values so it never blocks you during dev
+#   - All actuator endpoints exposed so you can inspect beans, env, health
+#   - Full debug logging
+# ----------------------------------------------------------------------------
+
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Points to local Keycloak Docker container.
+          # Not actually used when fos.security.enabled=false,
+          # but Spring needs a value to start without errors.
+          jwk-set-uri: http://localhost:8180/realms/fos/protocol/openid-connect/certs
+
+  cloud:
+    gateway:
+      default-filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter:
+              # Very high in dev so rate limiting never blocks you
+              replenishRate: 10000
+              burstCapacity: 10000
+            key-resolver: "#{@actorKeyResolver}"
+
+fos:
+  security:
+    # CRITICAL: false = no JWT validation. ONLY safe in dev/tests.
+    enabled: false
+  governance:
+    url: http://localhost:8081
+  workspace:
+    url: http://localhost:8082
+
+management:
+  endpoints:
+    web:
+      exposure:
+        # Expose everything in dev: beans, env, mappings, conditions, etc.
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: always
+    include-exception: true
+
+logging:
+  level:
+    root: INFO
+    # Gateway package - show every filter decision, routing decision
+    com.fos.gateway: DEBUG
+    # Spring Cloud Gateway routing engine
+    org.springframework.cloud.gateway: DEBUG
+    # Spring Security - show JWT validation steps, access decisions
+    org.springframework.security: DEBUG
+    # WebFlux - show reactive pipeline steps
+    org.springframework.web.reactive: DEBUG
+    # Redis - show rate limiter interactions
+    org.springframework.data.redis: DEBUG

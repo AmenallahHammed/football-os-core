@@ -1,0 +1,67 @@
+# fos-workspace-service/src/main/resources/application-staging.yml
+# ----------------------------------------------------------------------------
+# STAGING PROFILE - production-like QA environment.
+# ----------------------------------------------------------------------------
+
+spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWKS_URI}
+
+fos:
+  security:
+    enabled: true
+  storage:
+    provider: ${STORAGE_PROVIDER:minio}
+  policy:
+    service-url: ${GOVERNANCE_URL}
+  canonical:
+    service-url: ${GOVERNANCE_URL}
+  onlyoffice:
+    document-server-url: ${ONLYOFFICE_URL}
+    jwt-secret: ${ONLYOFFICE_JWT_SECRET}
+
+minio:
+  endpoint: ${MINIO_ENDPOINT}
+  access-key: ${MINIO_ACCESS_KEY}
+  secret-key: ${MINIO_SECRET_KEY}
+  # Staging uses a separate bucket so staging uploads never mix with prod data
+  bucket: fos-workspace-staging
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: never
+    include-exception: false
+
+logging:
+  level:
+    root: WARN
+    com.fos.workspace: INFO
+    com.fos.sdk: INFO
+    org.springframework.web: WARN
+    org.springframework.security: WARN
+    org.springframework.data.mongodb: WARN
+    org.mongodb.driver: WARN
+    org.springframework.kafka: WARN
+    io.mongock: INFO
+    org.springframework.web.client: WARN

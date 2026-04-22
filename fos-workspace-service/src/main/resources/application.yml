@@ -1,52 +1,69 @@
-server:
-  port: 8082
+# fos-workspace-service/src/main/resources/application.yml
+# ----------------------------------------------------------------------------
+# SHARED BASE CONFIGURATION - applies to ALL profiles.
+# ----------------------------------------------------------------------------
 
 spring:
   application:
     name: fos-workspace-service
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  # -- MongoDB ----------------------------------------------------------------
   data:
     mongodb:
       uri: ${MONGODB_URI:mongodb://localhost:27017/fos_workspace}
+      # NEVER true - indexes are managed exclusively by Mongock migration classes.
+      # Setting this to true would create duplicate indexes and race conditions.
       auto-index-creation: false
+
+  # -- Kafka ------------------------------------------------------------------
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      retries: 3
+      properties:
+        linger.ms: 100
     consumer:
       group-id: fos-workspace
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest
+      enable-auto-commit: false
+
+  # -- Security ---------------------------------------------------------------
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: ${KEYCLOAK_JWKS_URI:http://localhost:8180/realms/fos/protocol/openid-connect/certs}
 
-mongock:
-  migration-scan-package: com.fos.workspace.db.migration
-  enabled: true
+  # -- JSON -------------------------------------------------------------------
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+    default-property-inclusion: non_null
 
-fos:
-  security:
-    enabled: ${FOS_SECURITY_ENABLED:true}
-  policy:
-    service-url: ${GOVERNANCE_URL:http://localhost:8081}
-  canonical:
-    service-url: ${GOVERNANCE_URL:http://localhost:8081}
-  storage:
-    provider: ${STORAGE_PROVIDER:minio}
-  onlyoffice:
-    document-server-url: ${ONLYOFFICE_URL:http://localhost:8090}
-    jwt-secret: ${ONLYOFFICE_JWT_SECRET:fos-onlyoffice-secret-key-change-in-production}
-    token-expiry-minutes: 60
+  # -- SQL init ---------------------------------------------------------------
+  # Workspace uses MongoDB so there is no SQL data.sql to load.
+  # This key is present for completeness and set to 'never' in all profiles.
+  sql:
+    init:
+      mode: never
 
-minio:
-  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
-  access-key: ${MINIO_ACCESS_KEY:minioadmin}
-  secret-key: ${MINIO_SECRET_KEY:minioadmin}
-  bucket: ${MINIO_BUCKET:fos-workspace}
+server:
+  port: ${SERVER_PORT:8082}
+  compression:
+    enabled: true
+    min-response-size: 2048
+  error:
+    include-message: always
+    include-binding-errors: always
 
 management:
   endpoints:
@@ -56,3 +73,43 @@ management:
   endpoint:
     health:
       show-details: never
+
+# -- Mongock -----------------------------------------------------------------
+# Mongock is the MongoDB equivalent of Flyway.
+# It scans the migration package for @ChangeUnit classes and runs only
+# the ones that have not been executed yet (tracked in mongockChangeLog collection).
+mongock:
+  migration-scan-package: com.fos.workspace.db.migration
+  enabled: true
+
+# -- FOS SDK client configuration --------------------------------------------
+fos:
+  security:
+    enabled: ${FOS_SECURITY_ENABLED:true}
+  policy:
+    # PolicyClient sends HTTP POST to this URL to evaluate OPA decisions.
+    # This points to fos-governance-service - workspace NEVER calls OPA directly.
+    service-url: ${GOVERNANCE_URL:http://localhost:8081}
+  canonical:
+    # CanonicalResolver fetches player/team identity from governance canonical API.
+    service-url: ${GOVERNANCE_URL:http://localhost:8081}
+  storage:
+    # Controls which StoragePort adapter is active.
+    # noop    = NoopStorageAdapter (returns fake URLs, no MinIO needed) - use in dev/tests
+    # minio   = MinioStorageAdapter (real MinIO container or server)
+    # s3      = S3StorageAdapter (AWS S3)
+    # azure   = AzureBlobStorageAdapter
+    provider: ${STORAGE_PROVIDER:noop}
+  onlyoffice:
+    document-server-url: ${ONLYOFFICE_URL:http://localhost:8090}
+    # Secret shared between this service and OnlyOffice Document Server.
+    # Used to sign JWT configs so OnlyOffice accepts them.
+    jwt-secret: ${ONLYOFFICE_JWT_SECRET:change-this-in-production}
+    token-expiry-minutes: 60
+
+# -- MinIO connection (only used when fos.storage.provider=minio) ------------
+minio:
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:minioadmin}
+  secret-key: ${MINIO_SECRET_KEY:minioadmin}
+  bucket: ${MINIO_BUCKET:fos-workspace}

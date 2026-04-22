@@ -1,0 +1,55 @@
+# fos-gateway/src/main/resources/application-staging.yml
+# ----------------------------------------------------------------------------
+# STAGING PROFILE - production-like server used for QA testing.
+#
+# Key differences from dev:
+#   - Security fully enabled (real JWTs required)
+#   - Credentials from environment variables
+#   - Reduced logging (no DEBUG)
+#   - Stack traces NOT sent in HTTP error responses
+# ----------------------------------------------------------------------------
+
+spring:
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT:6379}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWKS_URI}
+
+fos:
+  security:
+    enabled: true
+  governance:
+    url: ${GOVERNANCE_URL}
+  workspace:
+    url: ${WORKSPACE_URL}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: never
+    include-exception: false
+
+logging:
+  level:
+    root: WARN
+    com.fos.gateway: INFO
+    org.springframework.cloud.gateway: WARN
+    org.springframework.security: WARN
+    org.springframework.web.reactive: WARN
+    org.springframework.data.redis: WARN

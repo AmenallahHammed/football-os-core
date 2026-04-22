@@ -1,29 +1,128 @@
+# fos-governance-service/src/main/resources/application.yml
+# ----------------------------------------------------------------------------
+# SHARED BASE CONFIGURATION - applies to ALL profiles.
+# ----------------------------------------------------------------------------
+
 spring:
+  application:
+    name: fos-governance-service
+
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  # -- PostgreSQL datasource --------------------------------------------------
   datasource:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/fos_governance}
     username: ${POSTGRES_USER:fos}
     password: ${POSTGRES_PASSWORD:fos}
     driver-class-name: org.postgresql.Driver
+    # HikariCP connection pool settings
+    hikari:
+      # Max connections in the pool
+      maximum-pool-size: 10
+      # Min connections kept alive
+      minimum-idle: 2
+      # How long a connection can be idle before being removed (ms)
+      idle-timeout: 300000
+      # How long to wait for a connection from the pool (ms)
+      connection-timeout: 30000
+      pool-name: FosGovernancePool
+
+  # -- JPA / Hibernate --------------------------------------------------------
+  jpa:
+    # validate = Hibernate checks DB schema matches entity classes, but never changes DB
+    # NEVER use create, create-drop, or update in any environment.
+    # Flyway owns the schema - Hibernate only reads it.
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        # Governance entities live in multiple schemas.
+        # Each @Entity uses @Table(schema="fos_identity") etc.
+        # This default applies when no schema is specified on @Table.
+        default_schema: fos_identity
+        # Show SQL in logs - overridden per profile
+        show_sql: false
+        format_sql: true
+        # Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    # Disable open-session-in-view (causes lazy loading issues - always disable)
+    open-in-view: false
+
+  # -- Flyway -----------------------------------------------------------------
+  flyway:
+    enabled: true
+    # Where Flyway looks for migration scripts
+    locations: classpath:db/migration
+    # Flyway stores its own history table in the public schema.
+    # This is separate from the fos_identity, fos_canonical etc. schemas.
+    default-schema: public
+    # If true: Flyway fails to start if any migration file has been modified
+    # after it was applied. Keep true - prevents accidental migration tampering.
+    validate-on-migrate: true
+    # Baseline: if existing tables are found with no Flyway history, treat them
+    # as baseline version 0 and continue. Set to false after first deployment.
+    baseline-on-migrate: false
+
+  # -- Kafka ------------------------------------------------------------------
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      retries: 3
+      properties:
+        linger.ms: 100
+    consumer:
+      group-id: fos-governance
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+
+  # -- Security (Keycloak JWT) ------------------------------------------------
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: ${KEYCLOAK_JWKS_URI:http://localhost:8180/realms/fos/protocol/openid-connect/certs}
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    properties:
-      hibernate:
-        default_schema: fos_identity
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-    default-schema: public
 
+  # -- JSON -------------------------------------------------------------------
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+    default-property-inclusion: non_null
+
+server:
+  port: ${SERVER_PORT:8081}
+  compression:
+    enabled: true
+    min-response-size: 2048
+  error:
+    include-message: always
+    include-binding-errors: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+
+# FOS custom settings
 fos:
+  security:
+    enabled: ${FOS_SECURITY_ENABLED:true}
+  opa:
+    # OPA sidecar runs alongside this service
+    url: ${OPA_URL:http://localhost:8181}
   canonical:
     service-url: ${CANONICAL_SERVICE_URL:http://localhost:8081}
   identity:
     keycloak:
       webhook:
-        secret: ${KEYCLOAK_WEBHOOK_SECRET}
+        secret: ${KEYCLOAK_WEBHOOK_SECRET:dev-keycloak-webhook-secret}

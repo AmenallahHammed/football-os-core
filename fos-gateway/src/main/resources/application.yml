@@ -1,14 +1,24 @@
-server:
-  port: 8080
+# fos-gateway/src/main/resources/application.yml
+# ----------------------------------------------------------------------------
+# SHARED BASE CONFIGURATION - applies to ALL profiles.
+# Profile-specific files (application-dev.yml etc.) override individual keys.
+# ----------------------------------------------------------------------------
 
 spring:
   application:
     name: fos-gateway
 
+  profiles:
+    # Default to dev if no profile is set.
+    # In production: export SPRING_PROFILES_ACTIVE=prod
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
   security:
     oauth2:
       resourceserver:
         jwt:
+          # The Keycloak JWKS endpoint. Gateway uses this to verify JWT signatures.
+          # No secret key needed - Keycloak signs tokens with RSA; gateway only verifies.
           jwk-set-uri: ${KEYCLOAK_JWKS_URI:http://localhost:8180/realms/fos/protocol/openid-connect/certs}
 
   data:
@@ -18,26 +28,36 @@ spring:
 
   cloud:
     gateway:
+      # Default rate limiter applied to EVERY route.
+      # replenishRate: how many requests per second the bucket refills
+      # burstCapacity: max burst before throttling kicks in
       default-filters:
         - name: RequestRateLimiter
           args:
             redis-rate-limiter:
               replenishRate: 100
-              requestedTokens: 60
-              burstCapacity: 100
+              burstCapacity: 120
             key-resolver: "#{@actorKeyResolver}"
+
+server:
+  port: ${SERVER_PORT:8080}
+  compression:
+    enabled: true
+    min-response-size: 2048
 
 management:
   endpoints:
     web:
       exposure:
-        include: health, info
+        include: health,info
   endpoint:
     health:
       show-details: never
 
+# FOS custom configuration
 fos:
   security:
+    # When false: JWT validation is completely skipped. ONLY for dev/tests.
     enabled: ${FOS_SECURITY_ENABLED:true}
   governance:
     url: ${GOVERNANCE_URL:http://localhost:8081}

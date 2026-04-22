@@ -1,0 +1,92 @@
+# fos-workspace-service/src/main/resources/application-dev.yml
+# ----------------------------------------------------------------------------
+# DEV PROFILE - local development.
+#
+# Key differences:
+#   - Security disabled (no JWT required)
+#   - NoopStorageAdapter (no MinIO container needed)
+#   - Local MongoDB Docker container
+#   - All actuator endpoints exposed
+#   - Full DEBUG logging
+#   - Mongock logs every migration step
+# ----------------------------------------------------------------------------
+
+spring:
+  data:
+    mongodb:
+      # Local Docker MongoDB - started by docker-compose up -d
+      uri: mongodb://localhost:27017/fos_workspace_dev
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8180/realms/fos/protocol/openid-connect/certs
+
+fos:
+  security:
+    # false = no JWT validation. Your dev API calls work without Keycloak tokens.
+    enabled: false
+  storage:
+    # noop = no real MinIO needed. Upload/download return fake URLs.
+    # Change to 'minio' when you want to test real file uploads locally.
+    provider: noop
+  policy:
+    service-url: http://localhost:8081
+  canonical:
+    service-url: http://localhost:8081
+  onlyoffice:
+    document-server-url: http://localhost:8090
+    # Simple known secret for local dev - easy to decode manually if needed
+    jwt-secret: dev-onlyoffice-secret-key-32-chars!!
+
+minio:
+  endpoint: http://localhost:9000
+  access-key: minioadmin
+  secret-key: minioadmin
+  bucket: fos-workspace-dev
+
+mongock:
+  migration-scan-package: com.fos.workspace.db.migration
+  enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: always
+    include-exception: true
+
+logging:
+  level:
+    root: INFO
+    # All workspace business code - DEBUG so you see every service call
+    com.fos.workspace: DEBUG
+    # All SDK code used by workspace (PolicyClient, FosKafkaProducer, etc.)
+    com.fos.sdk: DEBUG
+    # Spring Web - see every incoming HTTP request
+    org.springframework.web: DEBUG
+    # Spring Security - see auth decisions (useful even with security disabled)
+    org.springframework.security: DEBUG
+    # Spring Data MongoDB - see every query
+    org.springframework.data.mongodb: DEBUG
+    org.mongodb.driver: INFO
+    # Spring Kafka - see producer/consumer activity
+    org.springframework.kafka: DEBUG
+    org.apache.kafka: INFO
+    # Mongock - see which migrations run and which are skipped
+    io.mongock: DEBUG
+    # HTTP client calls to governance service (PolicyClient, CanonicalServiceClient)
+    org.springframework.web.client: DEBUG

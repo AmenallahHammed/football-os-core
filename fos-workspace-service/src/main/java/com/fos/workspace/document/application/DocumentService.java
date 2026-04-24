@@ -31,6 +31,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -41,6 +42,7 @@ public class DocumentService {
     private static final Duration DOWNLOAD_URL_EXPIRY = Duration.ofHours(1);
     private static final Duration UPLOAD_URL_EXPIRY = Duration.ofMinutes(15);
     private static final UUID FALLBACK_ACTOR_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final UUID FALLBACK_CLUB_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final String FALLBACK_ROLE = "ROLE_CLUB_ADMIN";
     private static final String DOCUMENT_UPLOADED_TOPIC = "fos.workspace.document.uploaded";
 
@@ -73,10 +75,11 @@ public class DocumentService {
 
     public UploadInitiationResult initiateUpload(InitiateUploadRequest request) {
         UUID actorId = currentActorId();
+        UUID clubId = currentClubId();
         String role = currentActorRole();
-        CanonicalRef ownerRef = CanonicalRef.of(CanonicalType.CLUB, actorId);
+        CanonicalRef ownerRef = CanonicalRef.club(clubId);
 
-        authorize(actionFor(request.category(), "upload"), ownerRef, ResourceState.DRAFT.name(), actorId, role);
+        authorize(actionFor(request.category(), "upload"), ownerRef, ResourceState.DRAFT.name(), actorId, role, clubId);
 
         WorkspaceDocument document = WorkspaceDocument.create(
                 request.name(),
@@ -114,8 +117,9 @@ public class DocumentService {
 
     public DocumentResponse confirmUpload(ConfirmUploadRequest request, InitiateUploadRequest originalRequest) {
         UUID actorId = currentActorId();
+        UUID clubId = currentClubId();
 
-        WorkspaceDocument document = loadDocument(request.documentId());
+        WorkspaceDocument document = loadDocument(request.documentId(), clubId);
         if (document.getState() == ResourceState.ARCHIVED) {
             throw new IllegalStateException("Cannot confirm upload for archived document: " + request.documentId());
         }
@@ -165,26 +169,29 @@ public class DocumentService {
 
     public DocumentResponse getDocument(UUID documentId) {
         UUID actorId = currentActorId();
+        UUID clubId = currentClubId();
         String role = currentActorRole();
-        WorkspaceDocument document = loadDocument(documentId);
-        authorize(actionFor(document.getCategory(), "read"), document.getOwnerRef(), document.getState().name(), actorId, role);
+        WorkspaceDocument document = loadDocument(documentId, clubId);
+        authorize(actionFor(document.getCategory(), "read"), document.getOwnerRef(), document.getState().name(), actorId, role, clubId);
         return DocumentResponse.from(document, generateDownloadUrl(document));
     }
 
     public Page<DocumentResponse> listDocuments(DocumentCategory category, Pageable pageable) {
         UUID actorId = currentActorId();
+        UUID clubId = currentClubId();
         String role = currentActorRole();
-        authorize(actionFor(category, "read"), CanonicalRef.of(CanonicalType.CLUB, actorId), ResourceState.ACTIVE.name(), actorId, role);
+        authorize(actionFor(category, "read"), CanonicalRef.club(clubId), ResourceState.ACTIVE.name(), actorId, role, clubId);
 
-        return documentRepository.findByCategoryAndState(category, ResourceState.ACTIVE, pageable)
+        return documentRepository.findByOwnerRefIdAndCategoryAndState(clubId, category, ResourceState.ACTIVE, pageable)
                 .map(document -> DocumentResponse.from(document, generateDownloadUrl(document)));
     }
 
     public void softDeleteDocument(UUID documentId) {
         UUID actorId = currentActorId();
+        UUID clubId = currentClubId();
         String role = currentActorRole();
-        WorkspaceDocument document = loadDocument(documentId);
-        authorize(actionFor(document.getCategory(), "delete"), document.getOwnerRef(), document.getState().name(), actorId, role);
+        WorkspaceDocument document = loadDocument(documentId, clubId);
+        authorize(actionFor(document.getCategory(), "delete"), document.getOwnerRef(), document.getState().name(), actorId, role, clubId);
 
         document.softDelete();
         WorkspaceDocument saved = documentRepository.save(document);
@@ -203,8 +210,8 @@ public class DocumentService {
         log.info("Soft-deleted document: documentId={} actor={}", documentId, actorId);
     }
 
-    private WorkspaceDocument loadDocument(UUID documentId) {
-        return documentRepository.findByResourceId(documentId)
+    private WorkspaceDocument loadDocument(UUID documentId, UUID clubId) {
+        return documentRepository.findByResourceIdAndOwnerRefId(documentId, clubId)
                 .orElseThrow(() -> new EntityNotFoundException("Document not found: " + documentId));
     }
 
@@ -212,8 +219,15 @@ public class DocumentService {
                            CanonicalRef resourceRef,
                            String resourceState,
                            UUID actorId,
-                           String role) {
-        PolicyResult policy = policyClient.evaluate(PolicyRequest.of(actorId, role, action, resourceRef, resourceState));
+                           String role,
+                           UUID clubId) {
+        PolicyResult policy = policyClient.evaluate(PolicyRequest.withContext(
+                actorId,
+                role,
+                action,
+                resourceRef,
+                resourceState,
+                buildTenantPolicyContext(clubId)));
         if (!policy.isAllowed()) {
             throw new AccessDeniedException(policy.reason());
         }
@@ -223,8 +237,32 @@ public class DocumentService {
         return securityEnabled ? securityContext.getActorId() : FALLBACK_ACTOR_ID;
     }
 
+    private UUID currentClubId() {
+        if (!securityEnabled) {
+            return FALLBACK_CLUB_ID;
+        }
+        String clubId = securityContext.clubId();
+        if (clubId == null || clubId.isBlank()) {
+            throw new AccessDeniedException("Missing club context in token");
+        }
+        try {
+            return UUID.fromString(clubId);
+        } catch (IllegalArgumentException ex) {
+            throw new AccessDeniedException("Invalid club context in token");
+        }
+    }
+
     private String currentActorRole() {
         return securityEnabled ? securityContext.getRole() : FALLBACK_ROLE;
+    }
+
+    private Map<String, Object> buildTenantPolicyContext(UUID clubId) {
+        Map<String, Object> tenant = new HashMap<>();
+        tenant.put("clubId", clubId.toString());
+
+        Map<String, Object> context = new HashMap<>();
+        context.put("tenant", tenant);
+        return context;
     }
 
     private String actionFor(DocumentCategory category, String operation) {

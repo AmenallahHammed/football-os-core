@@ -15,19 +15,23 @@ import java.util.UUID;
 
 public interface WorkspaceEventRepository extends MongoRepository<WorkspaceEvent, String> {
 
-    Optional<WorkspaceEvent> findByResourceId(UUID resourceId);
+    Optional<WorkspaceEvent> findByResourceIdAndCreatedByRefId(UUID resourceId, UUID createdByRefId);
 
-    Page<WorkspaceEvent> findByTeamRefIdAndStateOrderByStartAtAsc(UUID teamRefId,
-                                                                  ResourceState state,
-                                                                  Pageable pageable);
+    Page<WorkspaceEvent> findByCreatedByRefIdAndTeamRefIdAndStateOrderByStartAtAsc(UUID createdByRefId,
+                                                                                     UUID teamRefId,
+                                                                                     ResourceState state,
+                                                                                     Pageable pageable);
 
     Page<WorkspaceEvent> findByTypeAndStateOrderByStartAtAsc(EventType type,
-                                                             ResourceState state,
-                                                             Pageable pageable);
+                                                              ResourceState state,
+                                                              Pageable pageable);
 
     Page<WorkspaceEvent> findByCreatedByRefIdAndState(UUID createdByRefId,
-                                                      ResourceState state,
-                                                      Pageable pageable);
+                                                       ResourceState state,
+                                                       Pageable pageable);
+
+    @Query("{ 'createdByRef.id': ?0, 'state': 'ACTIVE', 'title': { $regex: ?1, $options: 'i' } }")
+    List<WorkspaceEvent> searchActiveByClubAndTitle(UUID createdByRefId, String titlePattern);
 
     @Query("{ 'state': 'ACTIVE', 'reminderSent': false, 'startAt': { $gte: ?0, $lte: ?1 } }")
     List<WorkspaceEvent> findUpcomingEventsNeedingReminder(Instant from, Instant to);

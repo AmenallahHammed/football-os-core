@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -28,6 +30,7 @@ public class PlayerProfileService {
 
     private static final Duration DOWNLOAD_URL_EXPIRY = Duration.ofHours(1);
     private static final UUID FALLBACK_ACTOR_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final UUID FALLBACK_CLUB_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final String FALLBACK_ROLE = "ROLE_CLUB_ADMIN";
 
     private final WorkspaceDocumentRepository documentRepository;
@@ -53,16 +56,18 @@ public class PlayerProfileService {
 
     public PlayerProfileResponse getProfile(UUID playerId) {
         UUID actorId = currentActorId();
+        UUID clubId = currentClubId();
         String role = currentActorRole();
 
         PlayerDTO player = canonicalResolver.getPlayer(playerId);
 
-        boolean canSeeDocuments = canAccess(actorId, role, "workspace.profile.tab.documents", playerId);
-        boolean canSeeReports = canAccess(actorId, role, "workspace.profile.tab.reports", playerId);
-        boolean canSeeMedical = canAccess(actorId, role, "workspace.profile.tab.medical", playerId);
-        boolean canSeeAdmin = canAccess(actorId, role, "workspace.profile.tab.admin", playerId);
+        boolean canSeeDocuments = canAccess(actorId, role, clubId, "workspace.profile.tab.documents", playerId);
+        boolean canSeeReports = canAccess(actorId, role, clubId, "workspace.profile.tab.reports", playerId);
+        boolean canSeeMedical = canAccess(actorId, role, clubId, "workspace.profile.tab.medical", playerId);
+        boolean canSeeAdmin = canAccess(actorId, role, clubId, "workspace.profile.tab.admin", playerId);
 
-        List<WorkspaceDocument> linkedDocuments = documentRepository.findByLinkedPlayerRefIdAndState(playerId, ResourceState.ACTIVE)
+        List<WorkspaceDocument> linkedDocuments = documentRepository
+                .findByOwnerRefIdAndLinkedPlayerRefIdAndState(clubId, playerId, ResourceState.ACTIVE)
                 .stream()
                 .sorted(Comparator.comparing(WorkspaceDocument::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed())
                 .toList();
@@ -100,13 +105,14 @@ public class PlayerProfileService {
         );
     }
 
-    private boolean canAccess(UUID actorId, String role, String action, UUID playerId) {
-        PolicyResult result = policyClient.evaluate(PolicyRequest.of(
+    private boolean canAccess(UUID actorId, String role, UUID clubId, String action, UUID playerId) {
+        PolicyResult result = policyClient.evaluate(PolicyRequest.withContext(
                 actorId,
                 role,
                 action,
                 CanonicalRef.player(playerId),
-                ResourceState.ACTIVE.name()));
+                ResourceState.ACTIVE.name(),
+                buildTenantPolicyContext(clubId)));
         return result.isAllowed();
     }
 
@@ -137,7 +143,31 @@ public class PlayerProfileService {
         return securityEnabled ? securityContext.getActorId() : FALLBACK_ACTOR_ID;
     }
 
+    private UUID currentClubId() {
+        if (!securityEnabled) {
+            return FALLBACK_CLUB_ID;
+        }
+        String clubId = securityContext.clubId();
+        if (clubId == null || clubId.isBlank()) {
+            throw new AccessDeniedException("Missing club context in token");
+        }
+        try {
+            return UUID.fromString(clubId);
+        } catch (IllegalArgumentException ex) {
+            throw new AccessDeniedException("Invalid club context in token");
+        }
+    }
+
     private String currentActorRole() {
         return securityEnabled ? securityContext.getRole() : FALLBACK_ROLE;
+    }
+
+    private Map<String, Object> buildTenantPolicyContext(UUID clubId) {
+        Map<String, Object> tenant = new HashMap<>();
+        tenant.put("clubId", clubId.toString());
+
+        Map<String, Object> context = new HashMap<>();
+        context.put("tenant", tenant);
+        return context;
     }
 }

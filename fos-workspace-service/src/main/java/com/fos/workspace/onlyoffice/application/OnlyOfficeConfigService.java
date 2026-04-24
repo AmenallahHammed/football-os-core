@@ -22,6 +22,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -31,6 +32,7 @@ public class OnlyOfficeConfigService {
 
     private static final Duration FILE_URL_EXPIRY = Duration.ofMinutes(30);
     private static final UUID FALLBACK_ACTOR_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final UUID FALLBACK_CLUB_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final String FALLBACK_ROLE = "ROLE_CLUB_ADMIN";
     private static final Set<String> VIEWABLE_FILE_TYPES = Set.of("docx", "xlsx", "pptx", "pdf");
     private static final Set<String> EDITABLE_FILE_TYPES = Set.of("docx", "xlsx", "pptx");
@@ -67,9 +69,10 @@ public class OnlyOfficeConfigService {
 
     public OnlyOfficeConfigResponse generateConfig(OnlyOfficeConfigRequest request) {
         UUID actorId = currentActorId();
+        UUID clubId = currentClubId();
         String role = currentActorRole();
 
-        WorkspaceDocument document = documentRepository.findByResourceId(request.documentId())
+        WorkspaceDocument document = documentRepository.findByResourceIdAndOwnerRefId(request.documentId(), clubId)
                 .orElseThrow(() -> new EntityNotFoundException("Document not found: " + request.documentId()));
 
         if (document.currentVersion() == null) {
@@ -83,12 +86,13 @@ public class OnlyOfficeConfigService {
                 ? "workspace.document." + document.getCategory().name().toLowerCase() + ".edit"
                 : "workspace.document." + document.getCategory().name().toLowerCase() + ".read";
 
-        PolicyResult policy = policyClient.evaluate(PolicyRequest.of(
+        PolicyResult policy = policyClient.evaluate(PolicyRequest.withContext(
                 actorId,
                 role,
                 action,
-                resourceRef(document, actorId),
-                document.getState().name()));
+                resourceRef(document, clubId),
+                document.getState().name(),
+                buildTenantPolicyContext(clubId)));
 
         if (!policy.isAllowed()) {
             throw new AccessDeniedException("Document access denied: " + policy.reason());
@@ -179,7 +183,7 @@ public class OnlyOfficeConfigService {
         }
     }
 
-    private CanonicalRef resourceRef(WorkspaceDocument document, UUID actorId) {
+    private CanonicalRef resourceRef(WorkspaceDocument document, UUID clubId) {
         if (document.getLinkedPlayerRef() != null) {
             return document.getLinkedPlayerRef();
         }
@@ -190,16 +194,40 @@ public class OnlyOfficeConfigService {
             return document.getOwnerRef();
         }
         if (document.getCategory() == DocumentCategory.CONTRACT) {
-            return CanonicalRef.club(actorId);
+            return CanonicalRef.club(clubId);
         }
-        return CanonicalRef.club(actorId);
+        return CanonicalRef.club(clubId);
     }
 
     private UUID currentActorId() {
         return securityEnabled ? securityContext.getActorId() : FALLBACK_ACTOR_ID;
     }
 
+    private UUID currentClubId() {
+        if (!securityEnabled) {
+            return FALLBACK_CLUB_ID;
+        }
+        String clubId = securityContext.clubId();
+        if (clubId == null || clubId.isBlank()) {
+            throw new AccessDeniedException("Missing club context in token");
+        }
+        try {
+            return UUID.fromString(clubId);
+        } catch (IllegalArgumentException ex) {
+            throw new AccessDeniedException("Invalid club context in token");
+        }
+    }
+
     private String currentActorRole() {
         return securityEnabled ? securityContext.getRole() : FALLBACK_ROLE;
+    }
+
+    private Map<String, Object> buildTenantPolicyContext(UUID clubId) {
+        Map<String, Object> tenant = new HashMap<>();
+        tenant.put("clubId", clubId.toString());
+
+        Map<String, Object> context = new HashMap<>();
+        context.put("tenant", tenant);
+        return context;
     }
 }

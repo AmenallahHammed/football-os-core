@@ -16,14 +16,21 @@ public interface WorkspaceDocumentRepository extends MongoRepository<WorkspaceDo
 
     Page<WorkspaceDocument> findByOwnerRefIdAndState(UUID ownerRefId, ResourceState state, Pageable pageable);
 
-    Page<WorkspaceDocument> findByCategoryAndState(DocumentCategory category, ResourceState state, Pageable pageable);
+    Page<WorkspaceDocument> findByOwnerRefIdAndCategoryAndState(UUID ownerRefId,
+                                                                 DocumentCategory category,
+                                                                 ResourceState state,
+                                                                 Pageable pageable);
 
-    List<WorkspaceDocument> findByLinkedPlayerRefIdAndState(UUID linkedPlayerRefId, ResourceState state);
+    List<WorkspaceDocument> findByOwnerRefIdAndLinkedPlayerRefIdAndState(UUID ownerRefId,
+                                                                          UUID linkedPlayerRefId,
+                                                                          ResourceState state);
 
     Optional<WorkspaceDocument> findByResourceId(UUID resourceId);
 
+    Optional<WorkspaceDocument> findByResourceIdAndOwnerRefId(UUID resourceId, UUID ownerRefId);
+
     boolean existsByResourceIdAndState(UUID resourceId, ResourceState state);
 
-    @Query("{ 'name': { $regex: ?0, $options: 'i' }, 'state': 'ACTIVE' }")
-    Page<WorkspaceDocument> searchByName(String namePattern, Pageable pageable);
+    @Query("{ 'ownerRef.id': ?0, 'name': { $regex: ?1, $options: 'i' }, 'state': 'ACTIVE' }")
+    Page<WorkspaceDocument> searchByOwnerRefIdAndName(UUID ownerRefId, String namePattern, Pageable pageable);
 }

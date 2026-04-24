@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayInputStream;
-import java.time.Duration;
 import java.util.UUID;
 
 /**
@@ -45,7 +44,6 @@ import java.util.UUID;
 public class OnlyOfficeSaveHandler {
 
     private static final Logger log = LoggerFactory.getLogger(OnlyOfficeSaveHandler.class);
-    private static final Duration UPLOAD_EXPIRY = Duration.ofMinutes(10);
 
     private final WorkspaceDocumentRepository documentRepository;
     private final StoragePort storagePort;
@@ -107,15 +105,15 @@ public class OnlyOfficeSaveHandler {
             // Replace the version segment: "documents/uuid/v1_file.docx" -> "v2_file.docx"
             String newKey = oldKey.replaceFirst("v\\d+_", "v" + newVersionNumber + "_");
             String bucket = document.currentVersion().getStorageBucket();
+            String contentType = document.currentVersion().getContentType();
 
-            // -- 4. Upload to MinIO via StoragePort ---------------------------
-            // StoragePort does not have a direct byte-upload method in Phase 1.
-            // We use generateUploadUrl + a direct PUT (simplified for now).
-            // TODO Sprint 1.5: add StoragePort.putObject(bucket, key, bytes) method
-            // For now, we log that the save was received and skip the actual upload.
-            // The NoopStorageAdapter makes this a safe no-op in tests.
-            log.info("OnlyOffice save processed (MinIO upload deferred to Sprint 1.5): " +
-                    "documentId={} newVersion={}", documentId, newVersionNumber);
+            // -- 4. Upload to storage before writing version metadata ----------
+            try (ByteArrayInputStream content = new ByteArrayInputStream(fileBytes)) {
+                storagePort.putObject(bucket, newKey, content, fileBytes.length, contentType);
+            }
+            storagePort.confirmUpload(bucket, newKey);
+            log.info("OnlyOffice save upload completed: documentId={} newVersion={} key={}",
+                    documentId, newVersionNumber, newKey);
 
             // -- 5. Create a new DocumentVersion -----------------------------
             DocumentVersion newVersion = new DocumentVersion(

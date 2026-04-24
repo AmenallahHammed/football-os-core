@@ -6,6 +6,7 @@ import io.minio.*;
 import io.minio.http.Method;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
@@ -51,6 +52,27 @@ public class MinioStorageAdapter implements StoragePort {
                     .expiry((int) expiry.toSeconds(), TimeUnit.SECONDS).build());
         } catch (Exception e) {
             throw new IllegalStateException("MinIO download URL generation failed for: " + objectKey, e);
+        }
+    }
+
+    @Override
+    public void putObject(String bucket, String objectKey, InputStream content,
+                          long contentLength, String contentType) {
+        try {
+            ensureBucket(bucket);
+
+            PutObjectArgs.Builder args = PutObjectArgs.builder()
+                    .bucket(bucket)
+                    .object(objectKey)
+                    .stream(content, contentLength, -1);
+
+            if (contentType != null && !contentType.isBlank()) {
+                args.contentType(contentType);
+            }
+
+            minioClient.putObject(args.build());
+        } catch (Exception e) {
+            throw new IllegalStateException("MinIO upload failed for: " + objectKey, e);
         }
     }
 

@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -30,6 +31,13 @@ public class NoopStorageAdapter implements StoragePort {
     public String generateDownloadUrl(String bucket, String objectKey, Duration expiry) {
         log.info("[NOOP-STORAGE] generateDownloadUrl: bucket={}, key={}", bucket, objectKey);
         return "https://noop.fos.local/download/" + objectKey;
+    }
+
+    @Override
+    public void putObject(String bucket, String objectKey, InputStream content,
+                          long contentLength, String contentType) {
+        log.info("[NOOP-STORAGE] putObject: bucket={}, key={}, bytes={}, contentType={}",
+                bucket, objectKey, contentLength, contentType);
     }
 
     @Override

@@ -2,7 +2,10 @@ package com.fos.sdk.storage;
 
 import com.fos.sdk.storage.adapter.NoopStorageAdapter;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayInputStream;
 import java.time.Duration;
+
 import static org.assertj.core.api.Assertions.*;
 
 class NoopStorageAdapterTest {
@@ -18,6 +21,13 @@ class NoopStorageAdapterTest {
 
     @Test
     void should_not_throw_on_confirm_or_delete() {
+        assertThatCode(() -> adapter.putObject(
+                "bucket",
+                "key",
+                new ByteArrayInputStream("content".getBytes()),
+                7,
+                "text/plain"
+        )).doesNotThrowAnyException();
         assertThatCode(() -> adapter.confirmUpload("bucket", "key")).doesNotThrowAnyException();
         assertThatCode(() -> adapter.deleteObject("bucket", "key")).doesNotThrowAnyException();
     }

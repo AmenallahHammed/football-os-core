@@ -1,112 +1,181 @@
 package fos
 
-default allow_workspace = false
+resource_not_archived {
+    input.resource.state != "ARCHIVED"
+}
+
+# Workspace document policies
 
 allow {
     input.resource.action == "workspace.document.general.upload"
+    resource_not_archived
     coaching_staff_roles[input.actor.role]
 }
 
 allow {
     input.resource.action == "workspace.document.general.read"
+    resource_not_archived
     coaching_staff_roles[input.actor.role]
 }
 
 allow {
     input.resource.action == "workspace.document.general.delete"
+    resource_not_archived
     coaching_staff_roles[input.actor.role]
 }
 
 allow {
-    startswith(input.resource.action, "workspace.document.medical.")
+    input.resource.action == "workspace.document.general.edit"
+    resource_not_archived
+    coaching_staff_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.document.medical.upload"
+    resource_not_archived
     medical_roles[input.actor.role]
 }
 
 allow {
-    startswith(input.resource.action, "workspace.document.admin.")
-    input.actor.role == "ROLE_CLUB_ADMIN"
+    input.resource.action == "workspace.document.medical.read"
+    resource_not_archived
+    medical_roles[input.actor.role]
 }
 
 allow {
-    input.resource.action == "workspace.document.report.read"
-    coaching_staff_roles[input.actor.role]
+    input.resource.action == "workspace.document.medical.delete"
+    resource_not_archived
+    club_admin_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.document.medical.edit"
+    resource_not_archived
+    club_admin_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.document.admin.upload"
+    resource_not_archived
+    club_admin_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.document.admin.read"
+    resource_not_archived
+    club_admin_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.document.admin.delete"
+    resource_not_archived
+    club_admin_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.document.admin.edit"
+    resource_not_archived
+    club_admin_roles[input.actor.role]
 }
 
 allow {
     input.resource.action == "workspace.document.report.upload"
+    resource_not_archived
     report_upload_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.document.report.read"
+    resource_not_archived
+    coaching_staff_roles[input.actor.role]
 }
 
 allow {
     input.resource.action == "workspace.document.report.delete"
+    resource_not_archived
     report_upload_roles[input.actor.role]
 }
 
 allow {
-    startswith(input.resource.action, "workspace.document.contract.")
-    input.actor.role == "ROLE_CLUB_ADMIN"
+    input.resource.action == "workspace.document.report.edit"
+    resource_not_archived
+    report_upload_roles[input.actor.role]
 }
 
-# Workspace Event Policies
+allow {
+    input.resource.action == "workspace.document.contract.upload"
+    resource_not_archived
+    club_admin_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.document.contract.read"
+    resource_not_archived
+    club_admin_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.document.contract.delete"
+    resource_not_archived
+    club_admin_roles[input.actor.role]
+}
+
+allow {
+    input.resource.action == "workspace.document.contract.edit"
+    resource_not_archived
+    club_admin_roles[input.actor.role]
+}
+
+# Workspace event policies
 
 allow {
     input.resource.action == "workspace.event.create"
+    resource_not_archived
     event_manage_roles[input.actor.role]
 }
 
 allow {
     input.resource.action == "workspace.event.update"
+    resource_not_archived
     event_manage_roles[input.actor.role]
 }
 
 allow {
     input.resource.action == "workspace.event.delete"
+    resource_not_archived
     event_manage_roles[input.actor.role]
 }
 
 allow {
     input.resource.action == "workspace.event.read"
+    resource_not_archived
     coaching_staff_roles[input.actor.role]
 }
 
+# Workspace profile tab policies
+
 allow {
     input.resource.action == "workspace.profile.tab.documents"
+    resource_not_archived
     coaching_staff_roles[input.actor.role]
 }
 
 allow {
     input.resource.action == "workspace.profile.tab.reports"
+    resource_not_archived
     coaching_staff_roles[input.actor.role]
 }
 
 allow {
     input.resource.action == "workspace.profile.tab.medical"
+    resource_not_archived
     medical_roles[input.actor.role]
 }
 
 allow {
     input.resource.action == "workspace.profile.tab.admin"
-    input.actor.role == "ROLE_CLUB_ADMIN"
-}
-
-allow {
-    input.resource.action == "workspace.document.general.edit"
-    coaching_staff_roles[input.actor.role]
-}
-
-allow {
-    input.resource.action == "workspace.document.report.edit"
-    report_upload_roles[input.actor.role]
-}
-
-allow {
-    input.resource.action == "workspace.document.medical.edit"
-    input.actor.role == "ROLE_CLUB_ADMIN"
-}
-
-allow {
-    input.resource.action == "workspace.document.admin.edit"
-    input.actor.role == "ROLE_CLUB_ADMIN"
+    resource_not_archived
+    club_admin_roles[input.actor.role]
 }
 
 coaching_staff_roles := {
@@ -131,5 +200,9 @@ report_upload_roles := {
 
 event_manage_roles := {
     "ROLE_HEAD_COACH",
+    "ROLE_CLUB_ADMIN"
+}
+
+club_admin_roles := {
     "ROLE_CLUB_ADMIN"
 }

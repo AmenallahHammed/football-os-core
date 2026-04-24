@@ -2,24 +2,5 @@ package fos
 
 default allow = false
 
-# Allow when actor has a recognized role and resource is ACTIVE
-allow {
-    input.actor.role != ""
-    input.resource.state == "ACTIVE"
-    not startswith(input.resource.action, "workspace.document.")
-}
-
-# Allow DRAFT resource operations for CLUB_ADMIN and OPERATOR
-allow {
-    input.resource.state == "DRAFT"
-    not startswith(input.resource.action, "workspace.document.")
-    role := input.actor.role
-    role_can_access_draft[role]
-}
-
-role_can_access_draft := {"CLUB_ADMIN", "OPERATOR", "HEAD_COACH"}
-
-# Deny all access to ARCHIVED resources
-deny {
-    input.resource.state == "ARCHIVED"
-}
+# No catch-all allow rules live here.
+# Every permitted action must be explicitly listed in workspace_policy.rego.

@@ -1,0 +1,23 @@
+<section class="players-page">
+  <header class="page-head">
+    <h1>Players</h1>
+    <p>Browse squad members, role groups, and profile access in one place.</p>
+  </header>
+
+  <div class="toolbar">
+    <input type="search" placeholder="Search player" [(ngModel)]="searchTerm" />
+    <select [(ngModel)]="selectedPosition">
+      <option value="ALL">All Positions</option>
+      <option value="GK">GK</option>
+      <option value="DEF">DEF</option>
+      <option value="MID">MID</option>
+      <option value="FWD">FWD</option>
+    </select>
+  </div>
+
+  <div class="card-grid">
+    @for (player of players; track player.id) {
+      <app-player-card [player]="player" (selected)="openProfile($event)"></app-player-card>
+    }
+  </div>
+</section>

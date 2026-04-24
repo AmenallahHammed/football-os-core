@@ -1,0 +1,39 @@
+<section class="calendar">
+  <header class="calendar-header">
+    <h2>{{ monthLabel }}</h2>
+    <div class="controls">
+      <button type="button" (click)="previousMonth()">&lt;</button>
+      <button type="button" (click)="jumpToToday()">Today</button>
+      <button type="button" (click)="nextMonth()">&gt;</button>
+    </div>
+  </header>
+
+  <div class="week-days">
+    @for (day of weekDays; track day) {
+      <span>{{ day }}</span>
+    }
+  </div>
+
+  <div class="grid">
+    @for (cell of cells; track cell.date.toISOString()) {
+      <button
+        type="button"
+        class="day-cell"
+        [class.outside]="!cell.inCurrentMonth"
+        [class.selected]="isSelected(cell.date)"
+        [class.today]="isToday(cell.date)"
+        (click)="chooseDay(cell)"
+      >
+        <span class="day-number">{{ cell.date.getDate() }}</span>
+        <div class="events">
+          @if (cell.events.length > 0) {
+            <span class="event-chip">{{ cell.events[0].title }}</span>
+          }
+          @if (cell.events.length > 1) {
+            <span class="more-events">+{{ cell.events.length - 1 }} more events</span>
+          }
+        </div>
+      </button>
+    }
+  </div>
+</section>

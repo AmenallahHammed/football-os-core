@@ -1,0 +1,37 @@
+:root {
+  --surface-app: #111;
+  --surface-sidebar: #1a1a1a;
+  --surface-panel: #1f1f1f;
+  --surface-elevated: #222;
+  --border-default: #2d2d2d;
+  --border-strong: #3a3a3a;
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --text-dim: #707783;
+  --accent: #3b82f6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: var(--surface-app);
+  color: var(--text-secondary);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}

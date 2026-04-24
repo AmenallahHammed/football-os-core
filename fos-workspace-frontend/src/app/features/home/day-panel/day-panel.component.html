@@ -1,0 +1,78 @@
+<section class="day-panel">
+  <header class="panel-header">
+    <div>
+      <p class="date">{{ date | date: 'EEEE, MMMM d' }}</p>
+      <p class="meta">{{ events.length }} events - {{ missingDocumentCount }} missing documents</p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="add-btn" (click)="requestAddEvent()">ADD EVENT</button>
+      <button type="button" class="close-btn" aria-label="Close day panel" (click)="closePanel()">X</button>
+    </div>
+  </header>
+
+  <div class="event-list">
+    @if (events.length === 0) {
+      <p class="empty">No events planned for this day.</p>
+    } @else {
+      @for (event of events; track event.id) {
+        <article class="event-card">
+          <div class="event-main-row">
+            <div>
+              <h3>{{ event.title }}</h3>
+              <p class="subtitle">{{ event.coachName }} - {{ event.location }}</p>
+            </div>
+            <span class="time-badge">{{ event.time }}</span>
+          </div>
+
+          <p class="notes">{{ event.notes }}</p>
+
+          <div class="attendees">
+            @for (attendee of event.attendees.slice(0, 4); track attendee.id) {
+              <img class="avatar" [src]="attendee.avatarUrl" [alt]="attendee.name" [title]="attendee.name" />
+            }
+            @if (attendeeOverflow(event) > 0) {
+              <span class="overflow">+{{ attendeeOverflow(event) }} staff</span>
+            }
+          </div>
+
+          <section class="document-section">
+            <div class="section-head">
+              <h4>Required Documents</h4>
+              <button type="button" class="upload-btn" (click)="uploadMissingDocument(event)">Upload</button>
+            </div>
+
+            @for (document of event.requiredDocuments; track document.id) {
+              <button
+                type="button"
+                class="document-row"
+                (contextmenu)="openDocumentMenu($event, event.id, document)"
+              >
+                <span class="icon">[DOC]</span>
+                <span class="name">{{ document.name }}</span>
+                <span class="owner">{{ document.responsibleStaffName }}</span>
+                <span class="badge" [class.missing]="!document.uploaded" [class.uploaded]="document.uploaded">
+                  {{ document.uploaded ? 'UPLOADED' : 'MISSING' }}
+                </span>
+              </button>
+            }
+          </section>
+        </article>
+      }
+    }
+  </div>
+
+  <footer class="note-bar">
+    <input type="text" placeholder="Write a note for this day" [(ngModel)]="noteText" />
+    <button type="button" (click)="submitNote()">Post</button>
+  </footer>
+
+  <app-context-menu
+    [visible]="contextVisible"
+    [x]="contextX"
+    [y]="contextY"
+    [actions]="documentActions"
+    (closed)="closeContextMenu()"
+    (actionSelected)="handleDocumentAction($event)"
+  ></app-context-menu>
+</section>

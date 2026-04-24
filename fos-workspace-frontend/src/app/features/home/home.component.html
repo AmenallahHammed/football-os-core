@@ -1,0 +1,41 @@
+<section class="home-page">
+  <header class="page-head">
+    <h1>Home</h1>
+    <p>Monthly scheduling board with event operations and documentation status.</p>
+  </header>
+
+  <section class="upcoming-row">
+    @for (event of upcomingEvents; track event.id) {
+      <article class="upcoming-card">
+        <p class="time">{{ event.date }} - {{ event.time }}</p>
+        <h3>{{ event.title }}</h3>
+        <p>{{ event.location }}</p>
+      </article>
+    }
+  </section>
+
+  <section class="calendar-stage">
+    <app-calendar [events]="events" (daySelected)="onDaySelected($event)"></app-calendar>
+
+    @if (dayPanelOpen) {
+      <app-day-panel
+        [date]="selectedDay"
+        [events]="selectedDayEvents"
+        (closed)="closeDayPanel()"
+        (addEventRequested)="openEventCreate()"
+        (documentUploaded)="onDocumentUploaded($event)"
+        (documentRenamed)="onDocumentRenamed($event)"
+        (documentDeleted)="onDocumentDeleted($event)"
+      ></app-day-panel>
+    }
+
+    @if (eventCreateOpen) {
+      <app-event-create
+        [date]="selectedDay"
+        [participants]="participants"
+        (canceled)="closeEventCreate()"
+        (created)="onEventCreated($event)"
+      ></app-event-create>
+    }
+  </section>
+</section>

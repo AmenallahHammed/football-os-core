@@ -1,0 +1,73 @@
+.player-card {
+  border: 1px solid var(--border-default);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #1d1d1d 0%, #151515 100%);
+  padding: 12px;
+  cursor: pointer;
+}
+
+.artboard {
+  position: relative;
+  height: 180px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 50% 30%, #243652 0%, #121212 65%);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.jersey {
+  position: absolute;
+  width: 110px;
+  height: 130px;
+  border-radius: 16px 16px 28px 28px;
+  background: linear-gradient(180deg, #2d466f 0%, #20324e 100%);
+  color: rgba(255, 255, 255, 0.28);
+  font-size: 64px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+
+.jersey::before,
+.jersey::after {
+  content: '';
+  position: absolute;
+  top: 14px;
+  width: 24px;
+  height: 48px;
+  border-radius: 8px;
+  background: inherit;
+}
+
+.jersey::before {
+  left: -18px;
+  transform: rotate(22deg);
+}
+
+.jersey::after {
+  right: -18px;
+  transform: rotate(-22deg);
+}
+
+.face {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  object-fit: cover;
+}
+
+.name {
+  margin: 10px 0 0;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.meta {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}

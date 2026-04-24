@@ -1,0 +1,124 @@
+<section class="documents-page">
+  <header class="page-head">
+    <div>
+      <h1>Documents</h1>
+      <app-breadcrumb [segments]="breadcrumbSegments" (segmentSelected)="onBreadcrumbSelected($event)"></app-breadcrumb>
+    </div>
+  </header>
+
+  <div class="content-grid">
+    <aside class="folder-panel">
+      <button type="button" class="folder-link" [class.active]="selectedFolderId === null" (click)="selectFolder(null)">
+        All Documents
+      </button>
+
+      @for (folder of rootFolders; track folder.id) {
+        <div class="folder-group">
+          <button
+            type="button"
+            class="folder-link"
+            [class.active]="selectedFolderId === folder.id"
+            (click)="selectFolder(folder.id)"
+          >
+            {{ folder.name }}
+          </button>
+
+          @for (sub of childFolders(folder.id); track sub.id) {
+            <button
+              type="button"
+              class="folder-link nested"
+              [class.active]="selectedFolderId === sub.id"
+              (click)="selectFolder(sub.id)"
+            >
+              {{ sub.name }}
+            </button>
+
+            @for (subSub of childFolders(sub.id); track subSub.id) {
+              <button
+                type="button"
+                class="folder-link nested level-2"
+                [class.active]="selectedFolderId === subSub.id"
+                (click)="selectFolder(subSub.id)"
+              >
+                {{ subSub.name }}
+              </button>
+            }
+          }
+        </div>
+      }
+    </aside>
+
+    <section class="table-panel">
+      <div class="toolbar">
+        <input type="search" placeholder="Search documents" [(ngModel)]="searchTerm" />
+
+        <select [(ngModel)]="selectedFileType">
+          <option value="all">All Types</option>
+          @for (type of fileTypes; track type) {
+            <option [value]="type">{{ type }}</option>
+          }
+        </select>
+
+        <select [(ngModel)]="selectedStatus">
+          <option value="all">All Status</option>
+          <option value="Draft">Draft</option>
+          <option value="Active">Active</option>
+          <option value="Archived">Archived</option>
+        </select>
+
+        <input type="date" [(ngModel)]="selectedDate" />
+
+        <button type="button" class="action-btn" (click)="showDropzone = !showDropzone">Upload</button>
+        <button type="button" class="action-btn" (click)="createFolder()">New Folder</button>
+      </div>
+
+      @if (showDropzone) {
+        <app-dropzone class="upload-panel" [compact]="true" (filesSelected)="onFilesSelected($event)"></app-dropzone>
+      }
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Date Uploaded</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (document of visibleDocuments; track document.id) {
+              <tr (click)="openDocument(document)" (contextmenu)="openContextMenu($event, document)">
+                <td>
+                  <span class="doc-title">{{ document.icon }} {{ document.name }}</span>
+                </td>
+                <td>{{ document.fileType }}</td>
+                <td>{{ document.uploadedAt | date: 'mediumDate' }}</td>
+                <td><app-status-badge [status]="document.status"></app-status-badge></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        @if (visibleDocuments.length === 0) {
+          <p class="empty-state">No documents match the selected filters.</p>
+        }
+      </div>
+    </section>
+
+    @if (selectedDocument) {
+      <aside class="editor-panel" @panelSlide>
+        <app-onlyoffice-editor [document]="selectedDocument" (closed)="closeEditor()"></app-onlyoffice-editor>
+      </aside>
+    }
+  </div>
+
+  <app-context-menu
+    [visible]="contextMenuVisible"
+    [x]="contextMenuX"
+    [y]="contextMenuY"
+    [actions]="contextActions"
+    (closed)="closeContextMenu()"
+    (actionSelected)="handleContextAction($event)"
+  ></app-context-menu>
+</section>

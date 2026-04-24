@@ -1,0 +1,134 @@
+.calendar {
+  border: 1px solid var(--border-default);
+  border-radius: 14px;
+  background: var(--surface-panel);
+  padding: 14px;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.calendar-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.controls {
+  display: flex;
+  gap: 6px;
+}
+
+.controls button {
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: #1f1f1f;
+  color: var(--text-secondary);
+  font-size: 12px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.controls button:hover {
+  border-color: rgba(59, 130, 246, 0.5);
+  color: var(--text-primary);
+}
+
+.week-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 6px;
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.week-days span {
+  padding: 6px;
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.day-cell {
+  border: 1px solid #2d2d2d;
+  border-radius: 10px;
+  min-height: 90px;
+  background: #171717;
+  color: inherit;
+  text-align: left;
+  padding: 8px;
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.day-cell:hover {
+  border-color: rgba(59, 130, 246, 0.38);
+}
+
+.day-cell.outside {
+  opacity: 0.45;
+}
+
+.day-cell.selected {
+  border-color: rgba(59, 130, 246, 0.7);
+  background: rgba(59, 130, 246, 0.14);
+}
+
+.day-cell.today .day-number {
+  color: var(--accent);
+}
+
+.day-number {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.event-chip {
+  display: block;
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 10px;
+  color: #dbeafe;
+  background: rgba(59, 130, 246, 0.2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.more-events {
+  color: var(--text-muted);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .day-cell {
+    min-height: 72px;
+    padding: 6px;
+  }
+
+  .event-chip {
+    display: none;
+  }
+}

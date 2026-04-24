@@ -1,0 +1,41 @@
+<section class="profile-page">
+  <a routerLink="/players" class="back-link">&lt; Back to Players</a>
+
+  @if (player) {
+    <article class="profile-card">
+      <img class="hero-photo" [src]="player.photoUrl" [alt]="player.name" />
+
+      <div class="hero-meta">
+        <h1>{{ player.name }}</h1>
+        <p>{{ player.position }} - #{{ player.shirtNumber }} - {{ player.team }}</p>
+      </div>
+    </article>
+
+    <app-tabs [tabs]="tabs" [activeTab]="activeTab" (tabChanged)="onTabChanged($event)"></app-tabs>
+
+    <section class="tab-panel">
+      @if (activeTab === 'documents') {
+        <h2>Related Documents</h2>
+        <ul>
+          @for (document of player.documents; track document) {
+            <li>{{ document }}</li>
+          }
+        </ul>
+      }
+
+      @if (activeTab === 'events') {
+        <h2>Related Events</h2>
+        <ul>
+          @for (event of player.events; track event) {
+            <li>{{ event }}</li>
+          }
+        </ul>
+      }
+    </section>
+  } @else {
+    <section class="not-found">
+      <h2>Player not found</h2>
+      <p>This profile is unavailable or has been removed.</p>
+    </section>
+  }
+</section>

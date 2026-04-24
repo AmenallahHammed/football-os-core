@@ -1,0 +1,33 @@
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-default);
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+.meta {
+  min-width: 0;
+}
+
+.name {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.role {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: var(--text-muted);
+}

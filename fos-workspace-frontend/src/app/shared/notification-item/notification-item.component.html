@@ -1,0 +1,7 @@
+<button type="button" class="notification-item" [class.unread]="item.unread" (click)="selectItem()">
+  <div class="headline">
+    <span class="action">{{ item.action }}</span>
+    <span class="timestamp">{{ item.timestamp }}</span>
+  </div>
+  <p class="resource">{{ item.resource }}</p>
+</button>

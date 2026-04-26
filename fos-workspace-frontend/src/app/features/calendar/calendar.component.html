@@ -1,10 +1,26 @@
 <section class="calendar">
   <header class="calendar-header">
-    <h2>{{ monthLabel }}</h2>
+    <div class="heading-copy">
+      <p class="eyebrow">Workspace Calendar</p>
+      <h2>{{ monthLabel }}</h2>
+      <p class="supporting">Monthly view for training, match, recovery, and academy blocks.</p>
+    </div>
+
     <div class="controls">
-      <button type="button" (click)="previousMonth()">&lt;</button>
-      <button type="button" (click)="jumpToToday()">Today</button>
-      <button type="button" (click)="nextMonth()">&gt;</button>
+      <div class="view-toggle" role="group" aria-label="Calendar view">
+        @for (viewMode of viewModes; track viewMode) {
+          <button type="button" [class.is-active]="viewMode === 'Month'" [disabled]="viewMode !== 'Month'">
+            {{ viewMode }}
+          </button>
+        }
+      </div>
+
+      <button type="button" class="filter-btn">Filters</button>
+
+      <div class="month-nav" role="group" aria-label="Change month">
+        <button type="button" class="nav-btn" (click)="previousMonth()">&lt;</button>
+        <button type="button" class="nav-btn" (click)="nextMonth()">&gt;</button>
+      </div>
     </div>
   </header>
 
@@ -24,13 +40,25 @@
         [class.today]="isToday(cell.date)"
         (click)="chooseDay(cell)"
       >
-        <span class="day-number">{{ cell.date.getDate() }}</span>
-        <div class="events">
+        <div class="day-top">
+          <span class="day-number">{{ cell.date.getDate() }}</span>
+
           @if (cell.events.length > 0) {
-            <span class="event-chip">{{ cell.events[0].title }}</span>
+            <span class="load-indicator">{{ cell.events.length }} block{{ cell.events.length > 1 ? 's' : '' }}</span>
           }
-          @if (cell.events.length > 1) {
-            <span class="more-events">+{{ cell.events.length - 1 }} more events</span>
+        </div>
+
+        <div class="events">
+          @for (event of cell.events.slice(0, 2); track event.id) {
+            <article class="event-chip" [attr.data-tone]="eventTone(event.type)">
+              <span class="event-tag">{{ event.type }}</span>
+              <strong>{{ event.title }}</strong>
+              <small>{{ eventSummary(event) }}</small>
+            </article>
+          }
+
+          @if (cell.events.length > 2) {
+            <span class="more-events">+{{ cell.events.length - 2 }} more</span>
           }
         </div>
       </button>

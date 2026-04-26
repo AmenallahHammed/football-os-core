@@ -41,6 +41,22 @@ export class DayPanelComponent {
 
   protected noteText = '';
 
+  protected eventTone(type: CalendarEvent['type']): string {
+    if (type === 'Training') {
+      return 'training';
+    }
+
+    if (type === 'Match' || type === 'Meeting') {
+      return 'match';
+    }
+
+    if (type === 'Recovery' || type === 'Medical') {
+      return 'recovery';
+    }
+
+    return 'academy';
+  }
+
   protected get missingDocumentCount(): number {
     return this.events.reduce(
       (count, event) => count + event.requiredDocuments.filter((document) => !document.uploaded).length,
@@ -100,6 +116,14 @@ export class DayPanelComponent {
 
   protected attendeeOverflow(event: CalendarEvent): number {
     return Math.max(0, event.attendees.length - 4);
+  }
+
+  protected eventMeta(event: CalendarEvent): string {
+    if (event.opponent) {
+      return `${event.location} - vs ${event.opponent}`;
+    }
+
+    return event.location;
   }
 
   protected submitNote(): void {

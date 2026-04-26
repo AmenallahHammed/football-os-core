@@ -7,6 +7,11 @@ interface CalendarCell {
   events: CalendarEvent[];
 }
 
+type CalendarView = 'Day' | 'Week' | 'Month';
+
+const DEFAULT_VISIBLE_MONTH = new Date(2026, 7, 1);
+const DEFAULT_SELECTED_DAY = new Date(2026, 7, 12);
+
 @Component({
   selector: 'app-calendar',
   standalone: true,
@@ -19,14 +24,14 @@ export class CalendarComponent implements OnInit, OnChanges {
   @Output() daySelected = new EventEmitter<Date>();
 
   protected readonly weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  protected readonly viewModes: CalendarView[] = ['Day', 'Week', 'Month'];
 
-  protected visibleMonth = this.startOfMonth(new Date());
-  protected selectedDate = new Date();
+  protected visibleMonth = this.startOfMonth(DEFAULT_VISIBLE_MONTH);
+  protected selectedDate = new Date(DEFAULT_SELECTED_DAY);
   protected cells: CalendarCell[] = [];
 
   ngOnInit(): void {
     this.buildMonthGrid();
-    this.daySelected.emit(this.selectedDate);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -39,6 +44,7 @@ export class CalendarComponent implements OnInit, OnChanges {
     const previous = new Date(this.visibleMonth);
     previous.setMonth(previous.getMonth() - 1);
     this.visibleMonth = this.startOfMonth(previous);
+    this.selectedDate = new Date(this.visibleMonth);
     this.buildMonthGrid();
   }
 
@@ -46,14 +52,24 @@ export class CalendarComponent implements OnInit, OnChanges {
     const next = new Date(this.visibleMonth);
     next.setMonth(next.getMonth() + 1);
     this.visibleMonth = this.startOfMonth(next);
+    this.selectedDate = new Date(this.visibleMonth);
     this.buildMonthGrid();
   }
 
-  protected jumpToToday(): void {
-    this.visibleMonth = this.startOfMonth(new Date());
-    this.selectedDate = new Date();
-    this.buildMonthGrid();
-    this.daySelected.emit(this.selectedDate);
+  protected eventTone(type: CalendarEvent['type']): string {
+    if (type === 'Training') {
+      return 'training';
+    }
+
+    if (type === 'Match' || type === 'Meeting') {
+      return 'match';
+    }
+
+    if (type === 'Recovery' || type === 'Medical') {
+      return 'recovery';
+    }
+
+    return 'academy';
   }
 
   protected chooseDay(cell: CalendarCell): void {
@@ -70,7 +86,11 @@ export class CalendarComponent implements OnInit, OnChanges {
   }
 
   protected get monthLabel(): string {
-    return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(this.visibleMonth);
+    return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(this.visibleMonth).toUpperCase();
+  }
+
+  protected eventSummary(event: CalendarEvent): string {
+    return `${event.time} - ${event.opponent ? `vs ${event.opponent}` : event.location}`;
   }
 
   private buildMonthGrid(): void {
@@ -100,7 +120,7 @@ export class CalendarComponent implements OnInit, OnChanges {
   }
 
   private toIsoDate(date: Date): string {
-    return date.toISOString().slice(0, 10);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   }
 
 }

@@ -1,4 +1,4 @@
-export type EventType = 'Match' | 'Training' | 'Meeting' | 'Medical';
+export type EventType = 'Match' | 'Training' | 'Meeting' | 'Medical' | 'Recovery' | 'Academy' | 'Drills';
 export type ParticipantGroup = 'Player' | 'Medical Staff' | 'Admin Staff' | 'Staff';
 
 export interface EventParticipant {

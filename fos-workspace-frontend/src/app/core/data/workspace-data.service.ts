@@ -506,13 +506,13 @@ export class WorkspaceDataService {
     return [
       {
         id: 'ev-1',
-        title: 'Morning Tactical Block',
-        date: this.isoDateOffset(1),
-        time: '09:00 AM',
+        title: 'Explosive Lower Body Block',
+        date: this.referenceDate(3),
+        time: '08:30 AM',
         type: 'Training',
-        location: 'Pitch A',
+        location: 'Performance Dome',
         coachName: 'Coach Anton Varga',
-        notes: '"Shape discipline and first-line pressing mechanics."',
+        notes: '"Acceleration starts, resisted sprints, and contact prep for the first team."',
         attendees: this.seedAttendees(['p-staff-1', 'p-player-2', 'p-player-3', 'p-med-1', 'p-admin-1']),
         requiredDocuments: [
           this.seedDocument('req-1', 'Session Plan v3.pdf', 'p-staff-2', false),
@@ -521,26 +521,26 @@ export class WorkspaceDataService {
       },
       {
         id: 'ev-2',
-        title: 'Video Review',
-        date: this.isoDateOffset(1),
-        time: '02:30 PM',
-        type: 'Meeting',
-        location: 'Analysis Room',
+        title: 'Finishing Wave Review',
+        date: this.referenceDate(3),
+        time: '02:00 PM',
+        type: 'Drills',
+        location: 'Analysis Bay',
         coachName: 'Coach Anton Varga',
-        notes: '"Break down transitions conceded in the final third."',
+        notes: '"Clip review focused on box entries, second-ball habits, and final-shot timing."',
         attendees: this.seedAttendees(['p-staff-1', 'p-staff-2', 'p-player-1', 'p-player-4']),
         requiredDocuments: [this.seedDocument('req-3', 'Video Tag Report.xlsx', 'p-staff-2', false)]
       },
       {
         id: 'ev-3',
-        title: 'League Match vs Lyon',
-        date: this.isoDateOffset(2),
+        title: 'League Match vs Marseille',
+        date: this.referenceDate(8),
         time: '07:45 PM',
         type: 'Match',
-        location: 'Home Stadium',
+        location: 'North Stand Arena',
         coachName: 'Coach Anton Varga',
-        notes: '"Control midfield tempo and deny lane to their 10."',
-        opponent: 'Lyon',
+        notes: '"High press in the first 20 minutes and hold compactness after transition."',
+        opponent: 'Marseille',
         attendees: this.seedAttendees(['p-staff-1', 'p-admin-2', 'p-player-1', 'p-player-2', 'p-player-3', 'p-player-4']),
         requiredDocuments: [
           this.seedDocument('req-4', 'Matchday Logistics.pdf', 'p-admin-2', true),
@@ -549,29 +549,133 @@ export class WorkspaceDataService {
       },
       {
         id: 'ev-4',
-        title: 'Recovery Session',
-        date: this.isoDateOffset(3),
-        time: '10:15 AM',
-        type: 'Medical',
-        location: 'Recovery Zone',
+        title: 'Recovery Pool Reset',
+        date: this.referenceDate(10),
+        time: '10:00 AM',
+        type: 'Recovery',
+        location: 'Hydro Lab',
         coachName: 'Dr. Helena Ruiz',
-        notes: '"Monitor hamstring load and hydration markers."',
+        notes: '"Contrast circuit, hydration markers, and low-load mobility for match starters."',
         attendees: this.seedAttendees(['p-med-1', 'p-med-2', 'p-player-2', 'p-player-3']),
         requiredDocuments: [this.seedDocument('req-6', 'Recovery Checklist.pdf', 'p-med-2', false)]
       },
       {
         id: 'ev-5',
-        title: 'Scouting Briefing',
-        date: this.isoDateOffset(5),
-        time: '03:00 PM',
-        type: 'Meeting',
-        location: 'Board Room',
+        title: 'Academy Sprint Lab',
+        date: this.referenceDate(12),
+        time: '11:30 AM',
+        type: 'Academy',
+        location: 'Youth Pitch',
         coachName: 'Liam Osei',
-        notes: '"Finalize shortlist for right wing profile before transfer window."',
-        attendees: this.seedAttendees(['p-staff-2', 'p-admin-1', 'p-admin-2']),
+        notes: '"U21 repeat sprint mechanics and transition shape under fatigue."',
+        attendees: this.seedAttendees(['p-staff-2', 'p-admin-1', 'p-player-2', 'p-player-4']),
         requiredDocuments: [
-          this.seedDocument('req-7', 'South America Scout Pack.pdf', 'p-admin-1', true),
-          this.seedDocument('req-8', 'Budget Delta Sheet.xlsx', 'p-admin-2', false)
+          this.seedDocument('req-7', 'Academy Load Sheet.pdf', 'p-admin-1', true),
+          this.seedDocument('req-8', 'Sprint Split Tracker.xlsx', 'p-staff-2', false)
+        ]
+      },
+      {
+        id: 'ev-6',
+        title: 'Pressing Waves',
+        date: this.referenceDate(12),
+        time: '04:00 PM',
+        type: 'Training',
+        location: 'Pitch One',
+        coachName: 'Coach Anton Varga',
+        notes: '"Trigger recognition across the front three with compact rest defense."',
+        attendees: this.seedAttendees(['p-staff-1', 'p-player-1', 'p-player-2', 'p-player-3', 'p-player-4']),
+        requiredDocuments: [this.seedDocument('req-9', 'Pressing Script.pdf', 'p-staff-2', true)]
+      },
+      {
+        id: 'ev-7',
+        title: 'Cup Match vs Lille',
+        date: this.referenceDate(15),
+        time: '08:00 PM',
+        type: 'Match',
+        location: 'Grand Stade',
+        coachName: 'Coach Anton Varga',
+        notes: '"Fast ball circulation and aggressive box occupation on the weak side."',
+        opponent: 'Lille',
+        attendees: this.seedAttendees(['p-staff-1', 'p-admin-2', 'p-player-1', 'p-player-2', 'p-player-3', 'p-player-4']),
+        requiredDocuments: [
+          this.seedDocument('req-10', 'Travel Run Sheet.pdf', 'p-admin-2', true),
+          this.seedDocument('req-11', 'Opponent Corners Deck.pptx', 'p-staff-2', false)
+        ]
+      },
+      {
+        id: 'ev-8',
+        title: 'Physio Recovery Checks',
+        date: this.referenceDate(18),
+        time: '09:15 AM',
+        type: 'Recovery',
+        location: 'Medical Wing',
+        coachName: 'Dr. Helena Ruiz',
+        notes: '"Soft tissue screening and force plate review before the midweek reload."',
+        attendees: this.seedAttendees(['p-med-1', 'p-med-2', 'p-player-1', 'p-player-3']),
+        requiredDocuments: [this.seedDocument('req-12', 'Force Plate Export.csv', 'p-med-1', false)]
+      },
+      {
+        id: 'ev-9',
+        title: 'Final Third Circuit',
+        date: this.referenceDate(20),
+        time: '03:30 PM',
+        type: 'Drills',
+        location: 'Finishing Grid',
+        coachName: 'Coach Anton Varga',
+        notes: '"Three-lane finishing pattern with rapid resets and rebound reactions."',
+        attendees: this.seedAttendees(['p-staff-1', 'p-player-2', 'p-player-3', 'p-player-4']),
+        requiredDocuments: [this.seedDocument('req-13', 'Chance Creation Script.pdf', 'p-staff-2', true)]
+      },
+      {
+        id: 'ev-10',
+        title: 'Academy Tactical Lab',
+        date: this.referenceDate(22),
+        time: '01:00 PM',
+        type: 'Academy',
+        location: 'Tactical Hall',
+        coachName: 'Liam Osei',
+        notes: '"Line breaking patterns and possession exits for the academy block."',
+        attendees: this.seedAttendees(['p-staff-2', 'p-admin-1', 'p-player-2', 'p-player-3']),
+        requiredDocuments: [this.seedDocument('req-14', 'Academy Clips Deck.pdf', 'p-staff-2', false)]
+      },
+      {
+        id: 'ev-11',
+        title: 'Travel Reset',
+        date: this.referenceDate(24),
+        time: '11:00 AM',
+        type: 'Recovery',
+        location: 'Recovery Suite',
+        coachName: 'Aiden Morse',
+        notes: '"Low-load flush session, sleep check, and arrival readiness after travel."',
+        attendees: this.seedAttendees(['p-med-2', 'p-player-1', 'p-player-4']),
+        requiredDocuments: [this.seedDocument('req-15', 'Travel Wellness Form.pdf', 'p-med-2', true)]
+      },
+      {
+        id: 'ev-12',
+        title: 'Set Piece Rehearsal',
+        date: this.referenceDate(27),
+        time: '05:15 PM',
+        type: 'Training',
+        location: 'Pitch A',
+        coachName: 'Coach Anton Varga',
+        notes: '"Rehearse corner routines, second-phase coverage, and back-post timing."',
+        attendees: this.seedAttendees(['p-staff-1', 'p-player-1', 'p-player-2', 'p-player-3', 'p-player-4']),
+        requiredDocuments: [this.seedDocument('req-16', 'Set Piece Call Sheet.pdf', 'p-staff-2', true)]
+      },
+      {
+        id: 'ev-13',
+        title: 'League Match vs Monaco',
+        date: this.referenceDate(29),
+        time: '06:30 PM',
+        type: 'Match',
+        location: 'North Stand Arena',
+        coachName: 'Coach Anton Varga',
+        notes: '"Protect the middle lane and attack early switches in possession."',
+        opponent: 'Monaco',
+        attendees: this.seedAttendees(['p-staff-1', 'p-admin-2', 'p-player-1', 'p-player-2', 'p-player-3', 'p-player-4']),
+        requiredDocuments: [
+          this.seedDocument('req-17', 'Matchday Ops Sheet.pdf', 'p-admin-2', true),
+          this.seedDocument('req-18', 'Monaco Press Notes.docx', 'p-staff-2', true)
         ]
       }
     ];
@@ -604,14 +708,12 @@ export class WorkspaceDataService {
     return coach?.name ?? 'Staff Assignment Pending';
   }
 
-  private isoDateOffset(daysFromNow: number): string {
-    const date = new Date();
-    date.setDate(date.getDate() + daysFromNow);
-    return this.toIsoDate(date);
+  private referenceDate(day: number): string {
+    return `2026-08-${String(day).padStart(2, '0')}`;
   }
 
   private toIsoDate(date: Date): string {
-    return date.toISOString().slice(0, 10);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   }
 
   private newId(prefix: string): string {

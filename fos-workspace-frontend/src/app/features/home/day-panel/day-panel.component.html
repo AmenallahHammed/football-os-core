@@ -16,13 +16,16 @@
       <p class="empty">No events planned for this day.</p>
     } @else {
       @for (event of events; track event.id) {
-        <article class="event-card">
+        <article class="event-card" [attr.data-tone]="eventTone(event.type)">
           <div class="event-main-row">
             <div>
+              <div class="event-label-row">
+                <span class="type-badge" [attr.data-tone]="eventTone(event.type)">{{ event.type }}</span>
+                <span class="time-badge">{{ event.time }}</span>
+              </div>
               <h3>{{ event.title }}</h3>
-              <p class="subtitle">{{ event.coachName }} - {{ event.location }}</p>
+              <p class="subtitle">{{ event.coachName }} - {{ eventMeta(event) }}</p>
             </div>
-            <span class="time-badge">{{ event.time }}</span>
           </div>
 
           <p class="notes">{{ event.notes }}</p>

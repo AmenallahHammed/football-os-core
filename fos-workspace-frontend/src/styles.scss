@@ -1,15 +1,22 @@
 :root {
-  --surface-app: #111;
-  --surface-sidebar: #1a1a1a;
-  --surface-panel: #1f1f1f;
-  --surface-elevated: #222;
-  --border-default: #2d2d2d;
-  --border-strong: #3a3a3a;
-  --text-primary: #f3f4f6;
-  --text-secondary: #d1d5db;
-  --text-muted: #9ca3af;
-  --text-dim: #707783;
-  --accent: #3b82f6;
+  --surface-app: #060913;
+  --surface-sidebar: #0a1020;
+  --surface-panel: #0f1728;
+  --surface-elevated: #131e34;
+  --surface-card: #10192b;
+  --border-default: rgba(116, 139, 187, 0.16);
+  --border-strong: rgba(130, 157, 214, 0.34);
+  --text-primary: #f5f8ff;
+  --text-secondary: #ced7ea;
+  --text-muted: #8593b2;
+  --text-dim: #64748b;
+  --accent: #61a9ff;
+  --accent-pink: #ff58d0;
+  --accent-green: #33f0a1;
+  --accent-violet: #8f63ff;
+  --accent-steel: #72c0ff;
+  --accent-warning: #facc15;
+  --shadow-panel: 0 24px 48px rgba(2, 6, 23, 0.45);
 }
 
 * {
@@ -24,9 +31,13 @@ body {
 }
 
 body {
-  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-family: 'Bahnschrift', 'Segoe UI', sans-serif;
   background: var(--surface-app);
   color: var(--text-secondary);
+  background-image:
+    radial-gradient(circle at top left, rgba(97, 169, 255, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(255, 88, 208, 0.12), transparent 24%),
+    linear-gradient(180deg, #060913 0%, #081120 42%, #05070d 100%);
 }
 
 button,

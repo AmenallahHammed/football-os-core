@@ -2,17 +2,20 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px;
-  border-radius: 10px;
-  background: var(--surface-elevated);
-  border: 1px solid var(--border-default);
+  padding: 12px;
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(19, 30, 52, 0.96) 0%, rgba(12, 20, 35, 0.96) 100%);
+  border: 1px solid rgba(97, 169, 255, 0.18);
+  box-shadow: var(--shadow-panel);
 }
 
 .avatar {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 999px;
   object-fit: cover;
+  border: 2px solid rgba(97, 169, 255, 0.24);
 }
 
 .meta {
@@ -22,7 +25,7 @@
 .name {
   margin: 0;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
 }
 

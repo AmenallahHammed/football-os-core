@@ -69,14 +69,65 @@ cd fos-workspace-frontend
 npm ci
 ```
 
-## Running the Project
+## Running Services Locally
 
-From repo root, run backend services in this order:
+Why `mvn spring-boot:run` fails at repo root:
+
+- The root `pom.xml` is an aggregator POM (`packaging: pom`) and does not contain an application `main` class.
+- Maven executes goals through the reactor, so a root command is considered for selected modules, not just one app.
+- This monorepo has multiple Spring Boot apps, so root `spring-boot:run` is ambiguous and can fail on non-app modules.
+
+Correct Maven pattern for one app at a time:
 
 ```bash
-mvn -pl fos-governance-service -am spring-boot:run -Dspring-boot.run.arguments=--server.port=8081
-mvn -pl fos-workspace-service -am spring-boot:run
-mvn -pl fos-gateway -am spring-boot:run
+mvn -pl <module-name> spring-boot:run
+```
+
+- `-pl` means "project list" (run only the module you name).
+- `-am` means "also make" (build required sibling modules too). Use `-am` for build goals such as `install` when needed, not for root `spring-boot:run` in this repo.
+
+Use the root helper scripts (recommended):
+
+```bash
+./run-governance.sh
+./run-workspace.sh
+./run-gateway.sh
+```
+
+Use the Makefile shortcuts:
+
+- A `Makefile` is a small command map for the team: everyone uses the same short commands instead of remembering long Maven flags.
+- This reduces onboarding friction and avoids "works on my machine" differences in startup commands.
+
+```bash
+make help
+make governance
+make workspace
+make gateway
+make all
+make stop
+```
+
+Notes:
+
+- `make all` starts all three services in background and writes logs/PIDs to `.run/`.
+- `make stop` stops all locally running Spring Boot service processes.
+- Scripts do not auto-source `.env` by default. If required, export env vars first:
+
+```bash
+set -a; source .env; set +a
+make gateway
+```
+
+Windows note:
+
+- Git Bash or WSL: use the same `.sh` scripts and `make` commands.
+- PowerShell/CMD: run Maven commands directly from repo root:
+
+```powershell
+mvn "-Dspring-boot.run.arguments=--server.port=8081" -pl fos-governance-service spring-boot:run
+mvn "-Dspring-boot.run.arguments=--server.port=8082" -pl fos-workspace-service spring-boot:run
+mvn "-Dspring-boot.run.arguments=--server.port=8080" -pl fos-gateway spring-boot:run
 ```
 
 Run frontend:

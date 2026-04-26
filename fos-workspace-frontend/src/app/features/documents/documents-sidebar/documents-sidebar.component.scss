@@ -1,0 +1,116 @@
+:host {
+  display: block;
+}
+
+.documents-sidebar {
+  border: 1px solid var(--border-default);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #181818 0%, #141414 100%);
+  min-height: 100%;
+  max-height: calc(100vh - 208px);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.section-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.all-files-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px;
+}
+
+.section-btn,
+.tree-link {
+  width: 100%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 9px;
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease;
+}
+
+.section-btn:hover,
+.tree-link:hover {
+  color: var(--text-primary);
+  border-color: rgba(59, 130, 246, 0.24);
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.section-btn.active,
+.tree-link.active {
+  color: var(--text-primary);
+  border-color: rgba(59, 130, 246, 0.45);
+  background: rgba(59, 130, 246, 0.18);
+}
+
+.expand-btn {
+  width: 32px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 9px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.expand-btn:hover {
+  border-color: rgba(59, 130, 246, 0.28);
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.chevron {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
+  transform: rotate(-45deg);
+  transition: transform 140ms ease;
+}
+
+.chevron.open {
+  transform: rotate(45deg);
+}
+
+.folder-tree {
+  margin: 2px 0 8px;
+  padding-left: 6px;
+  border-left: 1px dashed #2f2f2f;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tree-link {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.deleted-slot {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #2b2b2b;
+}
+
+.warning {
+  color: #fca5a5;
+}
+
+.warning:hover,
+.warning.active {
+  color: #fee2e2;
+  border-color: rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.12);
+}

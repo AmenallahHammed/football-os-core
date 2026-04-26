@@ -1,27 +1,58 @@
-# FosWorkspaceFrontend
+# FOS Workspace Frontend
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.17.
+Angular frontend for the Football OS workspace module.
 
-## Development server
+## Purpose
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+This app provides the UI for workspace features routed through the backend gateway:
 
-## Code scaffolding
+- documents
+- calendar/events
+- player profile views
+- notifications
+- search
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Prerequisites
+
+- Node.js 20+
+- NPM
+- backend services running (`fos-gateway`, `fos-workspace-service`, `fos-governance-service`)
+
+## Install
+
+```bash
+npm ci
+```
+
+## Run Locally
+
+```bash
+npm start
+```
+
+Default URL: `http://localhost:4200`
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+```bash
+npm run build
+```
 
-## Running unit tests
+Build output: `dist/fos-workspace-frontend`
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Test
 
-## Running end-to-end tests
+```bash
+npm test
+```
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Scripts
 
-## Further help
+- `npm start`: start dev server
+- `npm run build`: production build
+- `npm test`: run unit tests
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Notes
+
+- API calls are expected to go through the gateway at `http://localhost:8080`.
+- Ensure Keycloak/infra containers are running when testing authenticated flows.

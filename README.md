@@ -11,7 +11,7 @@ It includes:
 - workspace service (`fos-workspace-service`)
 - API gateway (`fos-gateway`)
 - Angular workspace frontend (`fos-workspace-frontend`)
-- local infrastructure orchestration (`docker-compose.yml`)
+- local stack orchestration (`docker-compose.yml`)
 
 ## Technologies Used
 
@@ -27,6 +27,7 @@ It includes:
 .
 |- pom.xml
 |- docker-compose.yml
+|- start.ps1
 |- fos-sdk/
 |- fos-governance-service/
 |- fos-gateway/
@@ -50,13 +51,19 @@ Module-level documentation:
 ## Installation
 
 1. Create a local env file from `.env.example`.
-2. Start infrastructure:
+2. Start the full local stack (recommended):
 
 ```bash
-docker compose up -d
+docker-compose up -d --build
 ```
 
-3. Build backend modules:
+PowerShell helper:
+
+```powershell
+.\start.ps1
+```
+
+3. If you are not using Docker Compose for the backend apps, build backend modules:
 
 ```bash
 mvn clean install -DskipTests
@@ -70,6 +77,11 @@ npm ci
 ```
 
 ## Running Services Locally
+
+- `docker-compose.yml` now starts the infrastructure plus `fos-governance-service`, `fos-workspace-service`, and `fos-gateway`.
+- The `run-governance.sh`, `run-workspace.sh`, and `run-gateway.sh` scripts are still useful when you want to run one service directly from source with Maven.
+- Do not run a script for a service while the matching Docker container is already running on the same port.
+- A common local-debug flow is: keep shared dependencies in Docker, stop one app container, then run that one app from source.
 
 Why `mvn spring-boot:run` fails at repo root:
 
@@ -86,7 +98,7 @@ mvn -pl <module-name> spring-boot:run
 - `-pl` means "project list" (run only the module you name).
 - `-am` means "also make" (build required sibling modules too). Use `-am` for build goals such as `install` when needed, not for root `spring-boot:run` in this repo.
 
-Use the root helper scripts (recommended):
+Use the root helper scripts for host-based single-service development:
 
 ```bash
 ./run-governance.sh

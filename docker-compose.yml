@@ -47,9 +47,10 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     healthcheck:
@@ -57,6 +58,7 @@ services:
       interval: 15s
       timeout: 10s
       retries: 5
+    restart: on-failure
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.5
@@ -159,7 +161,7 @@ services:
       POSTGRES_URL: jdbc:postgresql://postgres:5432/fos_governance
       POSTGRES_USER: ${DB_USER:-fos}
       POSTGRES_PASSWORD: ${DB_PASS:-fos}
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       KEYCLOAK_JWKS_URI: http://keycloak:8080/realms/fos/protocol/openid-connect/certs
       OPA_URL: ${OPA_URL:-http://host.docker.internal:8181}
       CANONICAL_SERVICE_URL: http://fos-governance-service:8081
@@ -192,7 +194,7 @@ services:
       SPRING_PROFILES_ACTIVE: staging
       SERVER_PORT: 8082
       MONGODB_URI: mongodb://mongodb:27017/fos_workspace
-      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       KEYCLOAK_JWKS_URI: http://keycloak:8080/realms/fos/protocol/openid-connect/certs
       GOVERNANCE_URL: http://fos-governance-service:8081
       STORAGE_PROVIDER: minio

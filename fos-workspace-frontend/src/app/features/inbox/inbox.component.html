@@ -1,0 +1,15 @@
+<section class="list-page">
+  <header>
+    <div>
+      <h1>Inbox</h1>
+      <p>Board, scouting, and department communication stream.</p>
+    </div>
+    <button type="button" (click)="markAllRead()">Mark all read</button>
+  </header>
+
+  <div class="list">
+    @for (item of items; track item.id) {
+      <app-notification-item [item]="item" (selected)="markRead($event)"></app-notification-item>
+    }
+  </div>
+</section>

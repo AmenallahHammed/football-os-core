@@ -1,0 +1,15 @@
+<article
+  class="player-card"
+  [@hoverLift]="animationState"
+  (mouseenter)="onHover(true)"
+  (mouseleave)="onHover(false)"
+  (click)="selectCard()"
+>
+  <div class="artboard">
+    <div class="jersey" aria-hidden="true">{{ player.shirtNumber }}</div>
+    <img class="face" [src]="player.photoUrl" [alt]="player.name" />
+  </div>
+
+  <p class="name">{{ player.name }}</p>
+  <p class="meta">{{ player.position }} - {{ player.team }}</p>
+</article>

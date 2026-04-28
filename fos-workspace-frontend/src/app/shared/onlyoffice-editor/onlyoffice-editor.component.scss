@@ -1,0 +1,59 @@
+.editor {
+  border: 1px solid var(--border-default);
+  border-radius: 14px;
+  background: #161616;
+  overflow: hidden;
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-default);
+  background: #1b1b1b;
+}
+
+.editor-header h3 {
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  font-size: 10px;
+}
+
+.close-btn {
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: var(--text-primary);
+  border-color: rgba(59, 130, 246, 0.45);
+}
+
+.editor-body {
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 26px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.muted {
+  color: var(--text-muted);
+  margin-top: 6px;
+}

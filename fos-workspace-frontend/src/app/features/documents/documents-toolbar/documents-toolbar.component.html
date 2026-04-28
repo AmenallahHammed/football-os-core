@@ -1,0 +1,51 @@
+<header class="documents-toolbar">
+  <div class="top-row">
+    <div class="brand">
+      <div class="brand-mark">W</div>
+      <p>WorkSpace</p>
+    </div>
+
+    <label class="search-shell">
+      <input
+        type="search"
+        placeholder="Search in documents"
+        [value]="searchTerm"
+        (input)="onSearchInput($event)"
+      />
+      <button type="button" class="filter-btn" aria-label="Filter documents">
+        <span class="filter-icon"></span>
+      </button>
+    </label>
+
+    <div class="top-actions">
+      <button type="button" class="icon-btn bell" aria-label="Notifications">
+        <span class="bell-icon"></span>
+      </button>
+      <button type="button" class="avatar-btn" aria-label="Open profile">AC</button>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <div class="action-group">
+      <button type="button" class="action-btn primary" (click)="requestUpload()">
+        Upload <span class="caret">v</span>
+      </button>
+      <button type="button" class="action-btn" (click)="requestCreate()">
+        Create <span class="caret">v</span>
+      </button>
+      <button type="button" class="action-btn" (click)="requestOrganize()">
+        Organize <span class="caret">v</span>
+      </button>
+      <button type="button" class="action-btn ghost" (click)="requestOverflow()">...</button>
+    </div>
+
+    <button type="button" class="view-btn" aria-label="List view" (click)="requestListView()">
+      <span class="list-icon" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+      List
+    </button>
+  </div>
+</header>

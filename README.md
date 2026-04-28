@@ -1,166 +1,180 @@
-# Football OS Core Documentation
+# Football OS Core
 
-## 1) Purpose
+## Project Purpose
 
-This repository contains the core backend platform for Football OS.
+Football OS Core is a multi-module monorepo that contains the backend platform for Football OS and its workspace frontend.
 
-It combines:
+It includes:
 
-1. Shared SDK modules
-2. Governance domain service
-3. Workspace domain service
-4. API gateway
-5. Local infrastructure orchestration
+- shared SDK libraries (`fos-sdk`)
+- governance service (`fos-governance-service`)
+- workspace service (`fos-workspace-service`)
+- API gateway (`fos-gateway`)
+- Angular workspace frontend (`fos-workspace-frontend`)
+- local stack orchestration (`docker-compose.yml`)
 
-## 2) High-level architecture
+## Technologies Used
 
-Backend request path:
+- Java 21, Spring Boot 3.3.x, Maven 3.9+
+- PostgreSQL, MongoDB, Kafka, Redis, MinIO
+- Keycloak (OIDC/JWT), OPA, OnlyOffice
+- Angular 17, TypeScript, Node/NPM
+- Docker Compose
 
-1. Client calls `fos-gateway` (`:8080`).
-2. Gateway validates JWT, enriches headers, applies rate limit, and routes traffic.
-3. Domain requests go to:
-   - `fos-governance-service` (identity, canonical, policy, signal, audit)
-   - `fos-workspace-service` (documents, events, profiles, notifications, search, onlyoffice)
-4. Services emit/consume Kafka signals and persist domain state.
+## Repository Structure
 
-Core data stores:
+```text
+.
+|- pom.xml
+|- docker-compose.yml
+|- start.ps1
+|- fos-sdk/
+|- fos-governance-service/
+|- fos-gateway/
+|- fos-workspace-service/
+|- fos-workspace-frontend/
+|- report/
+|  '- implementation-summary.md
+|- diagrams/
+|  '- class-diagram.md
+'- AI_CONTEXT/  (retained internal context files)
+```
 
-- PostgreSQL (governance)
-- MongoDB (workspace)
-- Kafka (events/signals)
-- Redis (gateway rate limiting)
-- MinIO (workspace document objects)
-
-Supporting services:
-
-- Keycloak (JWT/JWKS)
-- OPA (policy decisions)
-- OnlyOffice (document editing)
-- OpenSearch (provisioned for future/extended search use)
-
-## 3) Repository modules
-
-Root Maven modules (from `pom.xml`):
-
-- `fos-sdk`
-- `fos-governance-service`
-- `fos-gateway`
-- `fos-workspace-service`
-
-Main module docs:
+Module-level documentation:
 
 - `fos-sdk/README.md`
 - `fos-governance-service/README.md`
 - `fos-workspace-service/README.md`
 - `fos-gateway/README.md`
+- `fos-workspace-frontend/README.md`
 
-## 4) Service boundaries and responsibilities
+## Installation
 
-- `fos-sdk`
-  - Shared contracts, adapters, policy/canonical clients, event primitives, and test utilities.
-
-- `fos-governance-service`
-  - Owns identity/canonical/policy/audit concerns and governance schemas.
-
-- `fos-workspace-service`
-  - Owns workspace document/event/notification aggregates and workspace APIs.
-
-- `fos-gateway`
-  - Edge enforcement: auth, request enrichment, rate limiting, and routing.
-
-## 5) Integration map
-
-Service-to-service:
-
-- Workspace -> Governance policy endpoint (`sdk-policy`)
-- Workspace -> Governance canonical endpoint (`sdk-canonical`)
-- Gateway -> Governance/Workspace downstream routing
-
-Event-driven:
-
-- Services use `sdk-events` contracts (`SignalEnvelope`, `KafkaTopics`)
-- Governance writes audit records from audit topics
-- Workspace consumes workspace topics to materialize inbox notifications
-
-## 6) Quick Start / Run Locally
-
-Prerequisites:
-
-- Java 21
-- Maven 3.9+
-- Docker + Docker Compose
-
-### 6.1 Prepare env
-
-From repo root, create `.env` from example and set required secrets:
-
-- `KEYCLOAK_ADMIN`
-- `KEYCLOAK_ADMIN_PASSWORD`
-- `OPENSEARCH_INITIAL_ADMIN_PASSWORD`
-
-Reference file: `.env.example`
-
-### 6.2 Start infrastructure
+1. Create a local env file from `.env.example`.
+2. Start the full local stack (recommended):
 
 ```bash
-docker compose up -d
+docker-compose up -d --build
 ```
 
-This starts Postgres, MongoDB, Kafka, Keycloak, MinIO, OpenSearch, Redis, and OnlyOffice.
+PowerShell helper:
 
-### 6.3 Build project
+```powershell
+.\start.ps1
+```
+
+3. If you are not using Docker Compose for the backend apps, build backend modules:
 
 ```bash
 mvn clean install -DskipTests
 ```
 
-### 6.4 Run services (recommended order)
-
-1) Governance service (set port 8081 to match gateway defaults):
+4. Install frontend dependencies:
 
 ```bash
-mvn -pl fos-governance-service -am spring-boot:run -Dspring-boot.run.arguments=--server.port=8081
+cd fos-workspace-frontend
+npm ci
 ```
 
-2) Workspace service (defaults to 8082):
+## Running Services Locally
+
+- `docker-compose.yml` now starts the infrastructure plus `fos-governance-service`, `fos-workspace-service`, and `fos-gateway`.
+- The `run-governance.sh`, `run-workspace.sh`, and `run-gateway.sh` scripts are still useful when you want to run one service directly from source with Maven.
+- Do not run a script for a service while the matching Docker container is already running on the same port.
+- A common local-debug flow is: keep shared dependencies in Docker, stop one app container, then run that one app from source.
+
+Why `mvn spring-boot:run` fails at repo root:
+
+- The root `pom.xml` is an aggregator POM (`packaging: pom`) and does not contain an application `main` class.
+- Maven executes goals through the reactor, so a root command is considered for selected modules, not just one app.
+- This monorepo has multiple Spring Boot apps, so root `spring-boot:run` is ambiguous and can fail on non-app modules.
+
+Correct Maven pattern for one app at a time:
 
 ```bash
-mvn -pl fos-workspace-service -am spring-boot:run
+mvn -pl <module-name> spring-boot:run
 ```
 
-3) Gateway (defaults to 8080):
+- `-pl` means "project list" (run only the module you name).
+- `-am` means "also make" (build required sibling modules too). Use `-am` for build goals such as `install` when needed, not for root `spring-boot:run` in this repo.
+
+Use the root helper scripts for host-based single-service development:
 
 ```bash
-mvn -pl fos-gateway -am spring-boot:run
+./run-governance.sh
+./run-workspace.sh
+./run-gateway.sh
 ```
 
-### 6.5 Smoke check
+Use the Makefile shortcuts:
 
-- Gateway health: `http://localhost:8080/actuator/health`
-- Governance health: `http://localhost:8081/actuator/health`
-- Workspace health: `http://localhost:8082/actuator/health`
+- A `Makefile` is a small command map for the team: everyone uses the same short commands instead of remembering long Maven flags.
+- This reduces onboarding friction and avoids "works on my machine" differences in startup commands.
 
-## 7) Testing
+```bash
+make help
+make governance
+make workspace
+make gateway
+make all
+make stop
+```
 
-Run all tests:
+Notes:
+
+- `make all` starts all three services in background and writes logs/PIDs to `.run/`.
+- `make stop` stops all locally running Spring Boot service processes.
+- Scripts do not auto-source `.env` by default. If required, export env vars first:
+
+```bash
+set -a; source .env; set +a
+make gateway
+```
+
+Windows note:
+
+- Git Bash or WSL: use the same `.sh` scripts and `make` commands.
+- PowerShell/CMD: run Maven commands directly from repo root:
+
+```powershell
+mvn "-Dspring-boot.run.arguments=--server.port=8081" -pl fos-governance-service spring-boot:run
+mvn "-Dspring-boot.run.arguments=--server.port=8082" -pl fos-workspace-service spring-boot:run
+mvn "-Dspring-boot.run.arguments=--server.port=8080" -pl fos-gateway spring-boot:run
+```
+
+Run frontend:
+
+```bash
+cd fos-workspace-frontend
+npm start
+```
+
+Default local ports:
+
+- gateway: `8080`
+- governance: `8081`
+- workspace: `8082`
+- frontend: `4200`
+
+## Testing and Build
+
+Backend:
 
 ```bash
 mvn test
 ```
 
-Run per module:
+Frontend:
 
 ```bash
-mvn -pl fos-governance-service test
-mvn -pl fos-workspace-service test
-mvn -pl fos-gateway test
-mvn -pl fos-sdk -am test
+cd fos-workspace-frontend
+npm run build
+npm test
 ```
 
-## 8) Practical mental model
+Note: some governance integration tests require local infrastructure (notably PostgreSQL/Kafka) to be running.
 
-Think of the platform in three layers:
+## Report and Diagrams
 
-1. Edge (`fos-gateway`) - protect and route requests
-2. Domain services (`fos-governance-service`, `fos-workspace-service`) - own business workflows and persistence
-3. Shared foundation (`fos-sdk`) - unify contracts, integration patterns, and test support
+- implementation report: `report/implementation-summary.md`
+- architecture/class diagram: `diagrams/class-diagram.md`

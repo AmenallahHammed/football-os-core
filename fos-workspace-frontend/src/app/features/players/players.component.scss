@@ -1,0 +1,42 @@
+.players-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-head h1 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 24px;
+}
+
+.page-head p {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.toolbar {
+  display: flex;
+  gap: 10px;
+}
+
+.toolbar input,
+.toolbar select {
+  background: #161616;
+  border: 1px solid #2d2d2d;
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  padding: 9px 11px;
+}
+
+.toolbar input {
+  flex: 1;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}

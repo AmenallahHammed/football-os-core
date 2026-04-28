@@ -1,0 +1,9 @@
+@if (visible) {
+  <button type="button" class="overlay" aria-label="Close menu" (click)="close()"></button>
+
+  <section class="menu" [style.left.px]="x" [style.top.px]="y" (contextmenu)="$event.preventDefault()">
+    @for (action of actions; track action.id) {
+      <button type="button" class="menu-item" (click)="onAction(action)">{{ action.label }}</button>
+    }
+  </section>
+}

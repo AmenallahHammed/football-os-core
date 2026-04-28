@@ -1,0 +1,14 @@
+<section class="editor" aria-live="polite">
+  <header class="editor-header">
+    <div>
+      <p class="eyebrow">OnlyOffice</p>
+      <h3>{{ document?.name }}</h3>
+    </div>
+    <button type="button" class="close-btn" (click)="closeEditor()">Close</button>
+  </header>
+
+  <div class="editor-body">
+    <p>Embedded document editing panel</p>
+    <p class="muted">Connect this panel to the backend OnlyOffice config endpoint for live editing.</p>
+  </div>
+</section>

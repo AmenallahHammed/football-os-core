@@ -1,0 +1,10 @@
+<nav class="breadcrumb" aria-label="Folder path">
+  @for (segment of segments; let last = $last; track segment.label + $index) {
+    <button type="button" class="crumb" [class.is-last]="last" (click)="select(segment, last)">
+      {{ segment.label }}
+    </button>
+    @if (!last) {
+      <span class="separator" aria-hidden="true">&gt;</span>
+    }
+  }
+</nav>

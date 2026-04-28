@@ -1,0 +1,9 @@
+<div class="workspace-shell">
+  <app-sidebar class="shell-sidebar"></app-sidebar>
+
+  <main class="shell-main">
+    <div class="page-layer" [@routeTransition]="getRouteAnimationState(outlet)">
+      <router-outlet #outlet="outlet"></router-outlet>
+    </div>
+  </main>
+</div>

@@ -1,0 +1,15 @@
+<a
+  class="nav-item"
+  [routerLink]="route"
+  routerLinkActive
+  #routerState="routerLinkActive"
+  [routerLinkActiveOptions]="{ exact: exact }"
+  [class.is-active]="active || routerState.isActive"
+>
+  <span class="icon" aria-hidden="true">{{ icon }}</span>
+  <span class="label">{{ label }}</span>
+
+  @if (badge !== null && badge > 0) {
+    <span class="badge">{{ badge }}</span>
+  }
+</a>

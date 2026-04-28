@@ -1,4 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
+  --font-family-sans: 'Inter', 'Segoe UI', sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --color-brand-primary: #0061ff;
+  --color-brand-primary-hover: #0052d9;
+  --color-brand-primary-active: #0046b8;
+  --color-neutral-0: #ffffff;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #ededed;
+  --color-neutral-300: #d9d9d9;
+  --color-neutral-500: #8b8783;
+  --color-neutral-1000: #000000;
+  --color-error: #de0000;
+  --color-error-bg: #fff0f0;
+  --color-info-bg: #eaf2ff;
+  --color-text-primary: #000000;
+  --color-text-muted: #8b8783;
+  --color-text-on-brand: #ffffff;
+  --color-border-default: #d9d9d9;
+  --color-border-subtle: #ededed;
+  --color-border-focus: #0061ff;
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-full: 9999px;
+  --shadow-focus: 0 0 0 3px rgba(0, 97, 255, 0.22);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.14);
+  --z-dropdown: 100;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 350ms;
+  --calendar-motion-page: 160ms;
+  --calendar-motion-drawer: 250ms;
+  --calendar-motion-modal: 160ms;
+  --calendar-motion-dropdown: 120ms;
+  --calendar-motion-press: 80ms;
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --shell-sidebar-width: 60px;
+  --calendar-left-rail-width: 300px;
+  --calendar-header-height: 56px;
+  --calendar-dialog-width: 460px;
+  --drawer-width: 520px;
+  --calendar-bottom-nav-height: 64px;
+  --type-page-title: 28px;
+  --type-section-title: 18px;
+  --type-card-title: 14px;
+  --type-body-md: 14px;
+  --type-body-sm: 13px;
+  --type-label-md: 11px;
+  --line-page-title: 1.2;
+  --line-section-title: 1.35;
+  --line-card-title: 1.35;
+  --line-body-md: 1.5;
+  --line-body-sm: 1.45;
+  --line-label-md: 1.2;
+  --control-height-sm: 36px;
+  --control-height-md: 38px;
+  --control-height-mobile: 44px;
   --surface-app: #060913;
   --surface-sidebar: #0a1020;
   --surface-panel: #0f1728;
@@ -17,6 +96,41 @@
   --accent-steel: #72c0ff;
   --accent-warning: #facc15;
   --shadow-panel: 0 24px 48px rgba(2, 6, 23, 0.45);
+  --calendar-grid-header-height: 48px;
+  --calendar-cell-padding: 8px;
+  --calendar-event-padding: 8px;
+  --calendar-drawer-padding-desktop: 32px;
+  --calendar-drawer-padding-mobile: 16px;
+  --calendar-month-row-height: 112px;
+  --calendar-week-time-gutter-width: 64px;
+  --calendar-week-hour-row-height: 72px;
+  --calendar-event-card-min-height: 24px;
+  --calendar-event-block-min-height: 48px;
+  --calendar-surface-alt: #fafafa;
+  --calendar-overlay-scrim: rgba(0, 0, 0, 0.32);
+  --calendar-state-error-border: rgba(222, 0, 0, 0.16);
+  --calendar-status-error-border: rgba(222, 0, 0, 0.2);
+  --calendar-status-success-border: rgba(0, 97, 255, 0.18);
+  --calendar-toast-success-border: rgba(0, 97, 255, 0.2);
+  --calendar-muted-surface: var(--color-neutral-100);
+  --calendar-hover-surface: var(--color-neutral-100);
+  --calendar-hover-border: var(--color-neutral-300);
+  --calendar-emphasis-surface: var(--color-info-bg);
+  --calendar-emphasis-text: var(--color-brand-primary);
+  --calendar-uploaded-surface: var(--color-neutral-100);
+  --calendar-uploaded-border: var(--color-neutral-300);
+  --calendar-uploaded-text: var(--color-text-muted);
+  --calendar-slot-surface: linear-gradient(180deg, var(--color-neutral-0) 0%, var(--calendar-surface-alt) 100%);
+  --calendar-event-training-bg: #eaf2ff;
+  --calendar-event-training-accent: #0061ff;
+  --calendar-event-match-bg: #fff4e0;
+  --calendar-event-match-accent: #b56a00;
+  --calendar-event-meeting-bg: #f2eeff;
+  --calendar-event-meeting-accent: #6e42d9;
+  --calendar-event-medical-bg: #eaf7ef;
+  --calendar-event-medical-accent: #0f8a3b;
+  --calendar-event-other-bg: var(--color-neutral-100);
+  --calendar-event-other-accent: var(--color-neutral-500);
 }
 
 * {
@@ -31,7 +145,7 @@ body {
 }
 
 body {
-  font-family: 'Bahnschrift', 'Segoe UI', sans-serif;
+  font-family: var(--font-family-sans);
   background: var(--surface-app);
   color: var(--text-secondary);
   background-image:
@@ -45,4 +159,24 @@ input,
 select,
 textarea {
   font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  box-shadow: var(--shadow-focus);
+  border-color: var(--color-border-focus);
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0ms !important;
+    transition-duration: 0ms !important;
+    scroll-behavior: auto !important;
+  }
 }

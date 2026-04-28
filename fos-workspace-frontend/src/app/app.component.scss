@@ -10,6 +10,10 @@
   background: var(--surface-app);
 }
 
+.workspace-shell--full {
+  grid-template-columns: 1fr;
+}
+
 .shell-main {
   position: relative;
   min-width: 0;
@@ -19,11 +23,20 @@
     linear-gradient(180deg, rgba(12, 20, 36, 0.96) 0%, rgba(5, 8, 15, 0.98) 100%);
 }
 
+.shell-main--full {
+  background: var(--color-neutral-100);
+}
+
 .page-layer {
   height: 100%;
   min-height: 100vh;
   overflow-y: auto;
   padding: 24px 28px;
+}
+
+.page-layer--full {
+  overflow: hidden;
+  padding: 0;
 }
 
 @media (max-width: 960px) {

@@ -23,6 +23,7 @@ export class SidebarComponent {
 
   protected get navItems(): SidebarItem[] {
     return [
+      { label: 'Calendar', route: '/workspace/calendar', icon: 'C', exact: false },
       { label: 'Home', route: '/home', icon: 'H', exact: true },
       { label: 'Documents', route: '/documents', icon: 'D', exact: false },
       { label: 'Players', route: '/players', icon: 'P', exact: false },

@@ -6,6 +6,7 @@ import { NotificationsComponent } from './features/notifications/notifications.c
 import { PlayerProfileComponent } from './features/player-profile/player-profile.component';
 import { PlayersComponent } from './features/players/players.component';
 import { SettingsComponent } from './features/settings/settings.component';
+import { WorkspaceCalendarComponent } from './features/workspace-calendar/workspace-calendar.component';
 
 export const routes: Routes = [
   {
@@ -17,6 +18,21 @@ export const routes: Routes = [
     path: 'home',
     component: HomeComponent,
     data: { animation: 'home' }
+  },
+  {
+    path: 'workspace',
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'calendar'
+      },
+      {
+        path: 'calendar',
+        component: WorkspaceCalendarComponent,
+        data: { animation: 'workspace-calendar', fullScreen: true }
+      }
+    ]
   },
   {
     path: 'documents',

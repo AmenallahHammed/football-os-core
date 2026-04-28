@@ -16,14 +16,12 @@ import { SidebarComponent } from './core/layout/sidebar/sidebar.component';
           ':leave',
           [
             style({ opacity: 1, transform: 'translateY(0)' }),
-            animate('120ms ease', style({ opacity: 0, transform: 'translateY(-10px)' }))
+            animate('120ms ease', style({ opacity: 0, transform: 'translateY(-4px)' }))
           ],
           { optional: true }
         ),
-        query(':enter', [style({ opacity: 0, transform: 'translateY(14px)' })], { optional: true }),
-        query(':enter', [animate('220ms 70ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))], {
-          optional: true
-        })
+        query(':enter', [style({ opacity: 0, transform: 'translateY(4px)' })], { optional: true }),
+        query(':enter', [animate('160ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))], { optional: true })
       ])
     ])
   ]
@@ -31,5 +29,9 @@ import { SidebarComponent } from './core/layout/sidebar/sidebar.component';
 export class AppComponent {
   protected getRouteAnimationState(outlet: RouterOutlet): string {
     return (outlet.activatedRouteData['animation'] as string) ?? 'default';
+  }
+
+  protected isFullScreenRoute(outlet: RouterOutlet): boolean {
+    return outlet.activatedRouteData['fullScreen'] === true;
   }
 }

@@ -1,15 +1,15 @@
 .dropzone {
-  border: 1px dashed var(--border-strong);
-  background: rgba(59, 130, 246, 0.05);
-  border-radius: 12px;
-  padding: 20px;
+  border: 1px dashed var(--color-border-default);
+  background: var(--calendar-surface-alt);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
   text-align: center;
   transition: border-color 160ms ease, background-color 160ms ease;
 }
 
 .dropzone.drag-active {
-  border-color: var(--accent);
-  background: rgba(59, 130, 246, 0.12);
+  border-color: var(--color-brand-primary);
+  background: var(--calendar-emphasis-surface);
 }
 
 .dropzone.compact {
@@ -18,30 +18,30 @@
 
 .title {
   margin: 0;
-  color: var(--text-primary);
-  font-size: 13px;
-  font-weight: 600;
+  color: var(--color-text-primary);
+  font-size: var(--type-body-md);
+  font-weight: var(--font-weight-semibold);
 }
 
 .hint {
   margin: 5px 0 12px;
-  color: var(--text-muted);
-  font-size: 12px;
+  color: var(--color-text-muted);
+  font-size: var(--type-body-sm);
 }
 
 .pick-btn {
-  border: 1px solid rgba(59, 130, 246, 0.45);
-  background: rgba(59, 130, 246, 0.14);
-  color: var(--text-primary);
-  border-radius: 8px;
+  border: 1px solid var(--color-border-default);
+  background: var(--color-neutral-0);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-md);
   padding: 8px 12px;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--type-body-sm);
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
 }
 
 .pick-btn:hover {
-  background: rgba(59, 130, 246, 0.22);
+  background: var(--color-neutral-100);
 }
 
 .file-input {

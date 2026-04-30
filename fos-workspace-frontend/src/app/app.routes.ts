@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { DocumentsComponent } from './features/documents/documents.component';
-import { HomeComponent } from './features/home/home.component';
 import { InboxComponent } from './features/inbox/inbox.component';
 import { NotificationsComponent } from './features/notifications/notifications.component';
 import { PlayerProfileComponent } from './features/player-profile/player-profile.component';
@@ -12,12 +11,7 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'home'
-  },
-  {
-    path: 'home',
-    component: HomeComponent,
-    data: { animation: 'home' }
+    redirectTo: 'workspace/calendar'
   },
   {
     path: 'workspace',
@@ -66,6 +60,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'home'
+    redirectTo: 'workspace/calendar'
   }
 ];

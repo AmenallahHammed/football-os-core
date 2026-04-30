@@ -2,8 +2,9 @@ import { DatePipe } from '@angular/common';
 import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { WorkspaceRailComponent } from '../../core/layout/workspace-rail/workspace-rail.component';
 import { EventParticipant, ParticipantGroup } from '../../shared/models/event.model';
-import { WorkspaceCalendarIconComponent } from './workspace-calendar-icon.component';
+import { WorkspaceCalendarIconComponent } from '../../shared/workspace-icon/workspace-icon.component';
 import {
   WorkspaceCalendarApiAttendee,
   WorkspaceCalendarApiEvent,
@@ -16,13 +17,6 @@ type CalendarViewMode = 'day' | 'week' | 'month' | 'year';
 type CalendarRole = 'head-coach' | 'staff';
 type AccessScope = 'All Staff' | 'Coaches Only' | 'Medical + Coaches';
 type ToastTone = 'success' | 'error' | 'info';
-
-interface CalendarNavItem {
-  label: string;
-  route: string;
-  icon: string;
-  exact: boolean;
-}
 
 interface CalendarPerson extends EventParticipant {
   canonicalType: 'PLAYER' | 'CLUB';
@@ -90,13 +84,6 @@ interface YearMonthCard {
   label: string;
   days: CalendarDayCell[];
   eventCount: number;
-}
-
-interface CreatePopoverState {
-  x: number;
-  y: number;
-  date: Date;
-  hour: number;
 }
 
 interface DocumentMenuState {
@@ -185,12 +172,12 @@ const CALENDAR_PEOPLE: CalendarPerson[] = [
 @Component({
   selector: 'app-workspace-calendar',
   standalone: true,
-  imports: [DatePipe, FormsModule, RouterLink, WorkspaceCalendarIconComponent],
+  imports: [DatePipe, FormsModule, RouterLink, WorkspaceRailComponent, WorkspaceCalendarIconComponent],
   templateUrl: './workspace-calendar.component.html',
   styleUrl: './workspace-calendar.component.scss'
 })
 export class WorkspaceCalendarComponent {
-  @ViewChild('createDialog') private createDialog?: ElementRef<HTMLElement>;
+  @ViewChild('createDrawer') private createDrawer?: ElementRef<HTMLElement>;
   @ViewChild('eventDrawer') private eventDrawer?: ElementRef<HTMLElement>;
   @ViewChild('fileMenu') private fileMenu?: ElementRef<HTMLElement>;
 
@@ -199,14 +186,12 @@ export class WorkspaceCalendarComponent {
   private lastFocusTrigger: HTMLElement | null = null;
   private lastMenuTrigger: HTMLElement | null = null;
 
-  protected readonly iconRailItems: CalendarNavItem[] = [
-    { label: 'Calendar', route: '/workspace/calendar', icon: 'calendar', exact: true },
-    { label: 'Documents', route: '/documents', icon: 'folder', exact: false },
-    { label: 'Players', route: '/players', icon: 'users', exact: false },
-    { label: 'Home', route: '/home', icon: 'house', exact: false },
-    { label: 'Settings', route: '/settings', icon: 'settings', exact: false }
+  protected readonly mobileNavItems = [
+    { label: 'Calendar', route: '/workspace/calendar', icon: 'calendar' },
+    { label: 'Documents', route: '/documents', icon: 'folder' },
+    { label: 'Players', route: '/players', icon: 'users' },
+    { label: 'Settings', route: '/settings', icon: 'settings' }
   ];
-  protected readonly mobileNavItems = this.iconRailItems.slice(0, 4);
   protected readonly viewModes: CalendarViewMode[] = ['day', 'week', 'month', 'year'];
   protected readonly attendeeFilters: Array<'All' | ParticipantGroup> = ['All', 'Player', 'Staff', 'Medical Staff', 'Admin Staff'];
   protected readonly accessOptions: AccessScope[] = ['All Staff', 'Coaches Only', 'Medical + Coaches'];
@@ -236,9 +221,8 @@ export class WorkspaceCalendarComponent {
   protected selectedEvent: CalendarEventView | null = null;
   protected drawerOpen = false;
   protected noteDraft = '';
-  protected createPopover: CreatePopoverState | null = null;
   protected documentMenu: DocumentMenuState | null = null;
-  protected createDialogOpen = false;
+  protected createDrawerOpen = false;
 
   protected toastMessage = '';
   protected toastTone: ToastTone = 'info';
@@ -416,7 +400,6 @@ export class WorkspaceCalendarComponent {
 
   protected setViewMode(nextView: CalendarViewMode): void {
     this.viewMode = nextView;
-    this.createPopover = null;
   }
 
   protected goToToday(): void {
@@ -471,36 +454,18 @@ export class WorkspaceCalendarComponent {
     this.activeDate = this.startOfDay(cell.date);
 
     if (cell.events.length === 0) {
-      this.openCreatePopover(cell.date, (event.currentTarget as HTMLElement).getBoundingClientRect(), 9);
-      return;
+      this.openCreateDrawer(cell.date, 9, event.currentTarget);
     }
-
-    this.createPopover = null;
   }
 
   protected chooseTimeSlot(date: Date, hour: number, event: Event): void {
     this.selectedDate = this.startOfDay(date);
     this.activeDate = this.startOfDay(date);
-    this.openCreatePopover(date, (event.currentTarget as HTMLElement).getBoundingClientRect(), hour);
+    this.openCreateDrawer(date, hour, event.currentTarget);
   }
 
-  protected openCreateDialogFromPopover(): void {
-    if (!this.createPopover) {
-      return;
-    }
-
-    this.resetCreateForm(this.createPopover.date, this.createPopover.hour);
-    this.createDialogOpen = true;
-    this.createPopover = null;
-    window.setTimeout(() => this.focusOverlay(this.createDialog?.nativeElement), 0);
-  }
-
-  protected closeCreatePopover(): void {
-    this.createPopover = null;
-  }
-
-  protected closeCreateDialog(): void {
-    this.createDialogOpen = false;
+  protected closeCreateDrawer(): void {
+    this.createDrawerOpen = false;
     this.restoreFocus();
   }
 
@@ -601,7 +566,7 @@ export class WorkspaceCalendarComponent {
 
     this.calendarApi.createEvent(request).subscribe({
       next: (eventResponse) => {
-        this.closeCreateDialog();
+        this.closeCreateDrawer();
         this.showToast('Event created', 'success');
         this.loadEvents(eventResponse.eventId);
       },
@@ -896,8 +861,8 @@ export class WorkspaceCalendarComponent {
 
     if (event.key === 'Escape') {
       event.preventDefault();
-      if (this.createDialogOpen) {
-        this.closeCreateDialog();
+      if (this.createDrawerOpen) {
+        this.closeCreateDrawer();
       } else if (this.drawerOpen) {
         this.closeDrawer();
       }
@@ -1085,17 +1050,23 @@ export class WorkspaceCalendarComponent {
     });
   }
 
-  private openCreatePopover(date: Date, anchor: DOMRect, hour: number): void {
+  private openCreateDrawer(date: Date, hour: number, trigger?: EventTarget | null): void {
     if (!this.canManageEvents) {
       return;
     }
 
-    this.createPopover = {
-      x: Math.min(anchor.left, window.innerWidth - 220),
-      y: Math.min(anchor.bottom + 8, window.innerHeight - 120),
-      date: this.startOfDay(date),
-      hour
-    };
+    this.resetCreateForm(this.startOfDay(date), hour);
+    this.selectedEvent = null;
+    this.drawerOpen = false;
+    this.documentMenu = null;
+    this.leftRailOpen = false;
+    this.createDrawerOpen = true;
+
+    if (trigger instanceof HTMLElement) {
+      this.rememberTrigger(trigger);
+    }
+
+    window.setTimeout(() => this.focusOverlay(this.createDrawer?.nativeElement), 0);
   }
 
   private resetCreateForm(date: Date, hour: number): void {

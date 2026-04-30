@@ -4,10 +4,11 @@
   routerLinkActive
   #routerState="routerLinkActive"
   [routerLinkActiveOptions]="{ exact: exact }"
+  [attr.aria-label]="label"
+  [attr.title]="label"
   [class.is-active]="active || routerState.isActive"
 >
-  <span class="icon" aria-hidden="true">{{ icon }}</span>
-  <span class="label">{{ label }}</span>
+  <app-workspace-calendar-icon class="icon" [name]="icon" [size]="18"></app-workspace-calendar-icon>
 
   @if (badge !== null && badge > 0) {
     <span class="badge">{{ badge }}</span>

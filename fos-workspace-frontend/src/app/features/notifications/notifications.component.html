@@ -1,15 +1,22 @@
-<section class="list-page">
-  <header>
-    <div>
-      <h1>Notifications</h1>
-      <p>Operational alerts and workflow updates.</p>
+<section class="feature-page list-page">
+  <header class="feature-header">
+    <div class="feature-header-copy">
+      <p class="feature-kicker">Alert center</p>
+      <h1 class="feature-title">Notifications</h1>
+      <p class="feature-subtitle">Operational alerts and workflow updates.</p>
     </div>
-    <button type="button" (click)="markAllRead()">Mark all read</button>
+    <button type="button" class="feature-button" (click)="markAllRead()">Mark all read</button>
   </header>
 
-  <div class="list">
-    @for (item of items; track item.id) {
-      <app-notification-item [item]="item" (selected)="markRead($event)"></app-notification-item>
+  <section class="feature-surface list-surface">
+    <div class="list">
+      @for (item of items; track item.id) {
+        <app-notification-item [item]="item" (selected)="markRead($event)"></app-notification-item>
+      }
+    </div>
+
+    @if (items.length === 0) {
+      <p class="feature-empty">No notifications are waiting right now.</p>
     }
-  </div>
+  </section>
 </section>

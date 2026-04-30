@@ -1,0 +1,23 @@
+<aside class="workspace-rail">
+  <header class="brand" aria-label="Football OS workspace">
+    <div class="logo">F</div>
+  </header>
+
+  <nav class="nav" aria-label="Main navigation">
+    @for (item of navItems; track item.route) {
+      <app-nav-item
+        [label]="item.label"
+        [route]="item.route"
+        [icon]="item.icon"
+        [exact]="item.exact"
+        [badge]="item.badge ?? null"
+      ></app-nav-item>
+    }
+  </nav>
+
+  @if (showProfile) {
+    <footer class="sidebar-footer">
+      <app-user-profile [compact]="true"></app-user-profile>
+    </footer>
+  }
+</aside>

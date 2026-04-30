@@ -1,35 +1,19 @@
-.documents-page {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.page-head h1 {
-  margin: 0 0 6px;
-  color: var(--text-primary);
-  font-size: 24px;
+.page-breadcrumb {
+  display: block;
 }
 
 .content-grid {
   display: grid;
   grid-template-columns: 240px minmax(0, 1fr) 360px;
-  gap: 14px;
+  gap: var(--space-4);
   align-items: start;
 }
 
-.folder-panel,
-.table-panel,
-.editor-panel {
-  border: 1px solid var(--border-default);
-  border-radius: 14px;
-  background: var(--surface-panel);
-}
-
 .folder-panel {
-  padding: 12px;
+  padding: var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-2);
   max-height: calc(100vh - 180px);
   overflow-y: auto;
 }
@@ -37,88 +21,87 @@
 .folder-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .folder-link {
   border: 1px solid transparent;
   background: transparent;
-  color: var(--text-secondary);
-  border-radius: 8px;
-  padding: 8px 10px;
-  font-size: 12px;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  font-size: var(--type-body-sm);
   text-align: left;
   cursor: pointer;
 }
 
 .folder-link:hover,
 .folder-link.active {
-  color: var(--text-primary);
-  border-color: rgba(59, 130, 246, 0.35);
-  background: rgba(59, 130, 246, 0.12);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-default);
+  background: var(--calendar-hover-surface);
+}
+
+.folder-link.active {
+  border-color: var(--color-brand-primary);
+  background: var(--calendar-emphasis-surface);
+  color: var(--calendar-emphasis-text);
+}
+
+.folder-link.nested {
+  padding-left: 20px;
+}
+
+.folder-link.level-2 {
+  padding-left: 28px;
 }
 
 .table-panel {
-  padding: 12px;
+  padding: var(--space-4);
 }
 
 .toolbar {
   display: grid;
-  grid-template-columns: 1.6fr repeat(3, minmax(120px, 1fr)) auto auto;
-  gap: 8px;
-  margin-bottom: 10px;
+  grid-template-columns: 1.6fr repeat(3, minmax(120px, 1fr)) auto;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
 }
 
-.toolbar input,
-.toolbar select {
-  background: #171717;
-  border: 1px solid #2d2d2d;
-  border-radius: 8px;
-  color: var(--text-secondary);
-  font-size: 12px;
-  padding: 8px 10px;
-}
-
-.action-btn {
-  border: 1px solid rgba(59, 130, 246, 0.45);
-  border-radius: 8px;
-  background: rgba(59, 130, 246, 0.15);
-  color: var(--text-primary);
-  font-size: 12px;
-  font-weight: 600;
-  padding: 0 12px;
-  cursor: pointer;
+app-dropzone.upload-panel {
+  display: block;
+  margin-bottom: var(--space-4);
 }
 
 .table-wrapper {
-  border: 1px solid var(--border-default);
-  border-radius: 10px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
   overflow: hidden;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  background: var(--color-neutral-0);
 }
 
 thead {
-  background: #1d1d1d;
+  background: var(--calendar-surface-alt);
 }
 
 th,
 td {
-  padding: 11px;
+  padding: 12px;
   text-align: left;
-  font-size: 12px;
-  color: var(--text-secondary);
-  border-bottom: 1px solid #2a2a2a;
+  font-size: var(--type-body-sm);
+  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 th {
-  font-size: 11px;
+  font-size: var(--type-label-md);
   text-transform: uppercase;
-  letter-spacing: 0.6px;
-  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  color: var(--color-text-muted);
 }
 
 tbody tr {
@@ -127,14 +110,25 @@ tbody tr {
 }
 
 tbody tr:hover {
-  background: rgba(59, 130, 246, 0.1);
+  background: var(--calendar-hover-surface);
+}
+
+.doc-title {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: var(--font-weight-medium);
 }
 
 .empty-state {
-  padding: 14px;
+  padding: var(--space-4);
   margin: 0;
-  color: var(--text-muted);
-  font-size: 12px;
+  color: var(--color-text-muted);
+  font-size: var(--type-body-sm);
+}
+
+.editor-panel {
+  min-width: 0;
 }
 
 @media (max-width: 1400px) {
@@ -154,5 +148,15 @@ tbody tr:hover {
 
   .toolbar {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .feature-header {
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 720px) {
+  .toolbar {
+    grid-template-columns: 1fr;
   }
 }

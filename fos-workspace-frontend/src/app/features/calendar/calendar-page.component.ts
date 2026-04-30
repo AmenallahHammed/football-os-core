@@ -3,18 +3,18 @@ import { WorkspaceDataService } from '../../core/data/workspace-data.service';
 import { UserProfileComponent } from '../../core/layout/user-profile/user-profile.component';
 import { CalendarEvent, EventCreateRequest, EventParticipant } from '../../shared/models/event.model';
 import { SearchResult } from '../../shared/models/search.model';
-import { CalendarComponent } from '../calendar/calendar.component';
+import { CalendarComponent } from './calendar.component';
 import { DayPanelComponent } from './day-panel/day-panel.component';
 import { EventCreateComponent } from './event-create/event-create.component';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-calendar-page',
   standalone: true,
   imports: [CalendarComponent, DayPanelComponent, EventCreateComponent, UserProfileComponent],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  templateUrl: './calendar-page.component.html',
+  styleUrl: './calendar-page.component.scss'
 })
-export class HomeComponent {
+export class CalendarPageComponent {
   protected readonly unreadNotificationCount = this.workspaceData.unreadNotificationCount;
 
   protected events: CalendarEvent[] = [];

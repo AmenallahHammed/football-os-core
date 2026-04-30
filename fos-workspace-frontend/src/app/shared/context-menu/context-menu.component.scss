@@ -12,10 +12,10 @@
   position: fixed;
   z-index: 41;
   min-width: 160px;
-  background: #191919;
-  border: 1px solid var(--border-strong);
-  border-radius: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  background: var(--color-neutral-0);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   padding: 6px;
@@ -24,15 +24,14 @@
 .menu-item {
   border: 0;
   background: transparent;
-  color: var(--text-secondary);
+  color: var(--color-text-primary);
   text-align: left;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   padding: 8px 10px;
-  font-size: 12px;
+  font-size: var(--type-body-sm);
   cursor: pointer;
 }
 
 .menu-item:hover {
-  background: rgba(59, 130, 246, 0.16);
-  color: var(--text-primary);
+  background: var(--calendar-hover-surface);
 }

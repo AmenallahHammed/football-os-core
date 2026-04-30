@@ -1,19 +1,26 @@
-<section class="players-page">
-  <header class="page-head">
-    <h1>Players</h1>
-    <p>Browse squad members, role groups, and profile access in one place.</p>
+<section class="feature-page players-page">
+  <header class="feature-header">
+    <div class="feature-header-copy">
+      <p class="feature-kicker">Squad overview</p>
+      <h1 class="feature-title">Players</h1>
+      <p class="feature-subtitle">Browse squad members, filter roles, and open player records from a single roster view.</p>
+    </div>
   </header>
 
-  <div class="toolbar">
-    <input type="search" placeholder="Search player" [(ngModel)]="searchTerm" />
-    <select [(ngModel)]="selectedPosition">
-      <option value="ALL">All Positions</option>
-      <option value="GK">GK</option>
-      <option value="DEF">DEF</option>
-      <option value="MID">MID</option>
-      <option value="FWD">FWD</option>
-    </select>
-  </div>
+  <section class="feature-surface players-controls">
+    <div class="toolbar">
+      <input class="feature-control" type="search" placeholder="Search player" [(ngModel)]="searchTerm" />
+      <select class="feature-control" [(ngModel)]="selectedPosition">
+        <option value="ALL">All Positions</option>
+        <option value="GK">GK</option>
+        <option value="DEF">DEF</option>
+        <option value="MID">MID</option>
+        <option value="FWD">FWD</option>
+      </select>
+    </div>
+
+    <p class="results-copy">{{ players.length }} players visible</p>
+  </section>
 
   <div class="card-grid">
     @for (player of players; track player.id) {

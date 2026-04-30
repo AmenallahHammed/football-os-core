@@ -1,4 +1,4 @@
-.home-page {
+.calendar-page {
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -358,7 +358,7 @@
 }
 
 @media (max-width: 620px) {
-  .home-page {
+  .calendar-page {
     min-height: auto;
   }
 

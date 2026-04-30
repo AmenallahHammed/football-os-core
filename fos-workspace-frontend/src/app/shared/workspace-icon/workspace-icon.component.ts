@@ -91,6 +91,14 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
           <circle cx="12" cy="12" r="1"></circle>
           <circle cx="12" cy="19" r="1"></circle>
         }
+        @case ('bell') {
+          <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5"></path>
+          <path d="M10 21a2 2 0 0 0 4 0"></path>
+        }
+        @case ('inbox') {
+          <path d="M22 12h-6l-2 3h-4l-2-3H2"></path>
+          <path d="M5.4 5h13.2a2 2 0 0 1 2 1.6l1.4 7.4a2 2 0 0 1-2 2.4H3.9a2 2 0 0 1-2-2.4l1.4-7.4A2 2 0 0 1 5.4 5z"></path>
+        }
       }
     </svg>
   `,

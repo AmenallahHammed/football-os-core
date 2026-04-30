@@ -8,23 +8,23 @@
 .crumb {
   background: transparent;
   border: 0;
-  color: var(--text-muted);
-  font-size: 12px;
+  color: var(--color-text-muted);
+  font-size: var(--type-body-sm);
   padding: 0;
   cursor: pointer;
 }
 
 .crumb:hover {
-  color: var(--text-primary);
+  color: var(--color-text-primary);
 }
 
 .crumb.is-last {
-  color: var(--text-primary);
-  font-weight: 600;
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
   cursor: default;
 }
 
 .separator {
-  color: var(--text-dim);
-  font-size: 12px;
+  color: var(--color-text-muted);
+  font-size: var(--type-body-sm);
 }

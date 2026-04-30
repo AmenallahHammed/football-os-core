@@ -3,24 +3,26 @@
   align-items: center;
   justify-content: center;
   min-width: 66px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   padding: 4px 10px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
+  font-size: var(--type-label-md);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.04em;
+  border: 1px solid var(--color-border-default);
 }
 
 .draft {
-  color: #d0d0d0;
-  background: #4a4a4a;
+  color: var(--color-text-muted);
+  background: var(--color-neutral-100);
 }
 
 .active {
-  color: #0f2518;
-  background: #6df0ad;
+  color: var(--calendar-uploaded-text);
+  background: var(--calendar-uploaded-surface);
+  border-color: var(--calendar-uploaded-border);
 }
 
 .archived {
-  color: #9a9a9a;
-  background: #2b2b2b;
+  color: var(--color-text-muted);
+  background: var(--calendar-surface-alt);
 }

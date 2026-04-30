@@ -1,7 +1,10 @@
-<div class="profile">
+<div class="profile" [class.profile--compact]="compact" [attr.aria-label]="name + ' · ' + role" [attr.title]="compact ? name + ' · ' + role : null">
   <img class="avatar" [src]="avatarUrl" [alt]="name" />
-  <div class="meta">
-    <p class="name">{{ name }}</p>
-    <p class="role">{{ role }}</p>
-  </div>
+
+  @if (!compact) {
+    <div class="meta">
+      <p class="name">{{ name }}</p>
+      <p class="role">{{ role }}</p>
+    </div>
+  }
 </div>

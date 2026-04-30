@@ -1,13 +1,17 @@
-<section class="documents-page">
-  <header class="page-head">
-    <div>
-      <h1>Documents</h1>
-      <app-breadcrumb [segments]="breadcrumbSegments" (segmentSelected)="onBreadcrumbSelected($event)"></app-breadcrumb>
+<section class="feature-page documents-page">
+  <header class="feature-header">
+    <div class="feature-header-copy">
+      <p class="feature-kicker">Workspace library</p>
+      <h1 class="feature-title">Documents</h1>
+      <p class="feature-subtitle">Review folders, upload files, and open document sessions from one streamlined surface.</p>
+      <app-breadcrumb class="page-breadcrumb" [segments]="breadcrumbSegments" (segmentSelected)="onBreadcrumbSelected($event)"></app-breadcrumb>
     </div>
+
+    <button type="button" class="feature-button" (click)="createFolder()">New Folder</button>
   </header>
 
   <div class="content-grid">
-    <aside class="folder-panel">
+    <aside class="feature-surface folder-panel">
       <button type="button" class="folder-link" [class.active]="selectedFolderId === null" (click)="selectFolder(null)">
         All Documents
       </button>
@@ -48,28 +52,29 @@
       }
     </aside>
 
-    <section class="table-panel">
+    <section class="feature-surface table-panel">
       <div class="toolbar">
-        <input type="search" placeholder="Search documents" [(ngModel)]="searchTerm" />
+        <input class="feature-control" type="search" placeholder="Search documents" [(ngModel)]="searchTerm" />
 
-        <select [(ngModel)]="selectedFileType">
+        <select class="feature-control" [(ngModel)]="selectedFileType">
           <option value="all">All Types</option>
           @for (type of fileTypes; track type) {
             <option [value]="type">{{ type }}</option>
           }
         </select>
 
-        <select [(ngModel)]="selectedStatus">
+        <select class="feature-control" [(ngModel)]="selectedStatus">
           <option value="all">All Status</option>
           <option value="Draft">Draft</option>
           <option value="Active">Active</option>
           <option value="Archived">Archived</option>
         </select>
 
-        <input type="date" [(ngModel)]="selectedDate" />
+        <input class="feature-control" type="date" [(ngModel)]="selectedDate" />
 
-        <button type="button" class="action-btn" (click)="showDropzone = !showDropzone">Upload</button>
-        <button type="button" class="action-btn" (click)="createFolder()">New Folder</button>
+        <button type="button" class="feature-button feature-button--primary" (click)="showDropzone = !showDropzone">
+          {{ showDropzone ? 'Hide Upload' : 'Upload' }}
+        </button>
       </div>
 
       @if (showDropzone) {

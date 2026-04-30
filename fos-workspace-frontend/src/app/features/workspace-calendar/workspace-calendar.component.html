@@ -1,20 +1,5 @@
 <section class="calendar-page">
-  <nav class="icon-rail" aria-label="Workspace modules">
-    <div class="rail-brand">F</div>
-
-    <div class="rail-links">
-      @for (item of iconRailItems; track item.route) {
-        <a
-          class="rail-link"
-          [class.is-active]="item.route === '/workspace/calendar'"
-          [routerLink]="item.route"
-          [attr.aria-label]="item.label"
-        >
-          <app-workspace-calendar-icon class="nav-icon" [name]="item.icon" [size]="20"></app-workspace-calendar-icon>
-        </a>
-      }
-    </div>
-  </nav>
+  <app-workspace-rail [showProfile]="false"></app-workspace-rail>
 
   @if (leftRailOpen) {
     <button type="button" class="left-rail-backdrop" aria-label="Close calendar navigation" (click)="closeLeftRail()"></button>
@@ -393,45 +378,31 @@
     }
   </nav>
 
-  @if (createPopover) {
-    <button type="button" class="overlay-scrim" aria-label="Close create event popover" (click)="closeCreatePopover()"></button>
+  @if (createDrawerOpen) {
+    <button type="button" class="overlay-scrim" aria-label="Close create event drawer" (click)="closeCreateDrawer()"></button>
 
-    <section class="create-popover" [style.left.px]="createPopover.x" [style.top.px]="createPopover.y">
-      <p>{{ createPopover.date | date: 'EEE, MMM d' }} · {{ hourLabel(createPopover.hour) }}</p>
-      <button type="button" class="primary-btn" (click)="openCreateDialogFromPopover()">
-        <span class="button-label">
-          <app-workspace-calendar-icon class="control-icon" name="plus" [size]="18"></app-workspace-calendar-icon>
-          Create event
-        </span>
-      </button>
-    </section>
-  }
-
-  @if (createDialogOpen) {
-    <button type="button" class="overlay-scrim" aria-label="Close create event dialog" (click)="closeCreateDialog()"></button>
-
-    <section
-      #createDialog
-      class="overlay-panel create-dialog"
+    <aside
+      #createDrawer
+      class="overlay-panel create-drawer"
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-event-title"
       (keydown)="handleOverlayKeydown($event)"
       tabindex="-1"
     >
-      <header class="dialog-head">
+      <header class="drawer-head">
         <div>
           <p class="section-kicker">Create event</p>
           <h3 id="create-event-title">New calendar entry</h3>
           <p>{{ draftDateValue | date: 'fullDate' }}</p>
         </div>
 
-        <button type="button" class="icon-btn" aria-label="Close create event dialog" (click)="closeCreateDialog()">
+        <button type="button" class="icon-btn" aria-label="Close create event drawer" (click)="closeCreateDrawer()">
           <app-workspace-calendar-icon class="control-icon" name="x" [size]="18"></app-workspace-calendar-icon>
         </button>
       </header>
 
-      <div class="dialog-body">
+      <div class="drawer-body create-body">
         <label class="field-group">
           <span>Name</span>
           <input data-autofocus type="text" [(ngModel)]="draftEventName" placeholder="Event title" />
@@ -607,11 +578,11 @@
         </section>
       </div>
 
-      <footer class="dialog-foot">
-        <button type="button" class="secondary-btn" (click)="closeCreateDialog()">Cancel</button>
+      <footer class="drawer-foot">
+        <button type="button" class="secondary-btn" (click)="closeCreateDrawer()">Cancel</button>
         <button type="button" class="primary-btn" [disabled]="createDisabled" (click)="createEvent()">Create</button>
       </footer>
-    </section>
+    </aside>
   }
 
   @if (drawerOpen && selectedEvent; as eventItem) {

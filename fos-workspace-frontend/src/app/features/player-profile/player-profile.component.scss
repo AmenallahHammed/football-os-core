@@ -1,60 +1,55 @@
-.profile-page {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
 .back-link {
   width: fit-content;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   text-decoration: none;
-  font-size: 12px;
+  font-size: var(--type-body-sm);
+}
+
+.back-link::before {
+  content: '<';
+  margin-right: 6px;
 }
 
 .back-link:hover {
-  color: var(--text-primary);
+  color: var(--color-text-primary);
 }
 
 .profile-card {
-  border: 1px solid var(--border-default);
-  border-radius: 14px;
-  background: var(--surface-panel);
-  padding: 14px;
+  padding: var(--space-4);
   display: flex;
-  gap: 14px;
+  gap: var(--space-4);
   align-items: center;
 }
 
 .hero-photo {
   width: 108px;
   height: 108px;
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   object-fit: cover;
+  border: 1px solid var(--color-border-default);
 }
 
-.hero-meta h1 {
-  margin: 0;
-  color: var(--text-primary);
-  font-size: 24px;
-}
-
-.hero-meta p {
-  margin: 4px 0 0;
-  color: var(--text-muted);
-  font-size: 13px;
+.hero-meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
 .tab-panel {
-  border: 1px solid var(--border-default);
-  border-radius: 14px;
-  background: var(--surface-panel);
-  padding: 14px;
+  padding: var(--space-4);
+}
+
+.panel-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
 }
 
 .tab-panel h2 {
-  margin: 0 0 10px;
-  color: var(--text-primary);
-  font-size: 15px;
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: var(--type-section-title);
 }
 
 .tab-panel ul {
@@ -63,34 +58,32 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .tab-panel li {
-  border: 1px solid #2a2a2a;
-  border-radius: 8px;
-  padding: 9px 10px;
-  color: var(--text-secondary);
-  font-size: 12px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  color: var(--color-text-primary);
+  font-size: var(--type-body-sm);
+  background: var(--calendar-surface-alt);
 }
 
 .not-found {
-  border: 1px solid var(--border-default);
-  border-radius: 14px;
-  background: var(--surface-panel);
-  padding: 16px;
+  padding: var(--space-5);
 }
 
 .not-found h2 {
   margin: 0;
-  color: var(--text-primary);
-  font-size: 18px;
+  color: var(--color-text-primary);
+  font-size: var(--type-section-title);
 }
 
 .not-found p {
   margin: 6px 0 0;
-  color: var(--text-muted);
-  font-size: 13px;
+  color: var(--color-text-muted);
+  font-size: var(--type-body-sm);
 }
 
 @media (max-width: 720px) {

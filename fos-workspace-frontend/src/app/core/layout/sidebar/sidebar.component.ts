@@ -1,48 +1,11 @@
 import { Component } from '@angular/core';
-import { WorkspaceDataService } from '../../data/workspace-data.service';
-import { NavItemComponent } from '../nav-item/nav-item.component';
-import { UserProfileComponent } from '../user-profile/user-profile.component';
-
-interface SidebarItem {
-  label: string;
-  route: string;
-  icon: string;
-  exact: boolean;
-  badge?: number;
-}
+import { WorkspaceRailComponent } from '../workspace-rail/workspace-rail.component';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [NavItemComponent, UserProfileComponent],
+  imports: [WorkspaceRailComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
-export class SidebarComponent {
-  constructor(private readonly workspaceData: WorkspaceDataService) {}
-
-  protected get navItems(): SidebarItem[] {
-    return [
-      { label: 'Calendar', route: '/workspace/calendar', icon: 'C', exact: false },
-      { label: 'Home', route: '/home', icon: 'H', exact: true },
-      { label: 'Documents', route: '/documents', icon: 'D', exact: false },
-      { label: 'Players', route: '/players', icon: 'P', exact: false },
-      {
-        label: 'Notifications',
-        route: '/notifications',
-        icon: 'N',
-        exact: false,
-        badge: this.workspaceData.unreadNotificationCount()
-      },
-      {
-        label: 'Inbox',
-        route: '/inbox',
-        icon: 'I',
-        exact: false,
-        badge: this.workspaceData.unreadInboxCount()
-      },
-      { label: 'Settings', route: '/settings', icon: 'S', exact: false }
-    ];
-  }
-
-}
+export class SidebarComponent {}

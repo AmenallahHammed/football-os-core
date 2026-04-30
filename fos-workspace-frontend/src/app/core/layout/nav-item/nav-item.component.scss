@@ -1,65 +1,53 @@
 .nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  border-radius: 14px;
-  padding: 11px 12px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--control-height-sm);
+  height: var(--control-height-sm);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 0;
   text-decoration: none;
-  color: var(--text-secondary);
-  background: rgba(11, 18, 34, 0.72);
+  color: var(--color-text-muted);
+  background: transparent;
   transition:
     background-color 180ms ease,
     border-color 180ms ease,
     color 180ms ease,
-    transform 180ms ease,
-    box-shadow 180ms ease;
+    transform 180ms ease;
 }
 
 .nav-item:hover {
-  background: rgba(15, 27, 49, 0.92);
-  border-color: rgba(97, 169, 255, 0.2);
-  color: var(--text-primary);
-  transform: translateX(2px);
+  background: var(--calendar-hover-surface);
+  border-color: var(--calendar-hover-border);
+  color: var(--color-text-primary);
 }
 
 .nav-item.is-active {
-  border-color: rgba(97, 169, 255, 0.42);
-  background:
-    linear-gradient(90deg, rgba(97, 169, 255, 0.22) 0%, rgba(15, 27, 49, 0.94) 100%);
-  color: var(--text-primary);
-  box-shadow: inset 3px 0 0 rgba(255, 88, 208, 0.65);
+  border-color: var(--color-brand-primary);
+  background: var(--calendar-emphasis-surface);
+  color: var(--calendar-emphasis-text);
 }
 
 .icon {
-  width: 24px;
-  height: 24px;
-  border-radius: 8px;
-  display: grid;
-  place-items: center;
-  background: rgba(255, 255, 255, 0.04);
-  text-align: center;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.label {
-  font-size: 13px;
-  font-weight: 600;
-  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
   min-width: 18px;
   height: 18px;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   padding: 0 6px;
-  background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent) 100%);
-  color: #06101f;
-  font-size: 11px;
-  font-weight: 700;
+  background: var(--color-brand-primary);
+  color: var(--color-text-on-brand);
+  font-size: var(--type-label-md);
+  font-weight: var(--font-weight-semibold);
+  border: 2px solid var(--color-neutral-0);
   display: inline-flex;
   align-items: center;
   justify-content: center;

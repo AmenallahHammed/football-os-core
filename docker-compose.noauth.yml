@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+
+  fos-gateway:
+    environment:
+      FOS_SECURITY_ENABLED: "false"
+
+  fos-workspace-service:
+    environment:
+      FOS_SECURITY_ENABLED: "false"
+      FOS_POLICY_SERVICE_URL: "http://fos-opa-mock"
+
+  fos-opa-mock:
+    image: nginx:alpine
+    container_name: fos-opa-mock
+    ports:
+      - "8181:80"
+    volumes:
+      - ./opa-mock/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./opa-mock/allow.json:/usr/share/nginx/html/allow.json:ro

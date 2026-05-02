@@ -11,7 +11,7 @@ It includes:
 - workspace service (`fos-workspace-service`)
 - API gateway (`fos-gateway`)
 - Angular workspace frontend (`fos-workspace-frontend`)
-- local stack orchestration (`docker-compose.yml`)
+- local stack orchestration (`docker-compose.yml`, `docker-compose.infra.yml`)
 
 ## Technologies Used
 
@@ -27,7 +27,9 @@ It includes:
 .
 |- pom.xml
 |- docker-compose.yml
+|- docker-compose.infra.yml
 |- start.ps1
+|- run-dev.sh
 |- fos-sdk/
 |- fos-governance-service/
 |- fos-gateway/
@@ -50,11 +52,14 @@ Module-level documentation:
 
 ## Installation
 
-1. Create a local env file from `.env.example`.
-2. Start the full local stack (recommended):
+1. Choose one local setup.
+
+Full Docker stack:
+
+- Create a local `.env` file from `.env.example` before starting the stack.
 
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 PowerShell helper:
@@ -63,13 +68,36 @@ PowerShell helper:
 .\start.ps1
 ```
 
-3. If you are not using Docker Compose for the backend apps, build backend modules:
+Hybrid local dev, lower RAM usage:
+
+- Ensure a local `.env.dev` file exists with the dev-only defaults needed by `keycloak` and `fos-opa-mock`.
+- `docker-compose.infra.yml` starts only infrastructure services.
+- `run-dev.sh` loads `.env.dev`, starts infra, and prints the native Maven commands for the three app services.
+- `opensearch` and `onlyoffice` stay disabled in this mode to reduce memory use.
+
+```bash
+./run-dev.sh
+```
+
+If you prefer to start infra manually:
+
+```bash
+docker compose --env-file .env.dev -f docker-compose.infra.yml up -d
+```
+
+Leanest day-to-day backend subset:
+
+```bash
+docker compose --env-file .env.dev -f docker-compose.infra.yml up -d postgres mongodb zookeeper kafka redis fos-opa-mock
+```
+
+2. If you are not using Docker Compose for the backend apps, build backend modules:
 
 ```bash
 mvn clean install -DskipTests
 ```
 
-4. Install frontend dependencies:
+3. Install frontend dependencies:
 
 ```bash
 cd fos-workspace-frontend
@@ -78,10 +106,15 @@ npm ci
 
 ## Running Services Locally
 
-- `docker-compose.yml` now starts the infrastructure plus `fos-governance-service`, `fos-workspace-service`, and `fos-gateway`.
-- The `run-governance.sh`, `run-workspace.sh`, and `run-gateway.sh` scripts are still useful when you want to run one service directly from source with Maven.
-- Do not run a script for a service while the matching Docker container is already running on the same port.
-- A common local-debug flow is: keep shared dependencies in Docker, stop one app container, then run that one app from source.
+- `docker-compose.yml` starts the full stack, including `fos-governance-service`, `fos-workspace-service`, and `fos-gateway`.
+- `docker-compose.infra.yml` is the hybrid-dev stack: infrastructure stays in Docker while the three app services run natively on the host.
+- `docker-compose.noauth.yml` remains the Docker-only auth-bypass overlay. It is not needed for the hybrid flow because the app services already default to the `dev` profile.
+- `run-dev.sh` is the quickest low-RAM entry point for hybrid dev.
+- Lowest practical hybrid subset for normal backend work: `postgres`, `mongodb`, `zookeeper`, `kafka`, `redis`, `fos-opa-mock`.
+- Add `minio` only when testing real object storage.
+- Add `keycloak` only when testing real auth.
+- `opensearch` and `onlyoffice` are disabled in `docker-compose.infra.yml` to reduce local RAM usage.
+- Do not run a native app service on the same port as a Docker container from the full stack.
 
 Why `mvn spring-boot:run` fails at repo root:
 
@@ -104,6 +137,12 @@ Use the root helper scripts for host-based single-service development:
 ./run-governance.sh
 ./run-workspace.sh
 ./run-gateway.sh
+```
+
+Use the hybrid helper for all three native app services with shared Docker infra:
+
+```bash
+./run-dev.sh
 ```
 
 Use the Makefile shortcuts:
@@ -134,12 +173,22 @@ make gateway
 Windows note:
 
 - Git Bash or WSL: use the same `.sh` scripts and `make` commands.
-- PowerShell/CMD: run Maven commands directly from repo root:
+- PowerShell/CMD: start infra directly, then run Maven commands from repo root:
 
 ```powershell
-mvn "-Dspring-boot.run.arguments=--server.port=8081" -pl fos-governance-service spring-boot:run
-mvn "-Dspring-boot.run.arguments=--server.port=8082" -pl fos-workspace-service spring-boot:run
-mvn "-Dspring-boot.run.arguments=--server.port=8080" -pl fos-gateway spring-boot:run
+docker compose --env-file .env.dev -f docker-compose.infra.yml up -d
+```
+
+```powershell
+mvn "-Dspring-boot.run.profiles=dev" -pl fos-governance-service spring-boot:run
+mvn "-Dspring-boot.run.profiles=dev" -pl fos-workspace-service spring-boot:run
+mvn "-Dspring-boot.run.profiles=dev" -pl fos-gateway spring-boot:run
+```
+
+If you want the leanest subset instead of the full infra file:
+
+```powershell
+docker compose --env-file .env.dev -f docker-compose.infra.yml up -d postgres mongodb zookeeper kafka redis fos-opa-mock
 ```
 
 Run frontend:

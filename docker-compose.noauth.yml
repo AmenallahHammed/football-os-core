@@ -1,3 +1,11 @@
+# This override is intentionally separate from application-dev.yml.
+# Dev profiles are for host-run (localhost infra, mvn spring-boot:run).
+# This file is for Docker-run with auth friction removed:
+#   - Disables JWT in gateway and workspace
+#   - Routes workspace policy checks to a local mock that always allows
+#   - Does NOT disable auth in governance (intentional)
+#   - Does NOT remove keycloak (it still starts from docker-compose.yml)
+# Usage: docker compose -f docker-compose.yml -f docker-compose.noauth.yml up -d
 version: "3.9"
 
 services:

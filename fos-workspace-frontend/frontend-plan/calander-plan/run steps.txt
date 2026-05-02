@@ -1,0 +1,55 @@
+Yes. For your normal low-RAM dev flow, use this every time.
+First-Time Only
+1. Start Docker Desktop.
+2. From D:\fos-sdk, make sure backend deps are available:
+mvn clean install -DskipTests
+3. Install frontend deps once:
+cd D:\fos-sdk\fos-workspace-frontend
+npm ci
+Daily Dev Start
+1. Start the lean infra from repo root:
+cd D:\fos-sdk
+docker compose --env-file .env.dev -f docker-compose.infra.yml up -d postgres mongodb zookeeper kafka redis fos-opa-mock
+2. Start governance in a new terminal:
+cd D:\fos-sdk
+mvn "-Dspring-boot.run.profiles=dev" -pl fos-governance-service spring-boot:run
+3. Start workspace in a new terminal:
+cd D:\fos-sdk
+mvn "-Dspring-boot.run.profiles=dev" -pl fos-workspace-service spring-boot:run
+4. Start gateway in a new terminal:
+cd D:\fos-sdk
+mvn "-Dspring-boot.run.profiles=dev" -pl fos-gateway spring-boot:run
+5. Start frontend in a new terminal:
+cd D:\fos-sdk\fos-workspace-frontend
+npm start
+6. Open:
+http://localhost:4200
+Quick Health Checks
+1. Governance:
+http://localhost:8081/actuator/health
+2. Workspace:
+http://localhost:8082/actuator/health
+3. Gateway:
+http://localhost:8080/actuator/health
+If Port 8080, 8081, or 8082 Is Already In Use
+1. Check who owns the port:
+Get-NetTCPConnection -LocalPort 8080 -State Listen | Select-Object LocalAddress,LocalPort,OwningProcess
+2. Stop it:
+Stop-Process -Id <PID> -Force
+3. Do the same for 8081 or 8082 if needed.
+When You Need Extra Services
+1. Real file storage testing:
+docker compose --env-file .env.dev -f docker-compose.infra.yml up -d minio
+2. Real auth testing:
+docker compose --env-file .env.dev -f docker-compose.infra.yml up -d keycloak
+Stop Everything
+1. Stop the Maven apps and frontend with Ctrl+C in their terminals.
+2. Stop Docker infra:
+cd D:\fos-sdk
+docker compose --env-file .env.dev -f docker-compose.infra.yml down
+Shortest Version
+1. Docker infra
+2. Governance
+3. Workspace
+4. Gateway
+5. Frontend

@@ -21,12 +21,14 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         if (!securityEnabled) {
-            return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
+            return http.cors(cors -> {})
+                    .csrf(ServerHttpSecurity.CsrfSpec::disable)
                     .authorizeExchange(ex -> ex.anyExchange().permitAll())
                     .build();
         }
 
-        http.csrf(ServerHttpSecurity.CsrfSpec::disable)
+        http.cors(cors -> {})
+            .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .authorizeExchange(exchanges -> exchanges
                 .pathMatchers("/actuator/health").permitAll()
                 .anyExchange().authenticated()

@@ -116,34 +116,36 @@
           <span></span>
         </button>
 
-        <div class="period-nav" role="group" aria-label="Change calendar period">
-          <button type="button" class="icon-btn" aria-label="Previous period" (click)="goPrevious()">
-            <app-workspace-calendar-icon class="control-icon" name="chevron-left" [size]="18"></app-workspace-calendar-icon>
-          </button>
-          <button type="button" class="today-btn" (click)="goToToday()">Today</button>
-          <button type="button" class="icon-btn" aria-label="Next period" (click)="goNext()">
-            <app-workspace-calendar-icon class="control-icon" name="chevron-right" [size]="18"></app-workspace-calendar-icon>
-          </button>
-        </div>
-
-        <div class="title-block">
-          <p class="section-kicker">Refined minimal calendar</p>
-          <h2>{{ pageTitle }}</h2>
-        </div>
+        <button
+          type="button"
+          class="title-trigger"
+          aria-label="Change visible date"
+          aria-controls="calendar-navigation"
+          [attr.aria-expanded]="leftRailOpen"
+          (click)="toggleLeftRail()"
+        >
+          <span class="toolbar-title">{{ headerTitle }}</span>
+          <span class="title-caret" aria-hidden="true"></span>
+        </button>
       </div>
 
       <div class="toolbar-right">
-        <label class="search-field">
-          <app-workspace-calendar-icon class="control-icon search-field-icon" name="search" [size]="18"></app-workspace-calendar-icon>
-          <input type="search" placeholder="Search events, docs, people" [(ngModel)]="searchTerm" />
-        </label>
-
         <div class="view-switcher" role="group" aria-label="Calendar view">
           @for (view of viewModes; track view) {
             <button type="button" [class.is-active]="viewMode === view" (click)="setViewMode(view)">
-              {{ viewButtonLabel(view) }}
+              <span class="view-label-full">{{ viewButtonLabel(view) }}</span>
+              <span class="view-label-compact">{{ viewButtonShortLabel(view) }}</span>
             </button>
           }
+        </div>
+
+        <div class="period-nav" role="group" aria-label="Change calendar period">
+          <button type="button" class="icon-btn" aria-label="Previous period" (click)="goPrevious()">
+            <app-workspace-calendar-icon class="control-icon" name="chevron-left" [size]="16"></app-workspace-calendar-icon>
+          </button>
+          <button type="button" class="icon-btn" aria-label="Next period" (click)="goNext()">
+            <app-workspace-calendar-icon class="control-icon" name="chevron-right" [size]="16"></app-workspace-calendar-icon>
+          </button>
         </div>
       </div>
     </header>

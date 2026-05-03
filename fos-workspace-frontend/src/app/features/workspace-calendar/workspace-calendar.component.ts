@@ -212,7 +212,6 @@ export class WorkspaceCalendarComponent {
   protected visibleDate = this.startOfDay(new Date());
   protected selectedDate = this.startOfDay(new Date());
   protected activeDate = this.startOfDay(new Date());
-  protected searchTerm = '';
   protected leftRailOpen = false;
   protected isLoading = true;
   protected loadError = '';
@@ -277,6 +276,10 @@ export class WorkspaceCalendarComponent {
     return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(this.visibleDate);
   }
 
+  protected get headerTitle(): string {
+    return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(this.visibleDate);
+  }
+
   protected get filteredParticipants(): CalendarPerson[] {
     const query = this.attendeeSearch.trim().toLowerCase();
 
@@ -302,26 +305,7 @@ export class WorkspaceCalendarComponent {
   }
 
   protected get visibleEvents(): CalendarEventView[] {
-    const query = this.searchTerm.trim().toLowerCase();
-
-    if (!query) {
-      return this.events;
-    }
-
-    return this.events.filter((event) => {
-      const attendeeMatch = event.attendees.some((attendee) => attendee.name.toLowerCase().includes(query));
-      const documentMatch = event.requiredDocuments.some((document) => document.name.toLowerCase().includes(query));
-      const taskMatch = event.tasks.some((task) => task.title.toLowerCase().includes(query) || task.description.toLowerCase().includes(query));
-
-      return (
-        event.title.toLowerCase().includes(query) ||
-        event.description.toLowerCase().includes(query) ||
-        event.location.toLowerCase().includes(query) ||
-        attendeeMatch ||
-        documentMatch ||
-        taskMatch
-      );
-    });
+    return this.events;
   }
 
   protected get weekDates(): Date[] {
@@ -737,6 +721,10 @@ export class WorkspaceCalendarComponent {
 
   protected viewButtonLabel(viewMode: CalendarViewMode): string {
     return viewMode.charAt(0).toUpperCase() + viewMode.slice(1);
+  }
+
+  protected viewButtonShortLabel(viewMode: CalendarViewMode): string {
+    return viewMode.charAt(0).toUpperCase();
   }
 
   protected eventsForGridDate(date: Date): CalendarEventView[] {

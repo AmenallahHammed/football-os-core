@@ -236,14 +236,19 @@ app-workspace-calendar-icon,
 .mini-month-head,
 .section-head,
 .drawer-event-head,
-.drawer-head,
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
 .toolbar,
 .toolbar-left,
 .toolbar-right,
 .period-nav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-3);
 }
 
@@ -257,7 +262,6 @@ app-workspace-calendar-icon,
 .danger-link,
 .secondary-btn,
 .primary-btn,
-.today-btn,
 .view-switcher button,
 .icon-btn,
 .rail-link,
@@ -283,7 +287,6 @@ app-workspace-calendar-icon,
 .danger-link:active,
 .secondary-btn:active,
 .primary-btn:active,
-.today-btn:active,
 .view-switcher button:active,
 .icon-btn:active,
 .rail-link:active,
@@ -308,7 +311,6 @@ app-workspace-calendar-icon,
 .danger-link,
 .secondary-btn,
 .primary-btn,
-.today-btn,
 .view-switcher button,
 .icon-btn {
   border-radius: var(--radius-md);
@@ -352,7 +354,6 @@ app-workspace-calendar-icon,
 }
 
 .secondary-btn:hover,
-.today-btn:hover,
 .icon-btn:hover,
 .view-switcher button:hover {
   background: var(--color-neutral-100);
@@ -487,36 +488,65 @@ app-workspace-calendar-icon,
 
 .toolbar {
   min-height: var(--calendar-header-height);
-  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--color-neutral-0);
 }
 
 .toolbar-left,
 .toolbar-right {
-  flex-wrap: wrap;
+  min-width: 0;
+  flex-wrap: nowrap;
 }
 
-.title-block {
-  display: grid;
-  gap: var(--space-1);
+.toolbar-left {
+  flex: 1 1 auto;
+  justify-content: flex-start;
+  gap: var(--space-3);
 }
 
-.search-field {
-  min-width: 220px;
-  height: var(--control-height-md);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--radius-sm);
-  padding: 0 var(--space-3);
-  background: var(--color-neutral-0);
-  display: inline-flex;
-  align-items: center;
+.toolbar-right {
+  flex: 0 0 auto;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+.period-nav {
   gap: var(--space-2);
 }
 
-.search-field-icon {
-  color: var(--color-text-muted);
+.title-trigger {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
 }
 
-.search-field input,
+.toolbar-title {
+  min-width: 0;
+  font-size: var(--type-page-title);
+  line-height: var(--line-page-title);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+.title-caret {
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  flex: none;
+}
+
 .field-group input,
 .field-group select,
 .field-group textarea,
@@ -537,12 +567,6 @@ app-workspace-calendar-icon,
   font-weight: var(--font-weight-regular);
 }
 
-.search-field input {
-  border: 0;
-  min-height: 0;
-  padding: 0;
-}
-
 .field-group textarea,
 .note-composer textarea {
   min-height: 88px;
@@ -550,7 +574,22 @@ app-workspace-calendar-icon,
   resize: vertical;
 }
 
+.toolbar .icon-btn,
+.toolbar .view-switcher button {
+  min-height: 34px;
+  height: 34px;
+}
+
+.toolbar .period-nav .icon-btn {
+  width: 34px;
+  min-width: 34px;
+  border-radius: var(--radius-full);
+}
+
 .view-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
   border: 1px solid var(--color-border-default);
   border-radius: var(--radius-full);
   padding: var(--space-1);
@@ -560,7 +599,12 @@ app-workspace-calendar-icon,
 .view-switcher button {
   border: 0;
   border-radius: var(--radius-full);
-  min-height: 34px;
+  padding: 0 var(--space-3);
+  font-size: 12px;
+}
+
+.view-label-compact {
+  display: none;
 }
 
 .view-switcher button.is-active {
@@ -1246,11 +1290,7 @@ app-workspace-calendar-icon,
   }
 
   .toolbar-right {
-    justify-content: space-between;
-  }
-
-  .search-field {
-    min-width: 180px;
+    justify-content: flex-end;
   }
 
   .year-grid {
@@ -1282,36 +1322,53 @@ app-workspace-calendar-icon,
   }
 
   .toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .toolbar-right {
-    display: grid;
+    padding: 10px 12px;
     gap: var(--space-2);
   }
 
-  .search-field {
-    min-width: 0;
+  .toolbar-right {
+    flex: 0 0 auto;
+  }
+
+  .toolbar-left {
+    gap: var(--space-2);
   }
 
   .view-switcher {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2px;
+    padding: 2px;
   }
 
-  .view-switcher button,
-  .icon-btn,
+  .toolbar .view-switcher button,
   .primary-btn,
-  .secondary-btn,
-  .today-btn {
-    min-height: var(--control-height-mobile);
+  .secondary-btn {
+    min-height: 30px;
+    height: 30px;
   }
 
-  .icon-btn {
-    width: var(--control-height-mobile);
-    min-width: var(--control-height-mobile);
+  .toolbar .period-nav .icon-btn,
+  .toolbar .rail-toggle {
+    width: 30px;
+    min-width: 30px;
+    height: 30px;
+    min-height: 30px;
+  }
+
+  .toolbar-title {
+    font-size: 18px;
+  }
+
+  .view-switcher button {
+    min-width: 30px;
+    padding: 0 8px;
+  }
+
+  .view-label-full {
+    display: none;
+  }
+
+  .view-label-compact {
+    display: inline;
   }
 
   .month-grid,

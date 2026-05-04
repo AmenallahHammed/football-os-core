@@ -1,40 +1,59 @@
 <section class="calendar-page">
-  <app-workspace-rail [showProfile]="false"></app-workspace-rail>
+  <aside class="calendar-icon-rail" aria-label="Workspace modules">
+    <div class="rail-brand" aria-label="Football OS">F</div>
+
+    <nav class="shell-rail-links" aria-label="Navigation principale">
+      @for (item of shellRailItems; track item.label) {
+        @if (item.route) {
+          <a
+            class="shell-rail-link"
+            [class.is-active]="item.active"
+            [routerLink]="item.route"
+            [attr.aria-label]="item.label"
+            [attr.title]="item.label"
+          >
+            <app-workspace-calendar-icon [name]="item.icon" [size]="20"></app-workspace-calendar-icon>
+          </a>
+        } @else {
+          <button type="button" class="shell-rail-link is-disabled" [attr.aria-label]="item.label" [attr.title]="item.label" disabled>
+            <app-workspace-calendar-icon [name]="item.icon" [size]="20"></app-workspace-calendar-icon>
+          </button>
+        }
+      }
+    </nav>
+  </aside>
 
   @if (leftRailOpen) {
     <button type="button" class="left-rail-backdrop" aria-label="Close calendar navigation" (click)="closeLeftRail()"></button>
   }
 
-  <aside id="calendar-navigation" class="left-rail" aria-label="Calendar navigation" [class.is-open]="leftRailOpen">
-    <section class="left-card role-card">
-      <p class="section-kicker">Calendar role</p>
-      <h1>Workspace Calendar</h1>
-      <p>{{ currentUser.name }} · {{ currentUser.role }}</p>
+  <aside id="calendar-navigation" class="calendar-sidebar" aria-label="Navigation calendrier" [class.is-open]="leftRailOpen">
+    <header class="calendar-sidebar-header">
+      <h1>Calendrier</h1>
+    </header>
 
-      <div class="role-meta">
-        <span class="role-chip">{{ canManageEvents ? 'Can create and delete' : 'View only' }}</span>
-        <span class="role-chip muted">Gateway: `8080`</span>
-      </div>
-    </section>
-
-    <section class="left-card mini-month-card">
+    <section class="mini-month-card">
       <div class="mini-month-head">
-        <div>
-          <p class="section-kicker">Jump to date</p>
-          <h2>{{ pageTitle }}</h2>
-        </div>
+        <h2>{{ miniMonthTitle }}</h2>
 
-        <button type="button" class="today-link" (click)="goToToday()">Today</button>
+        <div class="mini-month-nav" role="group" aria-label="Changer le mois du mini calendrier">
+          <button type="button" class="mini-nav-btn" aria-label="Mois precedent" (click)="goPreviousMiniMonth()">
+            <app-workspace-calendar-icon class="control-icon" name="chevron-left" [size]="14"></app-workspace-calendar-icon>
+          </button>
+          <button type="button" class="mini-nav-btn" aria-label="Mois suivant" (click)="goNextMiniMonth()">
+            <app-workspace-calendar-icon class="control-icon" name="chevron-right" [size]="14"></app-workspace-calendar-icon>
+          </button>
+        </div>
       </div>
 
       <div class="mini-weekdays" aria-hidden="true">
-        <span>Mo</span>
-        <span>Tu</span>
-        <span>We</span>
-        <span>Th</span>
-        <span>Fr</span>
-        <span>Sa</span>
-        <span>Su</span>
+        <span>Lun</span>
+        <span>Mar</span>
+        <span>Mer</span>
+        <span>Jeu</span>
+        <span>Ven</span>
+        <span>Sam</span>
+        <span>Dim</span>
       </div>
 
       <div class="mini-grid">
@@ -53,50 +72,20 @@
       </div>
     </section>
 
-    <section class="left-card rail-list-card">
-      <div class="section-head">
-        <div>
-          <p class="section-kicker">Required docs</p>
-          <h2>Missing files</h2>
-        </div>
-      </div>
+    <button type="button" class="sidebar-add-btn">
+      <app-workspace-calendar-icon class="inline-icon" name="plus" [size]="16"></app-workspace-calendar-icon>
+      Ajouter un calendrier
+    </button>
 
-      @if (leftRailMissingDocuments.length === 0) {
-        <p class="rail-empty">No missing documents in the current calendar view.</p>
-      } @else {
-        <div class="rail-list">
-          @for (item of leftRailMissingDocuments; track item.event.id + item.document.id) {
-            <button type="button" class="rail-row" (click)="openEvent(item.event, $event.currentTarget)">
-              <span class="rail-row-title">{{ item.document.name }}</span>
-              <span class="rail-row-meta">{{ item.event.title }} · {{ item.document.assignedName }}</span>
-              <span class="status-pill danger">MISSING</span>
-            </button>
-          }
-        </div>
-      }
-    </section>
-
-    <section class="left-card rail-list-card">
-      <div class="section-head">
-        <div>
-          <p class="section-kicker">Assigned tasks</p>
-          <h2>Open follow-ups</h2>
-        </div>
-      </div>
-
-      @if (leftRailTasks.length === 0) {
-        <p class="rail-empty">No tasks are attached to the current event list.</p>
-      } @else {
-        <div class="rail-list">
-          @for (item of leftRailTasks; track item.event.id + item.task.id) {
-            <button type="button" class="rail-row" (click)="openEvent(item.event, $event.currentTarget)">
-              <span class="rail-row-title">{{ item.task.title }}</span>
-              <span class="rail-row-meta">{{ item.event.title }} · {{ item.task.assignedName }}</span>
-              <span class="status-pill muted">{{ item.task.completed ? 'DONE' : 'OPEN' }}</span>
-            </button>
-          }
-        </div>
-      }
+    <section class="calendar-list-section">
+      <h2>Mes calendriers</h2>
+      <button type="button" class="calendar-list-item is-selected">
+        <span class="calendar-check" aria-hidden="true">
+          <span class="calendar-color-dot"></span>
+        </span>
+        Calendrier
+      </button>
+      <button type="button" class="show-all-link">Afficher tout</button>
     </section>
   </aside>
 
@@ -115,6 +104,17 @@
           <span></span>
           <span></span>
         </button>
+
+        <div class="period-nav" role="group" aria-label="Changer la periode">
+          <button type="button" class="icon-btn" aria-label="Periode precedente" (click)="goPrevious()">
+            <app-workspace-calendar-icon class="control-icon" name="chevron-left" [size]="16"></app-workspace-calendar-icon>
+          </button>
+          <button type="button" class="icon-btn" aria-label="Periode suivante" (click)="goNext()">
+            <app-workspace-calendar-icon class="control-icon" name="chevron-right" [size]="16"></app-workspace-calendar-icon>
+          </button>
+        </div>
+
+        <button type="button" class="today-button" (click)="goToToday()">Aujourd'hui</button>
 
         <button
           type="button"
@@ -139,14 +139,14 @@
           }
         </div>
 
-        <div class="period-nav" role="group" aria-label="Change calendar period">
-          <button type="button" class="icon-btn" aria-label="Previous period" (click)="goPrevious()">
-            <app-workspace-calendar-icon class="control-icon" name="chevron-left" [size]="16"></app-workspace-calendar-icon>
-          </button>
-          <button type="button" class="icon-btn" aria-label="Next period" (click)="goNext()">
-            <app-workspace-calendar-icon class="control-icon" name="chevron-right" [size]="16"></app-workspace-calendar-icon>
-          </button>
-        </div>
+        <button type="button" class="icon-btn menu-placeholder" aria-label="Options calendrier" disabled>
+          <app-workspace-calendar-icon class="control-icon" name="more-vertical" [size]="16"></app-workspace-calendar-icon>
+        </button>
+
+        <button type="button" class="primary-btn new-event-btn" [disabled]="!canManageEvents" (click)="openNewEvent($event.currentTarget)">
+          <app-workspace-calendar-icon class="control-icon" name="plus" [size]="16"></app-workspace-calendar-icon>
+          Nouveau
+        </button>
       </div>
     </header>
 
@@ -165,13 +165,13 @@
       @if (viewMode === 'month') {
         <section class="calendar-surface month-surface">
           <div class="weekdays-row" aria-hidden="true">
-            <span>Mon</span>
-            <span>Tue</span>
-            <span>Wed</span>
-            <span>Thu</span>
-            <span>Fri</span>
-            <span>Sat</span>
-            <span>Sun</span>
+            <span>Lundi</span>
+            <span>Mardi</span>
+            <span>Mercredi</span>
+            <span>Jeudi</span>
+            <span>Vendredi</span>
+            <span>Samedi</span>
+            <span>Dimanche</span>
           </div>
 
           <div class="month-grid" role="grid">
@@ -189,10 +189,9 @@
                 (keydown)="handleMonthCellKeydown($event, cell)"
               >
                 <div class="month-cell-head">
-                  <span class="day-number">{{ cell.date.getDate() }}</span>
-                  @if (cell.events.length > 0) {
-                    <span class="event-count">{{ cell.events.length }}</span>
-                  }
+                  <button type="button" class="day-number" (click)="selectMonthDate(cell.date); $event.stopPropagation()">
+                    {{ cell.date.getDate() }}
+                  </button>
                 </div>
 
                 <div class="month-events">
@@ -204,8 +203,8 @@
                       [attr.aria-label]="eventCardLabel(eventItem)"
                       (click)="openEvent(eventItem, $event.currentTarget); $event.stopPropagation()"
                     >
+                      <span class="event-time">{{ shortTimeLabel(eventItem.start) }}</span>
                       <strong>{{ eventItem.title }}</strong>
-                      <span>{{ eventTimeLabel(eventItem) }}</span>
                     </button>
                   }
 
@@ -370,22 +369,24 @@
       }
     }
   </main>
-
-  <nav class="bottom-nav" aria-label="Workspace modules">
-    @for (item of mobileNavItems; track item.route) {
-      <a class="bottom-link" [class.is-active]="item.route === '/workspace/calendar'" [routerLink]="item.route">
-        <app-workspace-calendar-icon class="nav-icon" [name]="item.icon" [size]="20"></app-workspace-calendar-icon>
-        <small>{{ item.label }}</small>
-      </a>
-    }
-  </nav>
-
+  @if (createPopover; as popover) {
+    <section class="create-popover" [style.left.px]="popover.x" [style.top.px]="popover.y" role="dialog" aria-label="Create event">
+      <p>{{ popoverDateLabel(popover.date) }} · {{ popoverTimeLabel(popover.hour) }}</p>
+      <button type="button" class="primary-btn create-popover-btn" (click)="createFromPopover($event.currentTarget)">
+        <app-workspace-calendar-icon class="control-icon" name="plus" [size]="16"></app-workspace-calendar-icon>
+        Create event
+      </button>
+      <button type="button" class="popover-close" aria-label="Close create event popover" (click)="closeCreatePopover()">
+        <app-workspace-calendar-icon class="control-icon" name="x" [size]="14"></app-workspace-calendar-icon>
+      </button>
+    </section>
+  }
   @if (createDrawerOpen) {
-    <button type="button" class="overlay-scrim" aria-label="Close create event drawer" (click)="closeCreateDrawer()"></button>
+    <button type="button" class="overlay-scrim" aria-label="Close create event modal" (click)="closeCreateDrawer()"></button>
 
     <aside
       #createDrawer
-      class="overlay-panel create-drawer"
+      class="overlay-panel create-modal"
       role="dialog"
       aria-modal="true"
       aria-labelledby="create-event-title"
@@ -395,55 +396,49 @@
       <header class="drawer-head">
         <div>
           <p class="section-kicker">Create event</p>
-          <h3 id="create-event-title">New calendar entry</h3>
+          <h3 id="create-event-title">Créer un événement</h3>
           <p>{{ draftDateValue | date: 'fullDate' }}</p>
         </div>
 
-        <button type="button" class="icon-btn" aria-label="Close create event drawer" (click)="closeCreateDrawer()">
+        <button type="button" class="icon-btn" aria-label="Close create event modal" (click)="closeCreateDrawer()">
           <app-workspace-calendar-icon class="control-icon" name="x" [size]="18"></app-workspace-calendar-icon>
         </button>
       </header>
 
       <div class="drawer-body create-body">
         <label class="field-group">
-          <span>Name</span>
+          <span>Title</span>
           <input data-autofocus type="text" [(ngModel)]="draftEventName" placeholder="Event title" />
         </label>
 
-        <div class="two-up">
+        <label class="field-group">
+          <span>Type</span>
+          <select [(ngModel)]="draftEventType">
+            @for (type of eventTypes; track type.value) {
+              <option [value]="type.value">{{ type.label }}</option>
+            }
+          </select>
+        </label>
+
+        <div class="four-up">
           <label class="field-group">
-            <span>Date</span>
+            <span>Start date</span>
             <input type="date" [(ngModel)]="draftDateValue" />
           </label>
 
           <label class="field-group">
-            <span>Type</span>
-            <select [(ngModel)]="draftEventType">
-              @for (type of eventTypes; track type.value) {
-                <option [value]="type.value">{{ type.label }}</option>
-              }
-            </select>
-          </label>
-        </div>
-
-        <div class="three-up">
-          <label class="field-group">
-            <span>Start</span>
+            <span>Start time</span>
             <input type="time" [(ngModel)]="draftStartTime" />
           </label>
 
           <label class="field-group">
-            <span>End</span>
-            <input type="time" [(ngModel)]="draftEndTime" />
+            <span>End date</span>
+            <input type="date" [(ngModel)]="draftEndDateValue" />
           </label>
 
           <label class="field-group">
-            <span>Who can access</span>
-            <select [(ngModel)]="draftAccess">
-              @for (scope of accessOptions; track scope) {
-                <option [value]="scope">{{ scope }}</option>
-              }
-            </select>
+            <span>End time</span>
+            <input type="time" [(ngModel)]="draftEndTime" />
           </label>
         </div>
 
@@ -460,8 +455,7 @@
         <section class="field-group people-section">
           <div class="section-head compact">
             <div>
-              <span>People picker</span>
-              <p>Search, filter, and add attendees.</p>
+              <span>Attendees</span>
             </div>
           </div>
 
@@ -503,8 +497,7 @@
         <section class="field-group docs-section">
           <div class="section-head compact">
             <div>
-              <span>Required Documents</span>
-              <p>Add one or more required files for this event.</p>
+              <span>Required documents</span>
             </div>
 
             <button type="button" class="secondary-btn" (click)="addRequiredDocumentRow()">
@@ -538,51 +531,14 @@
           </div>
         </section>
 
-        <section class="field-group tasks-section">
-          <div class="section-head compact">
-            <div>
-              <span>Assign Tasks</span>
-              <p>Attach follow-up work to a person before the event starts.</p>
-            </div>
-          </div>
-
-          <div class="task-builder">
-            <input type="text" [(ngModel)]="taskTitle" placeholder="Task title" />
-            <input type="text" [(ngModel)]="taskDescription" placeholder="Task description" />
-            <select [(ngModel)]="taskAssigneeId">
-              @for (person of peopleDirectory; track person.id) {
-                <option [value]="person.id">{{ person.name }}</option>
-              }
-            </select>
-            <input type="datetime-local" [(ngModel)]="taskDueAt" />
-            <button type="button" class="secondary-btn" (click)="addTask()">
-              <span class="button-label">
-                <app-workspace-calendar-icon class="control-icon" name="plus" [size]="18"></app-workspace-calendar-icon>
-                Add task
-              </span>
-            </button>
-          </div>
-
-          @if (taskDrafts.length > 0) {
-            <div class="task-list">
-              @for (task of taskDrafts; track task.id) {
-                <article class="task-row">
-                  <div>
-                    <strong>{{ task.title }}</strong>
-                    <p>{{ task.description || 'No task description provided.' }}</p>
-                    <span>{{ personById(task.assignedToActorId)?.name ?? 'Unassigned' }}</span>
-                  </div>
-                  <button type="button" class="danger-link" (click)="removeTask(task.id)">Remove</button>
-                </article>
-              }
-            </div>
-          }
-        </section>
+        @if (createError) {
+          <p class="create-error">{{ createError }}</p>
+        }
       </div>
 
       <footer class="drawer-foot">
         <button type="button" class="secondary-btn" (click)="closeCreateDrawer()">Cancel</button>
-        <button type="button" class="primary-btn" [disabled]="createDisabled" (click)="createEvent()">Create</button>
+        <button type="button" class="primary-btn" [disabled]="createDisabled" (click)="createEvent()">Save</button>
       </footer>
     </aside>
   }
@@ -601,8 +557,8 @@
     >
       <header class="drawer-head">
         <div>
-          <p class="section-kicker">{{ selectedDate | date: 'EEEE, MMMM d' }}</p>
-          <h3 id="event-drawer-title">{{ selectedDateEvents.length }} events · {{ selectedDateMissingCount }} missing documents</h3>
+          <p class="section-kicker">{{ eventItem.start | date: 'EEEE, MMMM d' }}</p>
+          <h3 id="event-drawer-title">{{ eventItem.title }}</h3>
         </div>
 
         <button type="button" class="icon-btn" aria-label="Close event drawer" (click)="closeDrawer()">
@@ -622,7 +578,7 @@
               <button type="button" class="danger-link" (click)="deleteSelectedEvent()">
                 <span class="button-label">
                   <app-workspace-calendar-icon class="inline-icon" name="trash" [size]="16"></app-workspace-calendar-icon>
-                  Delete event
+                  Delete
                 </span>
               </button>
             }
@@ -630,7 +586,7 @@
 
           <dl class="drawer-meta">
             <div>
-              <dt>Time</dt>
+              <dt>Date and time</dt>
               <dd>
                 <span class="meta-with-icon">
                   <app-workspace-calendar-icon class="inline-icon" name="clock" [size]="16"></app-workspace-calendar-icon>
@@ -647,57 +603,42 @@
                 </span>
               </dd>
             </div>
-            <div>
-              <dt>Coach</dt>
-              <dd>
-                <span class="meta-with-icon">
-                  <app-workspace-calendar-icon class="inline-icon" name="users" [size]="16"></app-workspace-calendar-icon>
-                  {{ eventItem.coachName }}
-                </span>
-              </dd>
-            </div>
           </dl>
 
           <p class="drawer-description">{{ eventItem.description }}</p>
 
-          <div class="participant-strip">
-            @for (attendee of eventItem.attendees; track attendee.id) {
-              <span class="participant-chip">
-                <span class="avatar-badge">{{ initialsFor(attendee.name) }}</span>
-                {{ attendee.name }}
-              </span>
-            }
-          </div>
         </article>
 
-        <section class="drawer-section">
-          <div class="section-head compact">
-            <div>
-              <span>Required Documents</span>
-              <p>Missing state is shown with text, not color alone.</p>
+        @if (eventItem.attendees.length > 0) {
+          <section class="drawer-section">
+            <div class="section-head compact">
+              <div>
+                <span>Attendees</span>
+              </div>
             </div>
 
-            <button type="button" class="secondary-btn" (click)="uploadDocument()">
-              <span class="button-label">
-                <app-workspace-calendar-icon class="control-icon" name="upload" [size]="18"></app-workspace-calendar-icon>
-                Upload
-              </span>
-            </button>
-          </div>
+            <div class="participant-strip">
+              @for (attendee of eventItem.attendees; track attendee.id) {
+                <span class="participant-chip">
+                  <span class="avatar-badge">{{ initialsFor(attendee.name) }}</span>
+                  {{ attendee.name }}
+                </span>
+              }
+            </div>
+          </section>
+        }
 
-          @if (eventItem.requiredDocuments.length === 0) {
-            <p class="drawer-empty">No required documents were added to this event.</p>
-          } @else {
+        @if (eventItem.requiredDocuments.length > 0) {
+          <section class="drawer-section">
+            <div class="section-head compact">
+              <div>
+                <span>Required documents</span>
+              </div>
+            </div>
+
             <div class="drawer-doc-list">
               @for (document of eventItem.requiredDocuments; track document.id) {
-                <button
-                  type="button"
-                  class="drawer-doc-row"
-                  aria-haspopup="menu"
-                  [attr.aria-expanded]="documentMenu?.document?.id === document.id"
-                  (click)="openDocumentMenuFromTrigger(document, $event.currentTarget)"
-                  (contextmenu)="openDocumentMenu($event, document)"
-                >
+                <article class="drawer-doc-row">
                   <div>
                     <span class="drawer-doc-title">
                       <app-workspace-calendar-icon class="inline-icon" name="file-text" [size]="16"></app-workspace-calendar-icon>
@@ -709,80 +650,14 @@
                     <span class="status-pill" [class.danger]="!document.uploaded" [class.success]="document.uploaded">
                       {{ document.uploaded ? 'UPLOADED' : 'MISSING' }}
                     </span>
-                    <app-workspace-calendar-icon class="inline-icon" name="more-vertical" [size]="16"></app-workspace-calendar-icon>
                   </span>
-                </button>
-              }
-            </div>
-          }
-        </section>
-
-        <section class="drawer-section">
-          <div class="section-head compact">
-            <div>
-              <span>Tasks</span>
-              <p>Assignments created with the event.</p>
-            </div>
-          </div>
-
-          @if (eventItem.tasks.length === 0) {
-            <p class="drawer-empty">No tasks are attached to this event.</p>
-          } @else {
-            <div class="task-list drawer-task-list">
-              @for (task of eventItem.tasks; track task.id) {
-                <article class="task-row">
-                  <div>
-                    <strong>{{ task.title }}</strong>
-                    <p>{{ task.description }}</p>
-                    <span>{{ task.assignedName }}{{ task.dueAt ? ' · due ' + (task.dueAt | date: 'MMM d, h:mm a') : '' }}</span>
-                  </div>
-                  <span class="status-pill muted">{{ task.completed ? 'DONE' : 'OPEN' }}</span>
                 </article>
               }
             </div>
-          }
-        </section>
-
-        <section class="drawer-section note-section">
-          <div class="section-head compact">
-            <div>
-              <span>Notes</span>
-              <p>Quick notes are saved for this session only.</p>
-            </div>
-          </div>
-
-          <div class="note-composer">
-            <textarea rows="3" [(ngModel)]="noteDraft" placeholder="Add an update for staff"></textarea>
-            <button type="button" class="primary-btn" (click)="submitNote()">Post note</button>
-          </div>
-        </section>
+          </section>
+        }
       </div>
     </aside>
-  }
-
-  @if (documentMenu) {
-    <button type="button" class="overlay-scrim menu-scrim" aria-label="Close file menu" (click)="closeDocumentMenu()"></button>
-
-    <section
-      #fileMenu
-      class="file-menu"
-      role="menu"
-      aria-label="Document actions"
-      [style.left.px]="documentMenu.x"
-      [style.top.px]="documentMenu.y"
-      (keydown)="handleDocumentMenuKeydown($event)"
-    >
-      <button type="button" role="menuitem" (click)="handleDocumentMenuAction('open')">Open</button>
-      <button type="button" role="menuitem" (click)="handleDocumentMenuAction('download')">Download</button>
-      <button type="button" role="menuitem" (click)="handleDocumentMenuAction('share')">Share</button>
-      <button type="button" role="menuitem" (click)="handleDocumentMenuAction('rename')">Rename</button>
-      <button type="button" role="menuitem" class="danger-link menu-danger" (click)="handleDocumentMenuAction('delete')">
-        <span class="button-label">
-          <app-workspace-calendar-icon class="inline-icon" name="trash" [size]="16"></app-workspace-calendar-icon>
-          Delete
-        </span>
-      </button>
-    </section>
   }
 
   @if (toastMessage) {

@@ -2,7 +2,6 @@ import { DatePipe } from '@angular/common';
 import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { WorkspaceRailComponent } from '../../core/layout/workspace-rail/workspace-rail.component';
 import { EventParticipant, ParticipantGroup } from '../../shared/models/event.model';
 import { WorkspaceCalendarIconComponent } from '../../shared/workspace-icon/workspace-icon.component';
 import {
@@ -15,7 +14,6 @@ import {
 
 type CalendarViewMode = 'day' | 'week' | 'month' | 'year';
 type CalendarRole = 'head-coach' | 'staff';
-type AccessScope = 'All Staff' | 'Coaches Only' | 'Medical + Coaches';
 type ToastTone = 'success' | 'error' | 'info';
 
 interface CalendarPerson extends EventParticipant {
@@ -28,14 +26,6 @@ interface CalendarRequiredDocumentDraft {
   assignedToActorId: string;
 }
 
-interface CalendarTaskDraft {
-  id: string;
-  title: string;
-  description: string;
-  assignedToActorId: string;
-  dueAt: string;
-}
-
 interface CalendarRequiredDocumentView {
   id: string;
   name: string;
@@ -44,16 +34,6 @@ interface CalendarRequiredDocumentView {
   assignedName: string;
   uploaded: boolean;
   submittedDocumentId: string | null;
-}
-
-interface CalendarTaskView {
-  id: string;
-  title: string;
-  description: string;
-  assignedToActorId: string | null;
-  assignedName: string;
-  dueAt: string | null;
-  completed: boolean;
 }
 
 interface CalendarEventView {
@@ -69,7 +49,6 @@ interface CalendarEventView {
   coachName: string;
   attendees: CalendarPerson[];
   requiredDocuments: CalendarRequiredDocumentView[];
-  tasks: CalendarTaskView[];
   missingDocumentCount: number;
 }
 
@@ -86,10 +65,18 @@ interface YearMonthCard {
   eventCount: number;
 }
 
-interface DocumentMenuState {
+interface CreatePopoverState {
   x: number;
   y: number;
-  document: CalendarRequiredDocumentView;
+  date: Date;
+  hour: number;
+}
+
+interface CalendarShellRailItem {
+  label: string;
+  icon: string;
+  route?: string;
+  active?: boolean;
 }
 
 const CURRENT_USER_ID = '11111111-1111-1111-1111-111111111101';
@@ -172,35 +159,32 @@ const CALENDAR_PEOPLE: CalendarPerson[] = [
 @Component({
   selector: 'app-workspace-calendar',
   standalone: true,
-  imports: [DatePipe, FormsModule, RouterLink, WorkspaceRailComponent, WorkspaceCalendarIconComponent],
+  imports: [DatePipe, FormsModule, RouterLink, WorkspaceCalendarIconComponent],
   templateUrl: './workspace-calendar.component.html',
   styleUrl: './workspace-calendar.component.scss'
 })
 export class WorkspaceCalendarComponent {
   @ViewChild('createDrawer') private createDrawer?: ElementRef<HTMLElement>;
   @ViewChild('eventDrawer') private eventDrawer?: ElementRef<HTMLElement>;
-  @ViewChild('fileMenu') private fileMenu?: ElementRef<HTMLElement>;
 
   private readonly calendarApi = inject(WorkspaceCalendarApiService);
   private toastTimer: number | null = null;
   private lastFocusTrigger: HTMLElement | null = null;
-  private lastMenuTrigger: HTMLElement | null = null;
 
-  protected readonly mobileNavItems = [
-    { label: 'Calendar', route: '/workspace/calendar', icon: 'calendar' },
-    { label: 'Documents', route: '/documents', icon: 'folder' },
-    { label: 'Players', route: '/players', icon: 'users' },
-    { label: 'Settings', route: '/settings', icon: 'settings' }
+  protected readonly shellRailItems: CalendarShellRailItem[] = [
+    { label: 'Activite', icon: 'activity' },
+    { label: 'Conversation', icon: 'message-circle' },
+    { label: 'Calendrier', icon: 'calendar', route: '/workspace/calendar', active: true },
+    { label: 'Appels', icon: 'phone' },
+    { label: 'Documents', icon: 'folder' },
+    { label: 'Applications', icon: 'apps' }
   ];
-  protected readonly viewModes: CalendarViewMode[] = ['day', 'week', 'month', 'year'];
+  protected readonly viewModes: CalendarViewMode[] = ['month', 'week'];
   protected readonly attendeeFilters: Array<'All' | ParticipantGroup> = ['All', 'Player', 'Staff', 'Medical Staff', 'Admin Staff'];
-  protected readonly accessOptions: AccessScope[] = ['All Staff', 'Coaches Only', 'Medical + Coaches'];
   protected readonly eventTypes: Array<{ value: WorkspaceCalendarApiEventType; label: string }> = [
     { value: 'TRAINING', label: 'Training' },
     { value: 'MATCH', label: 'Match' },
     { value: 'MEETING', label: 'Meeting' },
-    { value: 'MEDICAL_CHECK', label: 'Medical' },
-    { value: 'ADMINISTRATIVE', label: 'Administrative' },
     { value: 'OTHER', label: 'Other' }
   ];
   protected readonly hours = Array.from({ length: 24 }, (_, index) => index);
@@ -212,6 +196,7 @@ export class WorkspaceCalendarComponent {
   protected visibleDate = this.startOfDay(new Date());
   protected selectedDate = this.startOfDay(new Date());
   protected activeDate = this.startOfDay(new Date());
+  protected miniCalendarDate = new Date(this.visibleDate.getFullYear(), this.visibleDate.getMonth(), 1);
   protected leftRailOpen = false;
   protected isLoading = true;
   protected loadError = '';
@@ -219,9 +204,9 @@ export class WorkspaceCalendarComponent {
 
   protected selectedEvent: CalendarEventView | null = null;
   protected drawerOpen = false;
-  protected noteDraft = '';
-  protected documentMenu: DocumentMenuState | null = null;
+  protected createPopover: CreatePopoverState | null = null;
   protected createDrawerOpen = false;
+  protected createError = '';
 
   protected toastMessage = '';
   protected toastTone: ToastTone = 'info';
@@ -229,20 +214,15 @@ export class WorkspaceCalendarComponent {
   protected draftEventName = '';
   protected draftDescription = '';
   protected draftLocation = '';
-  protected draftAccess: AccessScope = 'All Staff';
   protected draftEventType: WorkspaceCalendarApiEventType = 'TRAINING';
   protected draftDateValue = this.toDateInputValue(new Date());
+  protected draftEndDateValue = this.toDateInputValue(new Date());
   protected draftStartTime = '09:00';
   protected draftEndTime = '10:30';
   protected attendeeSearch = '';
   protected attendeeFilter: 'All' | ParticipantGroup = 'All';
   protected selectedAttendeeIds: string[] = [CURRENT_USER_ID];
   protected requiredDocumentDrafts: CalendarRequiredDocumentDraft[] = [this.newRequiredDocumentDraft()];
-  protected taskTitle = '';
-  protected taskDescription = '';
-  protected taskAssigneeId = CURRENT_USER_ID;
-  protected taskDueAt = '';
-  protected taskDrafts: CalendarTaskDraft[] = [];
 
   constructor() {
     this.loadEvents();
@@ -277,7 +257,7 @@ export class WorkspaceCalendarComponent {
   }
 
   protected get headerTitle(): string {
-    return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(this.visibleDate);
+    return new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(this.visibleDate);
   }
 
   protected get filteredParticipants(): CalendarPerson[] {
@@ -318,7 +298,11 @@ export class WorkspaceCalendarComponent {
   }
 
   protected get miniMonthCells(): CalendarDayCell[] {
-    return this.buildMonthCells(this.visibleDate);
+    return this.buildMonthCells(this.miniCalendarDate);
+  }
+
+  protected get miniMonthTitle(): string {
+    return new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(this.miniCalendarDate);
   }
 
   protected get yearMonthCards(): YearMonthCard[] {
@@ -344,18 +328,6 @@ export class WorkspaceCalendarComponent {
       .slice(0, 6);
   }
 
-  protected get leftRailTasks(): Array<{ event: CalendarEventView; task: CalendarTaskView }> {
-    return this.visibleEvents.flatMap((event) => event.tasks.map((task) => ({ event, task }))).slice(0, 6);
-  }
-
-  protected get selectedDateEvents(): CalendarEventView[] {
-    return this.eventsForDate(this.selectedDate);
-  }
-
-  protected get selectedDateMissingCount(): number {
-    return this.selectedDateEvents.reduce((count, event) => count + event.missingDocumentCount, 0);
-  }
-
   protected get createDisabled(): boolean {
     return !this.draftEventName.trim();
   }
@@ -366,6 +338,10 @@ export class WorkspaceCalendarComponent {
 
   protected retryLoad(): void {
     this.loadEvents();
+  }
+
+  protected openNewEvent(trigger?: EventTarget | null): void {
+    this.openCreateDrawer(this.selectedDate, 9, trigger);
   }
 
   protected closeLeftRail(): void {
@@ -384,6 +360,7 @@ export class WorkspaceCalendarComponent {
 
   protected setViewMode(nextView: CalendarViewMode): void {
     this.viewMode = nextView;
+    this.closeCreatePopover();
   }
 
   protected goToToday(): void {
@@ -391,6 +368,8 @@ export class WorkspaceCalendarComponent {
     this.visibleDate = today;
     this.selectedDate = today;
     this.activeDate = today;
+    this.syncMiniCalendarToDate(today);
+    this.closeCreatePopover();
   }
 
   protected goPrevious(): void {
@@ -406,6 +385,8 @@ export class WorkspaceCalendarComponent {
 
     this.selectedDate = this.startOfDay(this.visibleDate);
     this.activeDate = this.startOfDay(this.visibleDate);
+    this.syncMiniCalendarToDate(this.visibleDate);
+    this.closeCreatePopover();
   }
 
   protected goNext(): void {
@@ -421,36 +402,88 @@ export class WorkspaceCalendarComponent {
 
     this.selectedDate = this.startOfDay(this.visibleDate);
     this.activeDate = this.startOfDay(this.visibleDate);
+    this.syncMiniCalendarToDate(this.visibleDate);
+    this.closeCreatePopover();
+  }
+
+  protected goPreviousMiniMonth(): void {
+    this.miniCalendarDate = new Date(this.miniCalendarDate.getFullYear(), this.miniCalendarDate.getMonth() - 1, 1);
+  }
+
+  protected goNextMiniMonth(): void {
+    this.miniCalendarDate = new Date(this.miniCalendarDate.getFullYear(), this.miniCalendarDate.getMonth() + 1, 1);
   }
 
   protected selectMiniMonthDate(date: Date): void {
     this.visibleDate = this.startOfDay(date);
     this.selectedDate = this.startOfDay(date);
     this.activeDate = this.startOfDay(date);
+    this.syncMiniCalendarToDate(date);
 
     if (this.viewMode === 'year') {
       this.viewMode = 'month';
     }
+
+    this.closeCreatePopover();
+  }
+
+  protected selectMonthDate(date: Date): void {
+    const nextDate = this.startOfDay(date);
+    this.selectedDate = nextDate;
+    this.activeDate = nextDate;
+
+    if (nextDate.getMonth() !== this.visibleDate.getMonth() || nextDate.getFullYear() !== this.visibleDate.getFullYear()) {
+      this.visibleDate = new Date(nextDate.getFullYear(), nextDate.getMonth(), 1);
+    }
+
+    this.syncMiniCalendarToDate(nextDate);
+    this.closeCreatePopover();
   }
 
   protected chooseMonthCell(cell: CalendarDayCell, event: Event): void {
+    if (cell.events.length === 0 && !this.canManageEvents) {
+      this.closeCreatePopover();
+      return;
+    }
+
     this.selectedDate = this.startOfDay(cell.date);
     this.activeDate = this.startOfDay(cell.date);
 
-    if (cell.events.length === 0) {
-      this.openCreateDrawer(cell.date, 9, event.currentTarget);
+    if (cell.events.length === 0 && this.canManageEvents) {
+      this.openCreatePopover(cell.date, event.currentTarget);
+      return;
     }
+
+    this.closeCreatePopover();
   }
 
   protected chooseTimeSlot(date: Date, hour: number, event: Event): void {
+    if (!this.canManageEvents) {
+      this.closeCreatePopover();
+      return;
+    }
+
     this.selectedDate = this.startOfDay(date);
     this.activeDate = this.startOfDay(date);
-    this.openCreateDrawer(date, hour, event.currentTarget);
+    this.syncMiniCalendarToDate(date);
+    this.openCreatePopover(date, event.currentTarget, hour);
   }
 
   protected closeCreateDrawer(): void {
     this.createDrawerOpen = false;
+    this.createError = '';
     this.restoreFocus();
+  }
+
+  protected closeCreatePopover(): void {
+    this.createPopover = null;
+  }
+
+  protected createFromPopover(trigger?: EventTarget | null): void {
+    const date = this.createPopover?.date ?? this.selectedDate;
+    const hour = this.createPopover?.hour ?? 9;
+    this.closeCreatePopover();
+    this.openCreateDrawer(date, hour, trigger);
   }
 
   protected toggleAttendee(participantId: string): void {
@@ -483,47 +516,23 @@ export class WorkspaceCalendarComponent {
     this.requiredDocumentDrafts = this.requiredDocumentDrafts.filter((row) => row.id !== rowId);
   }
 
-  protected addTask(): void {
-    if (!this.taskTitle.trim()) {
-      return;
-    }
-
-    this.taskDrafts = [
-      ...this.taskDrafts,
-      {
-        id: this.newId('task'),
-        title: this.taskTitle.trim(),
-        description: this.taskDescription.trim(),
-        assignedToActorId: this.taskAssigneeId,
-        dueAt: this.taskDueAt
-      }
-    ];
-
-    this.taskTitle = '';
-    this.taskDescription = '';
-    this.taskDueAt = '';
-  }
-
-  protected removeTask(taskId: string): void {
-    this.taskDrafts = this.taskDrafts.filter((task) => task.id !== taskId);
-  }
-
   protected createEvent(): void {
     if (this.createDisabled) {
       return;
     }
 
     const startAt = this.combineDateAndTime(this.draftDateValue, this.draftStartTime);
-    const endAt = this.combineDateAndTime(this.draftDateValue, this.draftEndTime);
+    const endAt = this.combineDateAndTime(this.draftEndDateValue, this.draftEndTime);
+    this.createError = '';
 
     if (Date.parse(endAt) <= Date.parse(startAt)) {
-      this.showToast('End time must be after start time.', 'error');
+      this.createError = 'End date and time must be after start.';
       return;
     }
 
     const request: WorkspaceCalendarCreateEventRequest = {
       title: this.draftEventName.trim(),
-      description: `[Access: ${this.draftAccess}]${this.draftDescription.trim() ? ` ${this.draftDescription.trim()}` : ''}`,
+      description: this.draftDescription.trim() || null,
       type: this.draftEventType,
       startAt,
       endAt,
@@ -540,12 +549,7 @@ export class WorkspaceCalendarComponent {
           documentCategory: 'GENERAL',
           assignedToActorId: document.assignedToActorId || null
         })),
-      tasks: this.taskDrafts.map((task) => ({
-        title: task.title,
-        description: task.description || task.title,
-        assignedToActorId: task.assignedToActorId || null,
-        dueAt: task.dueAt ? new Date(task.dueAt).toISOString() : null
-      }))
+      tasks: []
     };
 
     this.calendarApi.createEvent(request).subscribe({
@@ -555,7 +559,7 @@ export class WorkspaceCalendarComponent {
         this.loadEvents(eventResponse.eventId);
       },
       error: () => {
-        this.showToast('Unable to create event. Check that the gateway is running on http://localhost:8080.', 'error');
+        this.createError = 'Unable to save event. Please try again.';
       }
     });
   }
@@ -564,8 +568,9 @@ export class WorkspaceCalendarComponent {
     this.selectedEvent = eventItem;
     this.selectedDate = this.startOfDay(eventItem.start);
     this.activeDate = this.startOfDay(eventItem.start);
+    this.syncMiniCalendarToDate(eventItem.start);
     this.drawerOpen = true;
-    this.documentMenu = null;
+    this.closeCreatePopover();
 
     if (trigger instanceof HTMLElement) {
       this.rememberTrigger(trigger);
@@ -577,8 +582,6 @@ export class WorkspaceCalendarComponent {
   protected closeDrawer(): void {
     this.drawerOpen = false;
     this.selectedEvent = null;
-    this.documentMenu = null;
-    this.lastMenuTrigger = null;
     this.restoreFocus();
   }
 
@@ -605,134 +608,40 @@ export class WorkspaceCalendarComponent {
     });
   }
 
-  protected submitNote(): void {
-    if (!this.noteDraft.trim()) {
-      return;
-    }
-
-    this.noteDraft = '';
-    this.showToast('Note saved for this session.', 'info');
-  }
-
-  protected uploadDocument(): void {
-    this.showToast('Use the Documents module to upload files for event requirements.', 'info');
-  }
-
-  protected openDocumentMenu(mouseEvent: MouseEvent, document: CalendarRequiredDocumentView): void {
-    mouseEvent.preventDefault();
-    mouseEvent.stopPropagation();
-
-    if (mouseEvent.currentTarget instanceof HTMLElement) {
-      this.lastMenuTrigger = mouseEvent.currentTarget;
-    }
-
-    this.documentMenu = {
-      x: Math.min(mouseEvent.clientX, window.innerWidth - 188),
-      y: Math.min(mouseEvent.clientY, window.innerHeight - 220),
-      document
-    };
-
-    window.setTimeout(() => this.focusOverlay(this.fileMenu?.nativeElement), 0);
-  }
-
-  protected closeDocumentMenu(): void {
-    this.documentMenu = null;
-    this.restoreMenuFocus();
-  }
-
-  protected openDocumentMenuFromTrigger(document: CalendarRequiredDocumentView, trigger: EventTarget | null): void {
-    if (!(trigger instanceof HTMLElement)) {
-      return;
-    }
-
-    const rect = trigger.getBoundingClientRect();
-    this.lastMenuTrigger = trigger;
-    this.documentMenu = {
-      x: Math.max(8, Math.min(rect.right - 180, window.innerWidth - 188)),
-      y: Math.max(8, Math.min(rect.bottom + 4, window.innerHeight - 220)),
-      document
-    };
-
-    window.setTimeout(() => this.focusOverlay(this.fileMenu?.nativeElement), 0);
-  }
-
-  protected handleDocumentMenuKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Escape') {
-      event.preventDefault();
-      this.closeDocumentMenu();
-      return;
-    }
-
-    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
-      return;
-    }
-
-    const items = this.focusableElements(event.currentTarget as HTMLElement);
-    if (items.length === 0) {
-      return;
-    }
-
-    const activeIndex = Math.max(
-      0,
-      items.findIndex((item) => item === document.activeElement)
-    );
-
-    event.preventDefault();
-
-    if (event.key === 'Home') {
-      items[0].focus();
-      return;
-    }
-
-    if (event.key === 'End') {
-      items[items.length - 1].focus();
-      return;
-    }
-
-    const offset = event.key === 'ArrowDown' ? 1 : -1;
-    const nextIndex = (activeIndex + offset + items.length) % items.length;
-    items[nextIndex].focus();
-  }
-
-  protected handleDocumentMenuAction(action: 'open' | 'download' | 'share' | 'rename' | 'delete'): void {
-    const document = this.documentMenu?.document;
-    this.closeDocumentMenu();
-
-    if (!document) {
-      return;
-    }
-
-    if (!document.uploaded) {
-      this.showToast(`${document.name} is still marked as missing.`, 'info');
-      return;
-    }
-
-    if (action === 'delete') {
-      this.showToast('Document unlinking is not connected to the event API yet.', 'info');
-      return;
-    }
-
-    this.showToast(`The ${action} action will be wired when event-linked files expose a download endpoint.`, 'info');
-  }
-
   protected closeToast(): void {
     this.toastMessage = '';
   }
 
   protected viewButtonLabel(viewMode: CalendarViewMode): string {
+    if (viewMode === 'month') {
+      return 'Mois';
+    }
+
+    if (viewMode === 'week') {
+      return 'Semaine';
+    }
+
     return viewMode.charAt(0).toUpperCase() + viewMode.slice(1);
   }
 
   protected viewButtonShortLabel(viewMode: CalendarViewMode): string {
-    return viewMode.charAt(0).toUpperCase();
+    return this.viewButtonLabel(viewMode).charAt(0).toUpperCase();
   }
 
   protected eventsForGridDate(date: Date): CalendarEventView[] {
-    return this.eventsForDate(date).slice(0, 2);
+    return this.eventsForDate(date).slice(0, 4);
   }
 
   protected overflowCount(date: Date): number {
-    return Math.max(0, this.eventsForDate(date).length - 2);
+    return Math.max(0, this.eventsForDate(date).length - 4);
+  }
+
+  protected popoverDateLabel(date: Date): string {
+    return new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }).format(date);
+  }
+
+  protected popoverTimeLabel(hour: number): string {
+    return this.hourLabel(hour);
   }
 
   protected eventsForWeekDate(date: Date): CalendarEventView[] {
@@ -765,10 +674,6 @@ export class WorkspaceCalendarComponent {
 
   protected eventTimeLabel(eventItem: CalendarEventView): string {
     return `${this.shortTimeLabel(eventItem.start)} - ${this.shortTimeLabel(eventItem.end)}`;
-  }
-
-  protected eventTimeRangeAriaLabel(eventItem: CalendarEventView): string {
-    return `${this.shortTimeLabel(eventItem.start)}, ${eventItem.missingDocumentCount} missing documents`;
   }
 
   protected weekEventTop(eventItem: CalendarEventView): number {
@@ -829,6 +734,7 @@ export class WorkspaceCalendarComponent {
     event.preventDefault();
     this.activeDate = this.startOfDay(nextDate);
     this.selectedDate = this.startOfDay(nextDate);
+    this.syncMiniCalendarToDate(nextDate);
 
     if (this.viewMode === 'month') {
       this.visibleDate = new Date(this.activeDate.getFullYear(), this.activeDate.getMonth(), 1);
@@ -890,6 +796,7 @@ export class WorkspaceCalendarComponent {
     this.visibleDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
     this.selectedDate = this.visibleDate;
     this.activeDate = this.visibleDate;
+    this.syncMiniCalendarToDate(monthDate);
   }
 
   protected dateKey(date: Date): string {
@@ -970,16 +877,6 @@ export class WorkspaceCalendarComponent {
       submittedDocumentId: document.submittedDocumentId
     }));
 
-    const tasks = (eventResponse.tasks ?? []).map((task) => ({
-      id: task.taskId,
-      title: task.title,
-      description: task.description,
-      assignedToActorId: task.assignedToActorId,
-      assignedName: this.resolvePersonName(task.assignedToActorId),
-      dueAt: task.dueAt,
-      completed: task.completed
-    }));
-
     const coachName = attendees.find((person) => person.role === 'Head Coach')?.name ?? this.currentUser.name;
 
     return {
@@ -995,7 +892,6 @@ export class WorkspaceCalendarComponent {
       coachName,
       attendees,
       requiredDocuments,
-      tasks,
       missingDocumentCount: requiredDocuments.filter((document) => !document.uploaded).length
     };
   }
@@ -1026,8 +922,10 @@ export class WorkspaceCalendarComponent {
     const monthStart = new Date(anchorDate.getFullYear(), anchorDate.getMonth(), 1);
     const firstDayIndex = (monthStart.getDay() + 6) % 7;
     const gridStart = this.addDays(monthStart, -firstDayIndex);
+    const daysInMonth = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0).getDate();
+    const cellCount = firstDayIndex + daysInMonth <= 35 ? 35 : 42;
 
-    return Array.from({ length: 42 }, (_, index) => {
+    return Array.from({ length: cellCount }, (_, index) => {
       const date = this.addDays(gridStart, index);
 
       return {
@@ -1043,10 +941,10 @@ export class WorkspaceCalendarComponent {
       return;
     }
 
+    this.closeCreatePopover();
     this.resetCreateForm(this.startOfDay(date), hour);
     this.selectedEvent = null;
     this.drawerOpen = false;
-    this.documentMenu = null;
     this.leftRailOpen = false;
     this.createDrawerOpen = true;
 
@@ -1057,26 +955,47 @@ export class WorkspaceCalendarComponent {
     window.setTimeout(() => this.focusOverlay(this.createDrawer?.nativeElement), 0);
   }
 
+  private openCreatePopover(date: Date, trigger?: EventTarget | null, hour = 9): void {
+    if (!this.canManageEvents) {
+      return;
+    }
+
+    if (trigger instanceof HTMLElement) {
+      this.rememberTrigger(trigger);
+      const rect = trigger.getBoundingClientRect();
+      this.createPopover = {
+        date: this.startOfDay(date),
+        hour,
+        x: Math.max(12, Math.min(rect.left + 12, window.innerWidth - 220)),
+        y: Math.max(12, Math.min(rect.top + 42, window.innerHeight - 116))
+      };
+      return;
+    }
+
+    this.createPopover = {
+      date: this.startOfDay(date),
+      hour,
+      x: 16,
+      y: 16
+    };
+  }
+
   private resetCreateForm(date: Date, hour: number): void {
     const endHour = Math.min(hour + 1, 23);
 
     this.draftEventName = '';
     this.draftDescription = '';
     this.draftLocation = '';
-    this.draftAccess = 'All Staff';
     this.draftEventType = 'TRAINING';
     this.draftDateValue = this.toDateInputValue(date);
+    this.draftEndDateValue = this.toDateInputValue(date);
     this.draftStartTime = `${String(hour).padStart(2, '0')}:00`;
     this.draftEndTime = `${String(endHour).padStart(2, '0')}:30`;
     this.attendeeSearch = '';
     this.attendeeFilter = 'All';
     this.selectedAttendeeIds = [CURRENT_USER_ID];
     this.requiredDocumentDrafts = [this.newRequiredDocumentDraft()];
-    this.taskTitle = '';
-    this.taskDescription = '';
-    this.taskAssigneeId = CURRENT_USER_ID;
-    this.taskDueAt = '';
-    this.taskDrafts = [];
+    this.createError = '';
   }
 
   private rememberTrigger(trigger: HTMLElement): void {
@@ -1086,11 +1005,6 @@ export class WorkspaceCalendarComponent {
   private restoreFocus(): void {
     this.lastFocusTrigger?.focus();
     this.lastFocusTrigger = null;
-  }
-
-  private restoreMenuFocus(): void {
-    this.lastMenuTrigger?.focus();
-    this.lastMenuTrigger = null;
   }
 
   private focusOverlay(container: HTMLElement | undefined): void {
@@ -1170,5 +1084,9 @@ export class WorkspaceCalendarComponent {
 
   private newId(prefix: string): string {
     return `${prefix}-${Math.random().toString(36).slice(2, 9)}`;
+  }
+
+  private syncMiniCalendarToDate(date: Date): void {
+    this.miniCalendarDate = new Date(date.getFullYear(), date.getMonth(), 1);
   }
 }

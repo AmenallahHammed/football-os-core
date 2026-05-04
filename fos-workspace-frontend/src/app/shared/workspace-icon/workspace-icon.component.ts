@@ -23,6 +23,21 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
           <rect x="3" y="4" width="18" height="18" rx="2"></rect>
           <path d="M3 10h18"></path>
         }
+        @case ('activity') {
+          <path d="M22 12h-4l-3 8-6-16-3 8H2"></path>
+        }
+        @case ('message-circle') {
+          <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-4-.9L3 21l1.7-4.5a8.5 8.5 0 1 1 16.3-5"></path>
+        }
+        @case ('phone') {
+          <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.7.6 2.5a2 2 0 0 1-.5 2.1L8 9.5a16 16 0 0 0 6.5 6.5l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.6.5 2.5.6a2 2 0 0 1 1.7 2"></path>
+        }
+        @case ('apps') {
+          <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+        }
         @case ('folder') {
           <path d="M2 19a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-8l-2-2H4a2 2 0 0 0-2 2z"></path>
         }

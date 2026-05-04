@@ -76,6 +76,14 @@ export interface WorkspaceCalendarCreateEventRequest {
   }>;
 }
 
+export interface WorkspaceCalendarUpdateEventRequest {
+  title?: string;
+  description?: string | null;
+  startAt?: string;
+  endAt?: string;
+  location?: string | null;
+}
+
 interface WorkspaceCalendarPageResponse<T> {
   content: T[];
 }
@@ -103,7 +111,15 @@ export class WorkspaceCalendarApiService {
     });
   }
 
-  deleteEvent(eventId: string): Observable<void> {
+  updateEvent(eventId: string, request: WorkspaceCalendarUpdateEventRequest): Observable<WorkspaceCalendarApiEvent> {
+    return this.http.put<WorkspaceCalendarApiEvent>(`${this.baseUrl}/api/v1/events/${eventId}`, request);
+  }
+
+  archiveEvent(eventId: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/api/v1/events/${eventId}`);
+  }
+
+  deleteEvent(eventId: string): Observable<void> {
+    return this.archiveEvent(eventId);
   }
 }

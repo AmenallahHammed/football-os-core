@@ -66,6 +66,12 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
         @case ('chevron-right') {
           <path d="m9 18 6-6-6-6"></path>
         }
+        @case ('chevron-down') {
+          <path d="m6 9 6 6 6-6"></path>
+        }
+        @case ('check') {
+          <path d="M20 6 9 17l-5-5"></path>
+        }
         @case ('plus') {
           <path d="M12 5v14"></path>
           <path d="M5 12h14"></path>

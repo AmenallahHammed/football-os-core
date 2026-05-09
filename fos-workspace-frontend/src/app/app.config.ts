@@ -5,17 +5,18 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { environment } from '../environments/environment';
 
-import { routes } from './app.routes';
+import { authenticatedRoutes, publicRoutes, routes } from './app.routes';
 import { AuthGuard } from './core/auth/auth.guard';
 import { AuthInterceptor } from './core/auth/auth.interceptor';
 import { AuthService } from './core/auth/auth.service';
 
 const guardedRoutes: Routes = [
+  ...publicRoutes,
   {
     path: '',
     canActivate: [AuthGuard],
     canActivateChild: [AuthGuard],
-    children: routes
+    children: authenticatedRoutes
   }
 ];
 

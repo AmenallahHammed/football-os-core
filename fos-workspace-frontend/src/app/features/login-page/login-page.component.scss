@@ -1,0 +1,43 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: var(--fos-color-bg);
+}
+
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--fos-space-6);
+}
+
+.login-card {
+  width: min(100%, 420px);
+  display: grid;
+  gap: var(--fos-space-3);
+  padding: var(--fos-space-8);
+  background: var(--fos-color-bg);
+  border: 1px solid var(--fos-color-border);
+  border-radius: var(--fos-radius-lg);
+  box-shadow: var(--fos-shadow-soft);
+}
+
+.login-kicker,
+.login-card p {
+  margin: 0;
+  color: var(--fos-color-muted);
+}
+
+.login-kicker {
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.login-card h1 {
+  margin: 0;
+  color: var(--fos-color-text);
+  font-size: 2rem;
+  line-height: 1.05;
+}

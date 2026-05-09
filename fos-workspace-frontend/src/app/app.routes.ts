@@ -1,18 +1,35 @@
 import { Routes } from '@angular/router';
+import { LandingPageComponent } from './features/landing-page/landing-page.component';
+import { LoginPageComponent } from './features/login-page/login-page.component';
 import { DocumentsComponent } from './features/documents/documents.component';
 import { InboxComponent } from './features/inbox/inbox.component';
 import { NotificationsComponent } from './features/notifications/notifications.component';
 import { PlayerProfileComponent } from './features/player-profile/player-profile.component';
 import { PlayersComponent } from './features/players/players.component';
+import { RequestAccessPageComponent } from './features/request-access-page/request-access-page.component';
 import { SettingsComponent } from './features/settings/settings.component';
 import { WorkspaceCalendarComponent } from './features/workspace-calendar/workspace-calendar.component';
 
-export const routes: Routes = [
+export const publicRoutes: Routes = [
   {
     path: '',
+    component: LandingPageComponent,
     pathMatch: 'full',
-    redirectTo: 'workspace/calendar'
+    data: { animation: 'landing-page', fullScreen: true }
   },
+  {
+    path: 'login',
+    component: LoginPageComponent,
+    data: { animation: 'login-page', fullScreen: true }
+  },
+  {
+    path: 'request-access',
+    component: RequestAccessPageComponent,
+    data: { animation: 'request-access-page', fullScreen: true }
+  }
+];
+
+export const authenticatedRoutes: Routes = [
   {
     path: 'workspace',
     children: [
@@ -60,6 +77,8 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'workspace/calendar'
+    redirectTo: ''
   }
 ];
+
+export const routes: Routes = [...publicRoutes, ...authenticatedRoutes];

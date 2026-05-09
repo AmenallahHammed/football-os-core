@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 :root {
   --font-family-sans: 'Inter', 'Segoe UI', sans-serif;
@@ -131,6 +131,28 @@
   --calendar-event-medical-accent: #0061ff;
   --calendar-event-other-bg: #f1f3f4;
   --calendar-event-other-accent: #5f6368;
+  --fos-color-text: #000000;
+  --fos-color-muted: #8b8783;
+  --fos-color-bg: #ffffff;
+  --fos-color-primary: #0061ff;
+  --fos-color-danger: #de0000;
+  --fos-color-border: #ededed;
+  --fos-color-surface: #f7f7f7;
+  --fos-radius-sm: 6px;
+  --fos-radius-md: 10px;
+  --fos-radius-lg: 16px;
+  --fos-radius-xl: 24px;
+  --fos-space-1: 4px;
+  --fos-space-2: 8px;
+  --fos-space-3: 12px;
+  --fos-space-4: 16px;
+  --fos-space-5: 20px;
+  --fos-space-6: 24px;
+  --fos-space-8: 32px;
+  --fos-space-10: 40px;
+  --fos-space-12: 48px;
+  --fos-space-16: 64px;
+  --fos-shadow-soft: 0 10px 24px rgba(0, 0, 0, 0.04);
 }
 
 * {
@@ -144,9 +166,13 @@ body {
   min-height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--font-family-sans);
-  background: var(--color-neutral-100);
+  background: var(--fos-color-bg);
   color: var(--color-text-primary);
 }
 
@@ -709,5 +735,624 @@ a:focus-visible {
 
   .calendar-page .create-layout {
     grid-template-columns: 1fr;
+  }
+}
+
+app-landing-page {
+  .landing-section--product-map {
+    position: relative;
+    z-index: 2;
+    margin-top: -36px;
+    padding-top: 84px;
+    background:
+      radial-gradient(circle at 70% 20%, rgba(47, 143, 78, 0.12), transparent 42%),
+      radial-gradient(circle at 0% 0%, rgba(47, 143, 78, 0.08), transparent 30%),
+      radial-gradient(circle at 100% 100%, rgba(152, 169, 60, 0.06), transparent 26%),
+      linear-gradient(180deg, #E6EDE2 0%, #EEF3EA 45%, #F7F8FA 100%);
+  }
+
+  .landing-section--product-map::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -96px;
+    left: 0;
+    height: 180px;
+    background:
+      linear-gradient(to bottom, rgba(244, 247, 243, 0), rgba(238, 244, 234, 0.34) 56%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .landing-product-map {
+    display: grid;
+    grid-template-columns: minmax(320px, 0.84fr) minmax(0, 1.16fr);
+    gap: 28px;
+    align-items: start;
+  }
+
+  .landing-product-map__copy {
+    display: grid;
+    gap: 16px;
+    padding-top: 8px;
+  }
+
+  .landing-product-map__supporting {
+    max-width: 60ch;
+  }
+
+  .landing-product-map__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .product-legend-pill {
+    min-height: 32px;
+    padding: 0 12px;
+    border: 1px solid rgba(31, 39, 51, 0.1);
+    border-radius: var(--fos-radius-pill);
+    background: rgba(255, 255, 255, 0.84);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--fos-gray-900);
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .product-legend-pill__dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: var(--fos-pitch-green);
+    box-shadow: 0 0 0 5px rgba(47, 143, 78, 0.1);
+  }
+
+  .product-legend-pill__dot--ops,
+  .product-service-node--workspace,
+  .product-service-node--back-office {
+    --node-accent: var(--fos-pitch-green);
+  }
+
+  .product-legend-pill__dot--performance,
+  .product-service-node--coach-pad,
+  .product-service-node--data-perf {
+    --node-accent: var(--fos-olive-accent);
+  }
+
+  .product-legend-pill__dot--analysis,
+  .product-service-node--match-view {
+    --node-accent: #6f8173;
+  }
+
+  .product-legend-pill__dot--experience,
+  .product-service-node--profile {
+    --node-accent: #4c9772;
+  }
+
+  .product-legend-pill__dot--recruitment,
+  .product-service-node--scouting {
+    --node-accent: #7e8f30;
+  }
+
+  .product-legend-pill__dot--admin,
+  .product-service-node--admin-app {
+    --node-accent: #5f6875;
+  }
+
+  .product-legend-pill__dot--ops,
+  .product-legend-pill__dot--performance,
+  .product-legend-pill__dot--analysis,
+  .product-legend-pill__dot--experience,
+  .product-legend-pill__dot--recruitment,
+  .product-legend-pill__dot--admin {
+    background: var(--node-accent);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--node-accent) 14%, transparent);
+  }
+
+  .landing-product-map__visual {
+    display: grid;
+    gap: 16px;
+  }
+
+  .landing-product-map__canvas {
+    position: relative;
+    min-height: 690px;
+    border: 1px solid rgba(31, 39, 51, 0.1);
+    border-radius: 16px;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(47, 143, 78, 0.08), transparent 18%),
+      linear-gradient(rgba(31, 39, 51, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(31, 39, 51, 0.035) 1px, transparent 1px),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(241, 245, 240, 0.9));
+    background-size: auto, 104px 104px, 104px 104px, auto;
+    box-shadow: 0 16px 34px rgba(31, 39, 51, 0.09);
+    overflow: hidden;
+  }
+
+  .landing-product-map__canvas::before,
+  .landing-product-map__canvas::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .landing-product-map__canvas::before {
+    inset: 10% 12%;
+    border: 1px solid rgba(47, 143, 78, 0.12);
+    border-radius: 999px;
+  }
+
+  .landing-product-map__canvas::after {
+    top: 50%;
+    left: 15%;
+    right: 15%;
+    height: 1px;
+    background: rgba(47, 143, 78, 0.12);
+  }
+
+  .product-core-node,
+  .product-service-node {
+    position: absolute;
+    z-index: 2;
+  }
+
+  .product-core-node {
+    top: 50%;
+    left: 50%;
+    width: 226px;
+    min-height: 158px;
+    padding: 22px;
+    border: 1px solid rgba(47, 143, 78, 0.18);
+    border-radius: 16px;
+    background:
+      radial-gradient(circle at top right, rgba(152, 169, 60, 0.11), transparent 44%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(243, 246, 242, 0.9));
+    box-shadow: 0 18px 36px rgba(31, 39, 51, 0.1);
+    transform: translate(-50%, -50%);
+    display: grid;
+    align-content: center;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .product-core-node__eyebrow,
+  .landing-product-map__summary-label {
+    color: var(--fos-pitch-green-dark);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .product-core-node strong {
+    color: var(--fos-text-dark);
+    font-family: var(--landing-heading-font);
+    font-size: 1.9rem;
+    line-height: 1;
+  }
+
+  .product-core-node p {
+    color: var(--fos-gray-700);
+    font-size: 0.94rem;
+    line-height: 1.5;
+  }
+
+  .product-map-connector {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    height: 1px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(47, 143, 78, 0.28), rgba(152, 169, 60, 0.12));
+    transform-origin: left center;
+  }
+
+  .product-map-connector--workspace {
+    width: 122px;
+    transform: rotate(-118deg);
+  }
+
+  .product-map-connector--coach-pad {
+    width: 172px;
+    transform: rotate(-46deg);
+  }
+
+  .product-map-connector--match-view {
+    width: 186px;
+    transform: rotate(-7deg);
+  }
+
+  .product-map-connector--data-perf {
+    width: 165px;
+    transform: rotate(34deg);
+  }
+
+  .product-map-connector--profile {
+    width: 128px;
+    transform: rotate(82deg);
+  }
+
+  .product-map-connector--scouting {
+    width: 165px;
+    transform: rotate(145deg);
+  }
+
+  .product-map-connector--admin-app {
+    width: 178px;
+    transform: rotate(184deg);
+  }
+
+  .product-map-connector--back-office {
+    width: 158px;
+    transform: rotate(224deg);
+  }
+
+  .product-service-node {
+    width: 176px;
+    min-height: 102px;
+    padding: 13px 13px 13px 15px;
+    border: 1px solid color-mix(in srgb, var(--node-accent) 28%, white);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 0 10px 20px rgba(31, 39, 51, 0.06);
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 10px;
+    align-items: start;
+  }
+
+  .product-service-node::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    border-radius: 16px 0 0 16px;
+    background: var(--node-accent);
+  }
+
+  .product-service-node__icon {
+    width: 38px;
+    height: 38px;
+    border: 1px solid color-mix(in srgb, var(--node-accent) 32%, white);
+    border-radius: 11px;
+    background-color: color-mix(in srgb, var(--node-accent) 10%, white);
+    background-repeat: no-repeat;
+    background-position: center;
+    flex: none;
+  }
+
+  .product-service-node__icon--workspace {
+    background-image:
+      linear-gradient(var(--node-accent) 0 0),
+      linear-gradient(var(--node-accent) 0 0),
+      linear-gradient(var(--node-accent) 0 0),
+      linear-gradient(var(--node-accent) 0 0);
+    background-size: 10px 8px, 10px 8px, 10px 8px, 10px 8px;
+    background-position: 10px 10px, 22px 10px, 10px 22px, 22px 22px;
+  }
+
+  .product-service-node__icon--coach-pad {
+    background-image:
+      radial-gradient(circle, transparent 9px, var(--node-accent) 9px 10px, transparent 10px),
+      linear-gradient(var(--node-accent) 0 0),
+      linear-gradient(90deg, var(--node-accent) 0 0);
+    background-size: 20px 20px, 18px 2px, 2px 18px;
+    background-position: center, center, center;
+  }
+
+  .product-service-node__icon--match-view {
+    background-image:
+      linear-gradient(var(--node-accent) 0 0),
+      linear-gradient(var(--node-accent) 0 0),
+      linear-gradient(135deg, transparent 46%, var(--node-accent) 47% 53%, transparent 54%);
+    background-size: 20px 14px, 14px 14px, 14px 14px;
+    background-position: 10px 13px, 10px 13px, 16px 13px;
+  }
+
+  .product-service-node__icon--data-perf {
+    background-image:
+      linear-gradient(var(--node-accent) 0 0),
+      linear-gradient(var(--node-accent) 0 0),
+      linear-gradient(var(--node-accent) 0 0),
+      linear-gradient(var(--node-accent) 0 0);
+    background-size: 4px 16px, 4px 10px, 4px 20px, 14px 2px;
+    background-position: 11px 16px, 18px 22px, 25px 12px, 13px 30px;
+  }
+
+  .product-service-node__icon--profile {
+    background-image:
+      radial-gradient(circle, var(--node-accent) 0 5px, transparent 5px),
+      radial-gradient(ellipse at center, transparent 0 9px, var(--node-accent) 9px 10px, transparent 10px);
+    background-size: 12px 12px, 22px 14px;
+    background-position: 14px 9px, 9px 19px;
+  }
+
+  .product-service-node__icon--scouting {
+    background-image:
+      radial-gradient(circle, transparent 7px, var(--node-accent) 7px 9px, transparent 9px),
+      linear-gradient(135deg, transparent 44%, var(--node-accent) 45% 56%, transparent 57%);
+    background-size: 18px 18px, 16px 16px;
+    background-position: 9px 8px, 22px 22px;
+  }
+
+  .product-service-node__icon--admin-app {
+    background-image:
+      linear-gradient(var(--node-accent) 0 0),
+      linear-gradient(var(--node-accent) 0 0),
+      linear-gradient(var(--node-accent) 0 0),
+      radial-gradient(circle, var(--node-accent) 0 3px, transparent 3px),
+      radial-gradient(circle, var(--node-accent) 0 3px, transparent 3px),
+      radial-gradient(circle, var(--node-accent) 0 3px, transparent 3px);
+    background-size: 16px 2px, 16px 2px, 16px 2px, 6px 6px, 6px 6px, 6px 6px;
+    background-position: 12px 11px, 12px 19px, 12px 27px, 20px 8px, 13px 16px, 24px 24px;
+  }
+
+  .product-service-node__icon--back-office {
+    background-image:
+      linear-gradient(var(--node-accent) 0 0),
+      linear-gradient(var(--node-accent) 0 0),
+      linear-gradient(var(--node-accent) 0 0);
+    background-size: 18px 12px, 10px 2px, 2px 4px;
+    background-position: 11px 17px, 15px 13px, 20px 13px;
+  }
+
+  .product-service-node__copy {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+  }
+
+  .product-service-node__copy h3 {
+    color: var(--fos-text-dark);
+    font-size: 0.96rem;
+    line-height: 1.15;
+  }
+
+  .product-service-node__copy p {
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  .product-service-node--workspace {
+    top: 8%;
+    left: 40%;
+    transform: translateX(-50%);
+  }
+
+  .product-service-node--coach-pad {
+    top: 17%;
+    right: 6%;
+  }
+
+  .product-service-node--match-view {
+    top: 41%;
+    right: 0;
+  }
+
+  .product-service-node--data-perf {
+    bottom: 14%;
+    right: 9%;
+  }
+
+  .product-service-node--profile {
+    bottom: 5%;
+    left: 56%;
+    transform: translateX(-50%);
+  }
+
+  .product-service-node--scouting {
+    bottom: 14%;
+    left: 8%;
+  }
+
+  .product-service-node--admin-app {
+    top: 41%;
+    left: 0;
+  }
+
+  .product-service-node--back-office {
+    top: 17%;
+    left: 6%;
+  }
+
+  .landing-product-map__summary {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(31, 39, 51, 0.1);
+    border-radius: 14px;
+    background:
+      linear-gradient(135deg, rgba(47, 143, 78, 0.05), rgba(152, 169, 60, 0.05)),
+      rgba(255, 255, 255, 0.94);
+    box-shadow: none;
+    padding: 18px 20px;
+    display: grid;
+    gap: 8px;
+  }
+
+  .landing-product-map__summary h3 {
+    max-width: 26ch;
+    color: var(--fos-text-dark);
+    font-size: 1.12rem;
+    line-height: 1.2;
+  }
+}
+
+@media (max-width: 1180px) {
+  app-landing-page {
+    .landing-product-map {
+      grid-template-columns: 1fr;
+    }
+
+    .landing-product-map__copy {
+      max-width: 860px;
+    }
+  }
+}
+
+@media (max-width: 960px) {
+  app-landing-page {
+    .landing-product-map__canvas {
+      min-height: 820px;
+    }
+
+    .product-core-node {
+      width: 220px;
+    }
+
+    .product-service-node {
+      width: 170px;
+    }
+
+    .product-service-node--workspace {
+      top: 5%;
+      left: 50%;
+    }
+
+    .product-service-node--coach-pad {
+      top: 17%;
+      right: 4%;
+    }
+
+    .product-service-node--match-view {
+      top: 39%;
+      right: 0;
+    }
+
+    .product-service-node--data-perf {
+      bottom: 15%;
+      right: 6%;
+    }
+
+    .product-service-node--profile {
+      bottom: 4%;
+      left: 50%;
+    }
+
+    .product-service-node--scouting {
+      bottom: 15%;
+      left: 6%;
+    }
+
+    .product-service-node--admin-app {
+      top: 39%;
+      left: 0;
+    }
+
+    .product-service-node--back-office {
+      top: 17%;
+      left: 4%;
+    }
+  }
+}
+
+@media (max-width: 720px) {
+  app-landing-page {
+    .landing-section--product-map {
+      margin-top: -24px;
+      padding-top: 72px;
+    }
+
+    .landing-product-map__legend {
+      gap: 8px;
+    }
+
+    .product-legend-pill {
+      font-size: 0.78rem;
+    }
+
+    .landing-product-map__canvas {
+      min-height: 940px;
+      padding: 12px;
+    }
+
+    .landing-product-map__canvas::before,
+    .landing-product-map__canvas::after,
+    .product-map-connector {
+      display: none;
+    }
+
+    .product-core-node {
+      top: 48%;
+      width: min(100%, 220px);
+      min-height: 150px;
+      padding: 22px;
+    }
+
+    .product-core-node strong {
+      font-size: 1.78rem;
+    }
+
+    .product-service-node {
+      width: calc(50% - 18px);
+      min-height: 100px;
+      padding: 12px 12px 12px 14px;
+      gap: 10px;
+    }
+
+    .product-service-node__copy h3 {
+      font-size: 0.96rem;
+    }
+
+    .product-service-node__copy p {
+      font-size: 0.8rem;
+    }
+
+    .product-service-node--workspace {
+      top: 3%;
+      left: 50%;
+      width: min(100%, 220px);
+    }
+
+    .product-service-node--back-office {
+      top: 16%;
+      left: 0;
+    }
+
+    .product-service-node--coach-pad {
+      top: 16%;
+      right: 0;
+    }
+
+    .product-service-node--admin-app {
+      top: 31%;
+      left: 0;
+    }
+
+    .product-service-node--match-view {
+      top: 31%;
+      right: 0;
+    }
+
+    .product-service-node--scouting {
+      bottom: 20%;
+      left: 0;
+    }
+
+    .product-service-node--data-perf {
+      bottom: 20%;
+      right: 0;
+    }
+
+    .product-service-node--profile {
+      bottom: 6%;
+      left: 50%;
+      width: min(100%, 220px);
+    }
+
+    .landing-product-map__summary {
+      padding: 20px;
+    }
+  }
+}
+
+@media (max-width: 560px) {
+  app-landing-page {
+    .landing-product-map__legend {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 }

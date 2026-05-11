@@ -1,7 +1,51 @@
-<main class="login-page">
-  <section class="login-card" aria-labelledby="login-title">
-    <p class="login-kicker">Football OS</p>
-    <h1 id="login-title">Opening sign in</h1>
-    <p>Redirecting you to Football OS.</p>
-  </section>
+<main class="signin-page">
+  <div class="signin-page__atmosphere" aria-hidden="true"></div>
+  <div class="signin-page__content">
+    <section class="signin-panel" aria-labelledby="signin-title">
+      <p class="signin-panel__brand">Football OS</p>
+      <h1 id="signin-title">Sign In</h1>
+      <p class="signin-panel__helper">
+        Access your club workspace using the credentials provided by your club.
+      </p>
+
+      <form class="signin-form" autocomplete="on">
+        <label for="signin-email">Company Email</label>
+        <input
+          id="signin-email"
+          name="email"
+          type="email"
+          inputmode="email"
+          placeholder="name@club-domain.com"
+          autocomplete="username"
+        />
+
+        <label for="signin-password">Password</label>
+        <input
+          id="signin-password"
+          name="password"
+          type="password"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+        />
+
+        <div class="signin-form__actions">
+          <a class="signin-form__link" routerLink="/">Back to homepage</a>
+          <a class="signin-form__link" href="mailto:contact@footballos.com?subject=Forgot%20Password">
+            Forgot password?
+          </a>
+        </div>
+
+        <button class="signin-form__submit" type="button" (click)="onSignIn()">Sign In</button>
+      </form>
+
+      <p class="signin-panel__status" role="status" aria-live="polite">
+        Opening secure sign-in...
+      </p>
+    </section>
+  </div>
+
+  <div class="signin-visual" aria-hidden="true">
+    <div class="signin-visual__net"></div>
+    <img class="signin-visual__ball" src="assets/ball.png" alt="" aria-hidden="true" />
+  </div>
 </main>

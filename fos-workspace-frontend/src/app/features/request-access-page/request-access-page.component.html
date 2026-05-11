@@ -1,190 +1,199 @@
-<header class="request-header">
-  <div class="request-shell request-header__inner">
-    <a class="request-brand" routerLink="/" aria-label="Football OS home">
-      <span class="request-brand__mark" aria-hidden="true">
-        <span class="request-brand__grid request-brand__grid--top"></span>
-        <span class="request-brand__grid request-brand__grid--mid"></span>
-        <span class="request-brand__grid request-brand__grid--bottom"></span>
-        <span class="request-brand__node request-brand__node--a"></span>
-        <span class="request-brand__node request-brand__node--b"></span>
-        <span class="request-brand__node request-brand__node--c"></span>
-      </span>
-      <span class="request-brand__lockup">
-        <strong>Football OS</strong>
-        <span>Premium Sports Tech</span>
-      </span>
-    </a>
+<main class="demo-main">
+  <section class="demo-hero">
+    <div class="demo-shell">
+      <h1>Request A Demo</h1>
+      <p>Request a demo to explore Football OS features, customized to fit your club’s needs.</p>
+    </div>
+  </section>
 
-    <nav class="request-header__actions" aria-label="Request demo navigation">
-      <a class="request-button request-button--ghost" routerLink="/">Back to home</a>
-      <a class="request-button request-button--ghost" routerLink="/login">Sign In</a>
-    </nav>
-  </div>
-</header>
+  <section class="demo-connect">
+    <div class="demo-shell">
+      <h2>Connect with Our Team</h2>
 
-<main class="request-main">
-  <section class="request-hero" aria-labelledby="request-title">
-    <div class="request-hero__field" aria-hidden="true"></div>
+      <section class="demo-card">
+        <div class="demo-expectations">
+          <h3>What to Expect from Your Demo</h3>
 
-    <div class="request-shell request-hero__grid">
-      <div class="request-copy">
-        <p class="request-kicker">Request Demo</p>
-        <h1 id="request-title">Request a Football OS demo for your club.</h1>
-        <p class="request-lead">
-          Tell us a bit about your club and the role you play. The Football OS team will follow up to
-          schedule a product demo for your organization.
-        </p>
+          <ul class="demo-check-list">
+            <li *ngFor="let item of expectations">{{ item }}</li>
+          </ul>
 
-        <div class="request-value-list" aria-label="What Football OS connects">
-          <article class="request-value-card">
-            <strong>Club operations</strong>
-            <span>Files, calendars, communication, and coordination</span>
-          </article>
-          <article class="request-value-card">
-            <strong>Sport performance</strong>
-            <span>Training workflows, monitoring, and performance visibility</span>
-          </article>
-          <article class="request-value-card">
-            <strong>Analysis and recruitment</strong>
-            <span>Video review, scouting, and connected decision-making</span>
-          </article>
+          <div class="demo-logo-row">
+            <p>Football clubs and staff teams trust Football OS</p>
+            <div class="demo-logo-pills" aria-label="Trusted teams">
+              <span *ngFor="let pill of trustPills">{{ pill }}</span>
+            </div>
+          </div>
         </div>
 
-        <div class="request-note">
-          <p class="request-note__eyebrow">Important</p>
-          <p>
-            Football OS accounts are managed at club level. If you are a team member, please use the
-            credentials provided by your club.
+        <section class="demo-form-panel" aria-labelledby="demo-form-title">
+          <h3 id="demo-form-title">Book Your Personalized 1:1 Demo</h3>
+
+          <p class="demo-form-panel__lead">
+            Share a few details and our team will reach out to schedule your session.
           </p>
-        </div>
-      </div>
 
-      <section class="request-form-card" aria-labelledby="request-form-title">
-        <div class="request-form-card__header">
-          <p class="request-form-card__eyebrow">Club representative form</p>
-          <h2 id="request-form-title">Book your Football OS demo</h2>
-          <p>
-            We will use this information only to understand your club context and contact you about a demo.
-          </p>
-        </div>
-
-        <div class="request-success" *ngIf="submitted" aria-live="polite">
-          <strong>Thank you. The Football OS team will contact you soon.</strong>
-        </div>
-
-        <form #requestForm="ngForm" class="request-form" (ngSubmit)="submitRequest(requestForm)" novalidate>
-          <div class="request-form__grid">
-            <label class="request-field">
-              <span>Full name</span>
-              <input
-                type="text"
-                name="fullName"
-                [(ngModel)]="formModel.fullName"
-                #fullName="ngModel"
-                required
-                autocomplete="name"
-              />
-              <small *ngIf="fullName.invalid && (fullName.touched || requestForm.submitted)">Full name is required.</small>
-            </label>
-
-            <label class="request-field">
-              <span>Club name</span>
-              <input
-                type="text"
-                name="clubName"
-                [(ngModel)]="formModel.clubName"
-                #clubName="ngModel"
-                required
-                autocomplete="organization"
-              />
-              <small *ngIf="clubName.invalid && (clubName.touched || requestForm.submitted)">Club name is required.</small>
-            </label>
-
-            <label class="request-field">
-              <span>Role</span>
-              <input
-                type="text"
-                name="role"
-                [(ngModel)]="formModel.role"
-                #role="ngModel"
-                required
-                autocomplete="organization-title"
-              />
-              <small *ngIf="role.invalid && (role.touched || requestForm.submitted)">Role is required.</small>
-            </label>
-
-            <label class="request-field">
-              <span>Work email</span>
-              <input
-                type="email"
-                name="workEmail"
-                [(ngModel)]="formModel.workEmail"
-                #workEmail="ngModel"
-                required
-                email
-                autocomplete="email"
-              />
-              <small *ngIf="workEmail.invalid && (workEmail.touched || requestForm.submitted)">
-                Enter a valid work email.
-              </small>
-            </label>
-
-            <label class="request-field request-field--full">
-              <span>Phone number <em>Optional</em></span>
-              <input
-                type="tel"
-                name="phoneNumber"
-                [(ngModel)]="formModel.phoneNumber"
-                autocomplete="tel"
-              />
-            </label>
-
-            <label class="request-field request-field--full">
-              <span>Message</span>
-              <textarea
-                name="message"
-                [(ngModel)]="formModel.message"
-                #message="ngModel"
-                required
-                rows="5"
-              ></textarea>
-              <small *ngIf="message.invalid && (message.touched || requestForm.submitted)">Message is required.</small>
-            </label>
+          <div class="demo-success" *ngIf="submitted" aria-live="polite">
+            Thank you. The Football OS team will contact you soon.
           </div>
 
-          <div class="request-form__actions">
-            <button class="request-button request-button--primary" type="submit">Submit Request</button>
-            <a class="request-button request-button--secondary" routerLink="/">Back to home</a>
-          </div>
-        </form>
+          <form #requestForm="ngForm" class="demo-form" (ngSubmit)="submitRequest(requestForm)" novalidate>
+            <div class="demo-form__grid">
+              <label class="demo-field">
+                <span>First Name *</span>
+                <input
+                  type="text"
+                  name="firstName"
+                  [(ngModel)]="formModel.firstName"
+                  #firstName="ngModel"
+                  required
+                  autocomplete="given-name"
+                />
+                <small *ngIf="firstName.invalid && (firstName.touched || requestForm.submitted)">First name is required.</small>
+              </label>
+
+              <label class="demo-field">
+                <span>Last Name *</span>
+                <input
+                  type="text"
+                  name="lastName"
+                  [(ngModel)]="formModel.lastName"
+                  #lastName="ngModel"
+                  required
+                  autocomplete="family-name"
+                />
+                <small *ngIf="lastName.invalid && (lastName.touched || requestForm.submitted)">Last name is required.</small>
+              </label>
+
+              <label class="demo-field">
+                <span>Email Address *</span>
+                <input
+                  type="email"
+                  name="email"
+                  [(ngModel)]="formModel.email"
+                  #email="ngModel"
+                  required
+                  email
+                  autocomplete="email"
+                />
+                <small *ngIf="email.invalid && (email.touched || requestForm.submitted)">Enter a valid email address.</small>
+              </label>
+
+              <label class="demo-field">
+                <span>Phone Number</span>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  [(ngModel)]="formModel.phoneNumber"
+                  autocomplete="tel"
+                />
+              </label>
+
+              <label class="demo-field">
+                <span>Club Name</span>
+                <input
+                  type="text"
+                  name="clubName"
+                  [(ngModel)]="formModel.clubName"
+                  autocomplete="organization"
+                />
+              </label>
+
+              <label class="demo-field">
+                <span>Club Size</span>
+                <select name="clubSize" [(ngModel)]="formModel.clubSize">
+                  <option value="">Select size</option>
+                  <option value="1-25">1-25 staff</option>
+                  <option value="26-75">26-75 staff</option>
+                  <option value="76-150">76-150 staff</option>
+                  <option value="151+">151+ staff</option>
+                </select>
+              </label>
+
+              <label class="demo-field demo-field--full">
+                <span>Role / Position</span>
+                <input
+                  type="text"
+                  name="role"
+                  [(ngModel)]="formModel.role"
+                  autocomplete="organization-title"
+                />
+              </label>
+
+              <label class="demo-field demo-field--full">
+                <span>Message / Club Context</span>
+                <textarea
+                  name="message"
+                  [(ngModel)]="formModel.message"
+                  rows="4"
+                ></textarea>
+              </label>
+            </div>
+
+            <button class="demo-submit" type="submit">Request A Demo</button>
+            <p class="demo-form__policy">
+              By submitting this form, you acknowledge that the Football OS team may contact you about your demo request.
+            </p>
+          </form>
+        </section>
       </section>
+    </div>
+  </section>
+
+  <section class="demo-trust">
+    <div class="demo-shell">
+      <h2>Trusted and Top-Rated Platform</h2>
+      <div class="demo-rating-row">
+        <article class="demo-rating" *ngFor="let rating of ratings">
+          <span class="demo-rating__icon" aria-hidden="true"></span>
+          <p class="demo-rating__stars" aria-label="Five stars">★★★★★</p>
+          <p>{{ rating }}</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-faq">
+    <div class="demo-shell demo-faq__shell">
+      <h2>Your Questions, Answered</h2>
+      <div class="demo-faq-list">
+        <details class="demo-faq-item" *ngFor="let faq of faqs; let i = index" [open]="i === 0">
+          <summary>{{ faq.question }}</summary>
+          <p>{{ faq.answer }}</p>
+        </details>
+      </div>
     </div>
   </section>
 </main>
 
-<footer class="request-footer">
-  <div class="request-shell request-footer__inner">
-    <div class="request-footer__brand">
-      <h2>Football OS</h2>
+<footer class="demo-footer">
+  <div class="demo-shell demo-footer__grid">
+    <div>
+      <h3>Football OS</h3>
       <p>A digital operating system for modern football clubs.</p>
     </div>
 
-    <nav class="request-footer__links" aria-label="Public links">
-      <p class="request-footer__heading">Explore</p>
-      <a routerLink="/">Home</a>
+    <nav class="demo-footer__links" aria-label="Product">
+      <h4>Product</h4>
+      <a routerLink="/">Platform</a>
+      <a routerLink="/">Services</a>
+      <a routerLink="/">Workspace</a>
+    </nav>
+
+    <nav class="demo-footer__links" aria-label="Company">
+      <h4>Company</h4>
+      <a routerLink="/">About</a>
       <a routerLink="/request-access">Request Demo</a>
       <a routerLink="/login">Sign In</a>
     </nav>
 
-    <div class="request-footer__links" aria-label="Contact">
-      <p class="request-footer__heading">Contact</p>
+    <div class="demo-footer__links" aria-label="Contact">
+      <h4>Contact</h4>
       <a href="mailto:contact@footballos.com">contact&#64;footballos.com</a>
     </div>
   </div>
 
-  <div class="request-shell">
-    <div class="request-footer__meta">
-      <p>&copy; 2026 Football OS. All rights reserved.</p>
-    </div>
+  <div class="demo-shell">
+    <p class="demo-footer__meta">&copy; 2026 Football OS. All rights reserved.</p>
   </div>
 </footer>

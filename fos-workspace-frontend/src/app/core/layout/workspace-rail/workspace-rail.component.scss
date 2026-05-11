@@ -43,7 +43,33 @@
 }
 
 .sidebar-footer {
+  display: grid;
+  gap: var(--space-3);
+  justify-items: center;
   padding-top: var(--space-2);
+}
+
+.logout-button {
+  width: var(--control-height-sm);
+  height: var(--control-height-sm);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-muted);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.logout-button:hover {
+  background: var(--calendar-hover-surface);
+  border-color: var(--calendar-hover-border);
+  color: var(--color-text-primary);
 }
 
 @media (max-width: 960px) {

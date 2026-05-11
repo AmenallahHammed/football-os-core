@@ -1,7 +1,9 @@
 import { Component, Input } from '@angular/core';
+import { AuthService } from '../../auth/auth.service';
 import { WorkspaceDataService } from '../../data/workspace-data.service';
 import { NavItemComponent } from '../nav-item/nav-item.component';
 import { UserProfileComponent } from '../user-profile/user-profile.component';
+import { WorkspaceCalendarIconComponent } from '../../../shared/workspace-icon/workspace-icon.component';
 
 interface WorkspaceRailItem {
   label: string;
@@ -14,14 +16,17 @@ interface WorkspaceRailItem {
 @Component({
   selector: 'app-workspace-rail',
   standalone: true,
-  imports: [NavItemComponent, UserProfileComponent],
+  imports: [NavItemComponent, UserProfileComponent, WorkspaceCalendarIconComponent],
   templateUrl: './workspace-rail.component.html',
   styleUrl: './workspace-rail.component.scss'
 })
 export class WorkspaceRailComponent {
   @Input() showProfile = true;
 
-  constructor(private readonly workspaceData: WorkspaceDataService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly workspaceData: WorkspaceDataService
+  ) {}
 
   protected get navItems(): WorkspaceRailItem[] {
     return [
@@ -44,5 +49,9 @@ export class WorkspaceRailComponent {
       },
       { label: 'Settings', route: '/settings', icon: 'settings', exact: false }
     ];
+  }
+
+  protected logout(): void {
+    this.authService.logout('/login');
   }
 }

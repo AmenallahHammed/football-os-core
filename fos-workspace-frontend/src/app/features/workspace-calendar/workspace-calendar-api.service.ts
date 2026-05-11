@@ -2,6 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
+
 export type WorkspaceCalendarApiEventType = 'TRAINING' | 'MATCH' | 'MEETING' | 'MEDICAL_CHECK' | 'ADMINISTRATIVE' | 'OTHER';
 export type WorkspaceCalendarApiCanonicalType = 'PLAYER' | 'TEAM' | 'MATCH' | 'TRAINING_SESSION' | 'CLUB';
 
@@ -93,7 +95,7 @@ interface WorkspaceCalendarPageResponse<T> {
 })
 export class WorkspaceCalendarApiService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8080';
+  private readonly baseUrl = environment.gatewayBaseUrl.replace(/\/+$/, '');
   private readonly teamRefId = '00000000-0000-0000-0000-000000000001';
 
   listEvents(): Observable<WorkspaceCalendarApiEvent[]> {

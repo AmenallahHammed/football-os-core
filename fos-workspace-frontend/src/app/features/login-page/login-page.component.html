@@ -35,12 +35,26 @@
           </a>
         </div>
 
-        <button class="signin-form__submit" type="button" (click)="onSignIn()">Sign In</button>
+        <button
+          class="signin-form__submit"
+          type="button"
+          [disabled]="isSigningIn"
+          [attr.aria-busy]="isSigningIn"
+          (click)="onSignIn()"
+        >
+          {{ isSigningIn ? 'Opening secure sign-in...' : 'Sign In' }}
+        </button>
       </form>
 
-      <p class="signin-panel__status" role="status" aria-live="polite">
-        Opening secure sign-in...
-      </p>
+      @if (signInError) {
+        <p class="signin-panel__status signin-panel__status--error" role="alert">
+          {{ signInError }}
+        </p>
+      } @else {
+        <p class="signin-panel__status" role="status" aria-live="polite">
+          {{ statusMessage }}
+        </p>
+      }
     </section>
   </div>
 

@@ -1,5 +1,5 @@
 export const environment = {
-  production: true,
+  production: false,
   gatewayBaseUrl: 'http://localhost:8080',
   auth: {
     enabled: true,

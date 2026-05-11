@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { AuthGuard } from './core/auth/auth.guard';
+import { PublicAuthGuard } from './core/auth/public-auth.guard';
 import { LandingPageComponent } from './features/landing-page/landing-page.component';
 import { LoginPageComponent } from './features/login-page/login-page.component';
 import { DocumentsComponent } from './features/documents/documents.component';
@@ -20,6 +22,7 @@ export const publicRoutes: Routes = [
   {
     path: 'login',
     component: LoginPageComponent,
+    canActivate: [PublicAuthGuard],
     data: { animation: 'login-page', fullScreen: true }
   },
   {
@@ -32,6 +35,8 @@ export const publicRoutes: Routes = [
 export const authenticatedRoutes: Routes = [
   {
     path: 'workspace',
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
     children: [
       {
         path: '',
@@ -48,31 +53,37 @@ export const authenticatedRoutes: Routes = [
   {
     path: 'documents',
     component: DocumentsComponent,
+    canActivate: [AuthGuard],
     data: { animation: 'documents' }
   },
   {
     path: 'players',
     component: PlayersComponent,
+    canActivate: [AuthGuard],
     data: { animation: 'players' }
   },
   {
     path: 'players/:id',
     component: PlayerProfileComponent,
+    canActivate: [AuthGuard],
     data: { animation: 'player-profile' }
   },
   {
     path: 'notifications',
     component: NotificationsComponent,
+    canActivate: [AuthGuard],
     data: { animation: 'notifications' }
   },
   {
     path: 'inbox',
     component: InboxComponent,
+    canActivate: [AuthGuard],
     data: { animation: 'inbox' }
   },
   {
     path: 'settings',
     component: SettingsComponent,
+    canActivate: [AuthGuard],
     data: { animation: 'settings' }
   },
   {

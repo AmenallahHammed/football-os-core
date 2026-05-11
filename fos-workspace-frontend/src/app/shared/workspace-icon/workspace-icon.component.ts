@@ -120,6 +120,11 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
           <path d="M22 12h-6l-2 3h-4l-2-3H2"></path>
           <path d="M5.4 5h13.2a2 2 0 0 1 2 1.6l1.4 7.4a2 2 0 0 1-2 2.4H3.9a2 2 0 0 1-2-2.4l1.4-7.4A2 2 0 0 1 5.4 5z"></path>
         }
+        @case ('log-out') {
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <path d="M16 17l5-5-5-5"></path>
+          <path d="M21 12H9"></path>
+        }
       }
     </svg>
   `,

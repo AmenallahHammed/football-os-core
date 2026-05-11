@@ -18,6 +18,9 @@
   @if (showProfile) {
     <footer class="sidebar-footer">
       <app-user-profile [compact]="true"></app-user-profile>
+      <button type="button" class="logout-button" aria-label="Sign out" title="Sign out" (click)="logout()">
+        <app-workspace-calendar-icon name="log-out" [size]="18"></app-workspace-calendar-icon>
+      </button>
     </footer>
   }
 </aside>

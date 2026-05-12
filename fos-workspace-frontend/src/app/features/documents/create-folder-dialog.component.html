@@ -1,0 +1,105 @@
+<div class="dialog-scrim" role="presentation" (click)="onScrimClick($event)">
+  <section
+    #dialogPanel
+    class="dialog-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="create-folder-title"
+    aria-describedby="create-folder-description"
+    (keydown)="onPanelKeydown($event)"
+  >
+    <header class="dialog-header">
+      <div class="title-group">
+        <span class="folder-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h4.1a2.5 2.5 0 0 1 1.8.77l1.1 1.13a1 1 0 0 0 .72.3H18.5A2.5 2.5 0 0 1 21 8.7v8.8a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5v-11Z" />
+          </svg>
+        </span>
+        <div>
+          <h2 id="create-folder-title">Create folder</h2>
+          <p id="create-folder-description">Set folder access before creating it.</p>
+        </div>
+      </div>
+
+      <button type="button" class="close-btn" aria-label="Close create folder dialog" (click)="close()">&#10005;</button>
+    </header>
+
+    <form class="dialog-body" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field-block">
+        <label for="folder-name">Name</label>
+        <input #nameInput id="folder-name" type="text" formControlName="name" placeholder="Folder name" maxlength="100" />
+        @if (nameControl.touched && nameControl.hasError('trimmedRequired')) {
+          <p class="validation-error">Folder name is required.</p>
+        }
+        @if (nameControl.touched && nameControl.hasError('maxlength')) {
+          <p class="validation-error">Folder name cannot exceed 100 characters.</p>
+        }
+      </div>
+
+      <fieldset class="field-block access-fieldset">
+        <legend>Who can access</legend>
+
+        <label class="access-option">
+          <input
+            type="radio"
+            name="accessType"
+            [checked]="selectedAccessType === 'private'"
+            (change)="onAccessTypeChanged('private')"
+          />
+          <span class="access-copy">
+            <strong>Only you</strong>
+            <small>Only you can access this folder</small>
+          </span>
+        </label>
+
+        <label class="access-option">
+          <input
+            type="radio"
+            name="accessType"
+            [checked]="selectedAccessType === 'specific'"
+            (change)="onAccessTypeChanged('specific')"
+          />
+          <span class="access-copy">
+            <strong>Specific people</strong>
+            <small>Choose who to share this folder with</small>
+          </span>
+        </label>
+
+        @if (selectedAccessType === 'specific') {
+          <div class="people-picker">
+            <p class="people-label">Select staff member</p>
+            @if (people.length === 0) {
+              <p class="helper-text">No people available yet.</p>
+            } @else {
+              <div class="people-list">
+                @for (person of people; track person.id) {
+                  <label class="person-option">
+                    <input
+                      type="checkbox"
+                      [checked]="isPersonSelected(person.id)"
+                      (change)="togglePerson(person.id)"
+                    />
+                    <span class="person-copy">
+                      <strong>{{ person.name }}</strong>
+                      @if (person.secondaryInfo) {
+                        <small>{{ person.secondaryInfo }}</small>
+                      }
+                    </span>
+                  </label>
+                }
+              </div>
+            }
+            @if (specificPeopleRequiredAndMissing && (peopleControl.touched || peopleControl.dirty)) {
+              <p class="validation-error">Select at least one person to continue.</p>
+            }
+          </div>
+        }
+      </fieldset>
+
+      <footer class="dialog-actions">
+        <button type="button" class="btn-secondary" (click)="close()">Cancel</button>
+        <button type="submit" class="btn-primary" [disabled]="!canSubmit">Create</button>
+      </footer>
+    </form>
+  </section>
+</div>

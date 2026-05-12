@@ -1,7 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, ElementRef, HostListener, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/auth/auth.service';
 import { EventParticipant } from '../../shared/models/event.model';
@@ -11,7 +10,8 @@ import {
   WorkspaceCalendarApiEvent,
   WorkspaceCalendarApiEventType,
   WorkspaceCalendarApiService,
-  WorkspaceCalendarCreateEventRequest
+  WorkspaceCalendarCreateEventRequest,
+  WorkspaceCalendarUpdateEventRequest
 } from './workspace-calendar-api.service';
 
 type CalendarViewMode = 'day' | 'week' | 'month' | 'year';
@@ -30,6 +30,13 @@ interface CalendarRequiredDocumentDraft {
   assignedToActorId: string;
 }
 
+interface CalendarTaskDraft {
+  id: string;
+  title: string;
+  description: string;
+  assignedToActorId: string;
+}
+
 interface CalendarRequiredDocumentView {
   id: string;
   name: string;
@@ -42,6 +49,7 @@ interface CalendarRequiredDocumentView {
 
 interface CalendarEventView {
   id: string;
+  createdByActorId: string | null;
   title: string;
   description: string;
   type: WorkspaceCalendarApiEventType;
@@ -74,13 +82,6 @@ interface CreatePopoverState {
   y: number;
   date: Date;
   hour: number;
-}
-
-interface CalendarShellRailItem {
-  label: string;
-  icon: string;
-  route?: string;
-  active?: boolean;
 }
 
 interface CalendarViewOption {
@@ -180,7 +181,7 @@ const CALENDAR_PEOPLE: CalendarPerson[] = [
 @Component({
   selector: 'app-workspace-calendar',
   standalone: true,
-  imports: [DatePipe, FormsModule, RouterLink, WorkspaceCalendarIconComponent],
+  imports: [DatePipe, FormsModule, WorkspaceCalendarIconComponent],
   templateUrl: './workspace-calendar.component.html',
   styleUrl: './workspace-calendar.component.scss'
 })
@@ -204,14 +205,6 @@ export class WorkspaceCalendarComponent {
   private toastTimer: number | null = null;
   private lastFocusTrigger: HTMLElement | null = null;
 
-  protected readonly shellRailItems: CalendarShellRailItem[] = [
-    { label: 'Activity', icon: 'activity' },
-    { label: 'Conversation', icon: 'message-circle' },
-    { label: 'Calendar', icon: 'calendar', route: '/workspace/calendar', active: true },
-    { label: 'Calls', icon: 'phone' },
-    { label: 'Documents', icon: 'folder' },
-    { label: 'Applications', icon: 'apps' }
-  ];
   protected readonly viewOptions: CalendarViewOption[] = [
     { mode: 'day', label: 'Day' },
     { mode: 'week', label: 'Week' },
@@ -249,6 +242,8 @@ export class WorkspaceCalendarComponent {
   protected createPopover: CreatePopoverState | null = null;
   protected createDrawerOpen = false;
   protected createError = '';
+  protected editorMode: 'create' | 'edit' = 'create';
+  protected editingEventId: string | null = null;
 
   protected toastMessage = '';
   protected toastTone: ToastTone = 'info';
@@ -261,11 +256,16 @@ export class WorkspaceCalendarComponent {
   protected draftEndDateValue = this.toDateInputValue(new Date());
   protected draftStartTime = '09:00';
   protected draftEndTime = '10:30';
+  protected draftTaskTitle = '';
+  protected draftTaskDescription = '';
+  protected draftTaskAssignedStaffId = '';
+  protected taskDraftError = '';
   protected attendeeSearch = '';
   protected attendeeSuggestionsOpen = false;
   protected focusedAttendeeSuggestionIndex = 0;
   protected selectedAttendeeIds: string[] = [CURRENT_USER_ID];
   protected requiredDocumentDrafts: CalendarRequiredDocumentDraft[] = [this.newRequiredDocumentDraft()];
+  protected taskDrafts: CalendarTaskDraft[] = [];
 
   constructor() {
     this.loadEvents();
@@ -332,6 +332,14 @@ export class WorkspaceCalendarComponent {
     return this.currentRole === 'head-coach';
   }
 
+  protected get canModifySelectedEvent(): boolean {
+    return this.canModifyEvent(this.selectedEvent);
+  }
+
+  protected get isEditMode(): boolean {
+    return this.editorMode === 'edit';
+  }
+
   protected get currentRole(): CalendarRole {
     const claims = this.authService?.tokenClaims() ?? null;
     if (!environment.auth.enabled && !claims) {
@@ -387,6 +395,42 @@ export class WorkspaceCalendarComponent {
 
   protected get currentViewLabel(): string {
     return this.viewButtonLabel(this.viewMode);
+  }
+
+  protected get staffAssigneeOptions(): CalendarPerson[] {
+    return this.peopleDirectory.filter((person) => person.group !== 'Player');
+  }
+
+  protected get taskDraftStarted(): boolean {
+    return Boolean(this.draftTaskTitle.trim() || this.draftTaskDescription.trim() || this.draftTaskAssignedStaffId);
+  }
+
+  protected get taskDraftInlineError(): string {
+    if (this.taskDraftError) {
+      return this.taskDraftError;
+    }
+
+    if (!this.taskDraftStarted) {
+      return '';
+    }
+
+    if (this.draftTaskTitle.trim().length > 80) {
+      return 'Task title must be 80 characters or fewer.';
+    }
+
+    if (this.draftTaskDescription.trim().length > 300) {
+      return 'Task description must be 300 characters or fewer.';
+    }
+
+    if (!this.draftTaskTitle.trim()) {
+      return 'Task title is required when adding a task.';
+    }
+
+    if (!this.draftTaskAssignedStaffId) {
+      return 'Assign a staff member for this task.';
+    }
+
+    return '';
   }
 
   protected get filteredAttendeeSuggestions(): CalendarPerson[] {
@@ -805,8 +849,20 @@ export class WorkspaceCalendarComponent {
   }
 
   protected closeCreateDrawer(): void {
+    const eventIdToReopen = this.isEditMode ? this.editingEventId : null;
     this.createDrawerOpen = false;
     this.createError = '';
+    this.editorMode = 'create';
+    this.editingEventId = null;
+
+    if (eventIdToReopen) {
+      const eventToReopen = this.events.find((event) => event.id === eventIdToReopen) ?? null;
+      if (eventToReopen) {
+        this.openEvent(eventToReopen);
+        return;
+      }
+    }
+
     this.restoreFocus();
   }
 
@@ -920,6 +976,43 @@ export class WorkspaceCalendarComponent {
     this.requiredDocumentDrafts = this.requiredDocumentDrafts.filter((row) => row.id !== rowId);
   }
 
+  protected addTaskDraft(): void {
+    const validationError = this.validateTaskDraftInput();
+    this.taskDraftError = validationError ?? '';
+    if (validationError) {
+      return;
+    }
+
+    this.taskDrafts = [
+      ...this.taskDrafts,
+      {
+        id: this.newId('task'),
+        title: this.draftTaskTitle.trim(),
+        description: this.draftTaskDescription.trim(),
+        assignedToActorId: this.draftTaskAssignedStaffId
+      }
+    ];
+
+    this.clearTaskDraftInput();
+  }
+
+  protected removeTaskDraft(taskId: string): void {
+    this.taskDrafts = this.taskDrafts.filter((task) => task.id !== taskId);
+  }
+
+  protected taskAssignedName(task: CalendarTaskDraft): string {
+    return this.personById(task.assignedToActorId)?.name ?? 'Unassigned';
+  }
+
+  protected taskDescriptionPreview(task: CalendarTaskDraft): string {
+    const description = task.description.trim();
+    if (!description) {
+      return 'No description';
+    }
+
+    return description.length > 90 ? `${description.slice(0, 87)}...` : description;
+  }
+
   protected createEvent(): void {
     if (this.createDisabled) {
       this.createError = 'Title, start, and end are required.';
@@ -934,6 +1027,51 @@ export class WorkspaceCalendarComponent {
       this.createError = 'End date and time must be after start.';
       return;
     }
+
+    if (this.isEditMode) {
+      if (!this.editingEventId) {
+        this.createError = 'Unable to determine which event to update.';
+        return;
+      }
+
+      const request: WorkspaceCalendarUpdateEventRequest = {
+        title: this.draftEventName.trim(),
+        description: this.draftDescription.trim() || null,
+        startAt,
+        endAt,
+        location: this.draftLocation.trim() || null
+      };
+
+      const eventId = this.editingEventId;
+      this.calendarApi.updateEvent(eventId, request).subscribe({
+        next: (eventResponse) => {
+          this.createDrawerOpen = false;
+          this.createError = '';
+          this.editorMode = 'create';
+          this.editingEventId = null;
+          this.showToast('Event updated', 'success');
+          this.loadEvents(eventResponse.eventId);
+        },
+        error: () => {
+          this.createError = 'Unable to update the event.';
+        }
+      });
+
+      return;
+    }
+
+    const taskDraftValidationError = this.validateTaskDraftInput();
+    if (taskDraftValidationError) {
+      this.taskDraftError = taskDraftValidationError;
+      return;
+    }
+
+    const tasksPayload = this.taskDrafts.map((task) => ({
+      title: task.title,
+      description: task.description || '',
+      assignedToActorId: task.assignedToActorId || null,
+      dueAt: null
+    }));
 
     const request: WorkspaceCalendarCreateEventRequest = {
       title: this.draftEventName.trim(),
@@ -954,13 +1092,16 @@ export class WorkspaceCalendarComponent {
           documentCategory: 'GENERAL',
           assignedToActorId: document.assignedToActorId || null
         })),
-      tasks: []
+      tasks: tasksPayload
     };
 
     this.calendarApi.createEvent(request).subscribe({
       next: (eventResponse) => {
         this.closeCreateDrawer();
-        this.showToast('Event created', 'success');
+        this.showToast(
+          tasksPayload.length > 0 ? 'Session created. Assigned staff will be notified.' : 'Event created',
+          'success'
+        );
         this.loadEvents(eventResponse.eventId);
       },
       error: () => {
@@ -992,8 +1133,16 @@ export class WorkspaceCalendarComponent {
     this.restoreFocus();
   }
 
+  protected editSelectedEvent(trigger?: EventTarget | null): void {
+    if (!this.selectedEvent || !this.canModifyEvent(this.selectedEvent)) {
+      return;
+    }
+
+    this.openEditDrawer(this.selectedEvent, trigger);
+  }
+
   protected deleteSelectedEvent(): void {
-    if (!this.selectedEvent || !this.canManageEvents) {
+    if (!this.selectedEvent || !this.canModifyEvent(this.selectedEvent)) {
       return;
     }
 
@@ -1291,6 +1440,7 @@ export class WorkspaceCalendarComponent {
 
     return {
       id: eventResponse.eventId,
+      createdByActorId: eventResponse.createdByActorId,
       title: eventResponse.title,
       description: eventResponse.description ?? 'No event description provided.',
       type: eventResponse.type,
@@ -1340,6 +1490,24 @@ export class WorkspaceCalendarComponent {
     return this.visibleEvents.filter((event) => this.sameDay(event.start, date)).sort((left, right) => left.start.getTime() - right.start.getTime());
   }
 
+  private canModifyEvent(eventItem: CalendarEventView | null): boolean {
+    if (!eventItem || !this.canManageEvents) {
+      return false;
+    }
+
+    const creatorId = eventItem.createdByActorId;
+    if (!creatorId) {
+      return true;
+    }
+
+    const currentActorId = this.authService?.currentActorId() ?? null;
+    if (!currentActorId) {
+      return true;
+    }
+
+    return creatorId === currentActorId || creatorId === this.currentUser.id;
+  }
+
   private buildMonthCells(anchorDate: Date): CalendarDayCell[] {
     const monthStart = new Date(anchorDate.getFullYear(), anchorDate.getMonth(), 1);
     const firstDayIndex = (monthStart.getDay() + 6) % 7;
@@ -1367,8 +1535,33 @@ export class WorkspaceCalendarComponent {
     this.closeMonthPicker();
     this.closeViewMenu();
     this.closeMoreOptionsMenu();
+    this.editorMode = 'create';
+    this.editingEventId = null;
     this.resetCreateForm(this.startOfDay(date), hour);
     this.selectedEvent = null;
+    this.drawerOpen = false;
+    this.leftRailOpen = false;
+    this.createDrawerOpen = true;
+
+    if (trigger instanceof HTMLElement) {
+      this.rememberTrigger(trigger);
+    }
+
+    window.setTimeout(() => this.focusOverlay(this.createDrawer?.nativeElement), 0);
+  }
+
+  private openEditDrawer(eventItem: CalendarEventView, trigger?: EventTarget | null): void {
+    if (!this.canModifyEvent(eventItem)) {
+      return;
+    }
+
+    this.closeCreatePopover();
+    this.closeMonthPicker();
+    this.closeViewMenu();
+    this.closeMoreOptionsMenu();
+    this.prefillFormForEdit(eventItem);
+    this.editorMode = 'edit';
+    this.editingEventId = eventItem.id;
     this.drawerOpen = false;
     this.leftRailOpen = false;
     this.createDrawerOpen = true;
@@ -1420,7 +1613,65 @@ export class WorkspaceCalendarComponent {
     this.closeAttendeeSuggestions();
     this.selectedAttendeeIds = [CURRENT_USER_ID];
     this.requiredDocumentDrafts = [this.newRequiredDocumentDraft()];
+    this.clearTaskDraftInput();
+    this.taskDrafts = [];
     this.createError = '';
+  }
+
+  private prefillFormForEdit(eventItem: CalendarEventView): void {
+    this.draftEventName = eventItem.title;
+    this.draftDescription = eventItem.description === 'No event description provided.' ? '' : eventItem.description;
+    this.draftLocation = eventItem.location === 'No location assigned' ? '' : eventItem.location;
+    this.draftEventType = eventItem.type;
+    this.draftDateValue = this.toDateInputValue(eventItem.start);
+    this.draftEndDateValue = this.toDateInputValue(eventItem.end);
+    this.draftStartTime = this.toTimeInputValue(eventItem.start);
+    this.draftEndTime = this.toTimeInputValue(eventItem.end);
+    this.attendeeSearch = '';
+    this.closeAttendeeSuggestions();
+    this.selectedAttendeeIds = eventItem.attendees.map((attendee) => attendee.id);
+    this.requiredDocumentDrafts =
+      eventItem.requiredDocuments.length > 0
+        ? eventItem.requiredDocuments.map((document) => ({
+            id: this.newId('doc'),
+            name: document.name,
+            assignedToActorId: document.assignedToActorId ?? ''
+          }))
+        : [this.newRequiredDocumentDraft()];
+    this.clearTaskDraftInput();
+    this.taskDrafts = [];
+    this.createError = '';
+  }
+
+  private validateTaskDraftInput(): string | null {
+    if (!this.taskDraftStarted) {
+      return null;
+    }
+
+    if (this.draftTaskTitle.trim().length > 80) {
+      return 'Task title must be 80 characters or fewer.';
+    }
+
+    if (this.draftTaskDescription.trim().length > 300) {
+      return 'Task description must be 300 characters or fewer.';
+    }
+
+    if (!this.draftTaskTitle.trim()) {
+      return 'Task title is required when adding a task.';
+    }
+
+    if (!this.draftTaskAssignedStaffId) {
+      return 'Assign a staff member for this task.';
+    }
+
+    return null;
+  }
+
+  private clearTaskDraftInput(): void {
+    this.draftTaskTitle = '';
+    this.draftTaskDescription = '';
+    this.draftTaskAssignedStaffId = '';
+    this.taskDraftError = '';
   }
 
   private rememberTrigger(trigger: HTMLElement): void {
@@ -1520,6 +1771,10 @@ export class WorkspaceCalendarComponent {
 
   private toDateInputValue(date: Date): string {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  }
+
+  private toTimeInputValue(date: Date): string {
+    return `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
   }
 
   private isValidDate(date: Date | null | undefined): date is Date {

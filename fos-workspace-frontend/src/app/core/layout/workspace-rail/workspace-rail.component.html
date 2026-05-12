@@ -17,7 +17,16 @@
 
   @if (showProfile) {
     <footer class="sidebar-footer">
-      <app-user-profile [compact]="true"></app-user-profile>
+      <a
+        class="profile-link"
+        routerLink="/workspace/profile"
+        routerLinkActive="is-active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        aria-label="Open profile"
+        title="Profile"
+      >
+        <app-user-profile [compact]="true"></app-user-profile>
+      </a>
       <button type="button" class="logout-button" aria-label="Sign out" title="Sign out" (click)="logout()">
         <app-workspace-calendar-icon name="log-out" [size]="18"></app-workspace-calendar-icon>
       </button>

@@ -1,0 +1,105 @@
+Here are all my questions in one go — answer as many as you can and we'll build the execution plan from there.
+
+**Layout & Structure**
+1. What's the exact split between the left panel and right calendar — is it something like 60px icon bar + full remaining width, or a wider left panel with labels?
+2. Does the left panel have only the Calendar icon, or other icons too (Documents, Notifications, Profile, etc.)?
+3. Is there a top navigation bar/header above everything, or does the calendar fill the full viewport edge to edge?
+4. On the calendar screenshot, is the right section showing a monthly view, weekly view, or both switchable?
+
+**Color Palette & Design**
+5. Can you describe or list the main colors from the palette PNG? (primary, background, accent, text colors — since I can't see the image)
+6. Is the overall theme dark, light, or a specific branded color scheme?
+7. What font family should be used — something specific or a clean sans-serif like Inter/Roboto?
+
+**Calendar Behavior**
+8. When a head coach clicks an empty date, does the create-event overlay open immediately, or is there a small popup/tooltip first asking "Create event?"
+9. Can staff members click on a date that has no events, or is clicking empty dates restricted to head coaches only?
+10. How are events displayed on the calendar cells — as colored dots, short title bars, or full event cards within the cell?
+11. If multiple events exist on one day, how are they shown — stacked, "+N more" overflow, or scrollable within the cell?
+12. Is there a today-highlight on the calendar?
+
+**Create Event Form (Head Coach Only)**
+13. What fields are in the create-event form exactly? From the photo description I can guess: title, date/time, location, type (training/match/meeting etc.), attendees/staff assignment — are there others like required documents, tasks, description?
+14. Is the attendee/staff assignment a multi-select dropdown, a search-and-add field, or a checklist?
+15. For required documents — can the coach specify what documents attendees need to bring/submit?
+16. Does the form have sections/steps or is it one long scrollable form?
+17. What's the save/submit button behavior — does it close the overlay and show the event immediately on the calendar?
+
+**View Event Side Panel (Staff Members)**
+18. The side panel for viewing events — does it slide in from the right, or is it a fixed panel that replaces content?
+19. What information is shown in the view-event panel: title, date/time, location, attendees list, attached files?
+20. The three-dot dropdown for files — what are the options? Download, Preview, Delete, something else?
+21. Can staff members RSVP or confirm attendance from the view panel?
+22. Can the head coach also see this view panel, and from it edit or delete the event?
+
+**Permissions & Role Behavior**
+23. Is "head coach" the only role that can create events, or can CLUB_ADMIN also create?
+24. Can anyone delete events, or only the creator/head coach?
+25. When a staff member opens the calendar, are ALL events visible to them, or only events they're invited to?
+
+**Data & API**
+26. The backend event API is at `/api/v1/events` — should the frontend call the gateway at port 8080, or the workspace service directly at 8082?
+27. Is authentication handled — meaning the frontend sends a JWT in the Authorization header, or is security disabled for now (dev mode)?
+28. Should the frontend show loading states and error messages, or keep it minimal for now?
+
+**Technical Stack**
+29. Is this an Angular app (as mentioned in ARCHITECTURE.md for Phase 1), or React/plain HTML?
+30. Should this be built as a single HTML file artifact, a React JSX artifact, or actual Angular component files?
+31. Should it use the existing backend API or mock data for now?
+
+
+
+
+answers 
+1)it's a 60px icon bar + the full remaining width
+
+2)there is another documents too but for now im conserned with the calnder section 
+
+3)idk honestly ig the most logical thing is the calnder filling the full viewport
+
+4)both switchable
+
+5)text->#000000 for main text stuff
+
+for sutle text file name stuff liek that ->#8B8783
+
+background->#FFFFFF
+
+missing doc /delete->#DE0000
+
+general color pallete :
+
+#000000
+
+#0061FF
+
+#FFFFFF
+
+#DE0000
+
+#8B8783
+
+6) the theme should be minimal and light for now i just want to see the design and check it out 
+
+7)font clean sans-serif
+
+8)there is a small pop up tooltip saying create event 
+9)staff can click but Nothing happens when they click they Don't have the authorization 
+10)check the picture i inserted to figure out the answer 
+11)check the image i iserted fro the answer of this question also 
+12)yes
+13)i will insert a photo of this 
+14 15 16 17) ill insert a picture that answers all of these quesitons 
+18) it slides from the right 
+19 20 ) ill insert two pitcure to confirme these questions 
+21)ehh idk i didn't thnik of this level it be for further development 
+22) yes he can see also 
+23)only the head coach can create events 
+24)no only the head coach can delete evnets becasue he is the one creating them 
+25)all the events are visible to them 
+26)The frontend should always call the gateway at port 8080 — never the workspace service directly.
+27)yeah yeah dont worry about auth for now 
+28)for now keep it minimal
+29)angular
+30)no multiple resusable components there is like a frontend but is very bad i want ti edit it and fix it 
+31)it shoudl use the existing backend api ill insert the data in the data base myself 

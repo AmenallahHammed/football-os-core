@@ -2,12 +2,13 @@
   class="dropzone"
   [class.drag-active]="dragActive"
   [class.compact]="compact"
+  [class.disabled]="disabled"
   (dragover)="onDragOver($event)"
   (dragleave)="onDragLeave($event)"
   (drop)="onDrop($event)"
 >
-  <input #fileInput type="file" multiple class="file-input" (change)="onFileInput($event)" />
+  <input #fileInput type="file" multiple class="file-input" [disabled]="disabled" (change)="onFileInput($event)" />
   <p class="title">Drop files here</p>
   <p class="hint">or choose files directly from your computer</p>
-  <button type="button" class="pick-btn" (click)="fileInput.click()">Choose Files</button>
+  <button type="button" class="pick-btn" [disabled]="disabled" (click)="fileInput.click()">Choose Files</button>
 </section>

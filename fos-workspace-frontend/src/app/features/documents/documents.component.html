@@ -78,7 +78,35 @@
       </div>
 
       @if (showDropzone) {
-        <app-dropzone class="upload-panel" [compact]="true" (filesSelected)="onFilesSelected($event)"></app-dropzone>
+        <div class="upload-config-row">
+          <label class="upload-config-field">
+            <span>Category</span>
+            <select class="feature-control" [(ngModel)]="uploadCategory" [disabled]="uploadBusy">
+              @for (category of uploadCategoryOptions; track category) {
+                <option [value]="category">{{ category }}</option>
+              }
+            </select>
+          </label>
+
+          <label class="upload-config-field">
+            <span>Visibility</span>
+            <select class="feature-control" [(ngModel)]="uploadVisibility" [disabled]="uploadBusy">
+              @for (visibility of uploadVisibilityOptions; track visibility) {
+                <option [value]="visibility">{{ visibility }}</option>
+              }
+            </select>
+          </label>
+        </div>
+
+        @if (uploadStatusMessage) {
+          <p class="upload-status" role="status">{{ uploadStatusMessage }}</p>
+        }
+        @if (uploadBusy) {
+          <p class="upload-status upload-status--muted" role="status">Uploading... {{ uploadProgress }}%</p>
+        }
+
+        <app-dropzone class="upload-panel" [compact]="true" [disabled]="uploadBusy" (filesSelected)="onFilesSelected($event)"></app-dropzone>
+        <p class="upload-helper">Allowed files: DOC, DOCX, XLS, XLSX, PPT, PPTX, PDF, TXT, ODT, ODS, ODP, PNG, JPG, JPEG. Max: 25MB.</p>
       }
 
       <div class="table-wrapper">
@@ -109,13 +137,44 @@
           <p class="empty-state">No documents match the selected filters.</p>
         }
       </div>
-    </section>
 
-    @if (selectedDocument) {
-      <aside class="editor-panel" @panelSlide>
-        <app-onlyoffice-editor [document]="selectedDocument" (closed)="closeEditor()"></app-onlyoffice-editor>
-      </aside>
-    }
+      @if (openDocumentError) {
+        <p class="open-error" role="status">
+          {{ openDocumentError }}
+          If this is a real backend document, open
+          <code>/workspace/onlyoffice-test/&lt;document-uuid&gt;</code>
+          with a valid UUID.
+        </p>
+      }
+
+      @if (backendLoadError) {
+        <p class="backend-warning" role="status">{{ backendLoadError }}</p>
+      }
+
+      @if (contextActionInfo) {
+        <p class="context-info" role="status">{{ contextActionInfo }}</p>
+      }
+
+      @if (contextActionError) {
+        <p class="context-error" role="alert">{{ contextActionError }}</p>
+      }
+
+      @if (createFolderInfo) {
+        <p class="context-info" role="status">{{ createFolderInfo }}</p>
+      }
+
+      @if (createFolderError) {
+        <p class="context-error" role="alert">{{ createFolderError }}</p>
+      }
+
+      @if (uploadInfo) {
+        <p class="context-info" role="status">{{ uploadInfo }}</p>
+      }
+
+      @if (uploadError) {
+        <p class="context-error" role="alert">{{ uploadError }}</p>
+      }
+    </section>
   </div>
 
   <app-context-menu
@@ -126,4 +185,12 @@
     (closed)="closeContextMenu()"
     (actionSelected)="handleContextAction($event)"
   ></app-context-menu>
+
+  @if (showCreateFolderDialog) {
+    <app-create-folder-dialog
+      [people]="createFolderPeople"
+      (cancelled)="closeCreateFolderDialog()"
+      (created)="handleCreateFolder($event)"
+    ></app-create-folder-dialog>
+  }
 </section>

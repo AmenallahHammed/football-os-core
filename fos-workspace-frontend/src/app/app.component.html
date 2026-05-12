@@ -1,11 +1,16 @@
-<div class="workspace-shell" [class.workspace-shell--full]="isFullScreenRoute(outlet)">
-  @if (!isFullScreenRoute(outlet)) {
+<div class="workspace-shell" [class.workspace-shell--full]="fullScreenRoute">
+  @if (!fullScreenRoute) {
     <app-sidebar class="shell-sidebar"></app-sidebar>
   }
 
-  <main class="shell-main" [class.shell-main--full]="isFullScreenRoute(outlet)">
-    <div class="page-layer" [class.page-layer--full]="isFullScreenRoute(outlet)" [@routeTransition]="getRouteAnimationState(outlet)">
-      <router-outlet #outlet="outlet"></router-outlet>
+  <main class="shell-main" [class.shell-main--full]="fullScreenRoute">
+    <div
+      class="page-layer"
+      [class.page-layer--full]="fullScreenRoute"
+      [class.page-layer--flush]="fullHeightRoute"
+      [@routeTransition]="routeAnimationState"
+    >
+      <router-outlet #outlet="outlet" (activate)="onOutletActivated(outlet)"></router-outlet>
     </div>
   </main>
 </div>

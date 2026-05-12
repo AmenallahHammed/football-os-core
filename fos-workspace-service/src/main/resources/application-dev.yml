@@ -40,8 +40,9 @@ fos:
     service-url: http://localhost:8081
   onlyoffice:
     document-server-url: http://localhost:8090
-    # Simple known secret for local dev - easy to decode manually if needed
-    jwt-secret: dev-onlyoffice-secret-key-32-chars!!
+    # Keep this aligned with the OnlyOffice Docker JWT secret to avoid
+    # "document security token is not correctly formed" / invalid signature.
+    jwt-secret: ${ONLYOFFICE_JWT_SECRET:fos-onlyoffice-secret-key-change-in-production}
 
 minio:
   endpoint: http://localhost:9000

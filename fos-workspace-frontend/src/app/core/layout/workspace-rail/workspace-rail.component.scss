@@ -15,6 +15,7 @@
   padding: var(--space-4) 0;
   background: var(--color-neutral-0);
   border-right: 1px solid var(--color-border-subtle);
+  overflow-x: hidden;
 }
 
 .brand {
@@ -39,6 +40,8 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-3);
+  width: 100%;
+  overflow-x: hidden;
   overflow-y: auto;
 }
 
@@ -47,6 +50,35 @@
   gap: var(--space-3);
   justify-items: center;
   padding-top: var(--space-2);
+}
+
+.profile-link {
+  display: inline-grid;
+  place-items: center;
+  width: var(--control-height-sm);
+  height: var(--control-height-sm);
+  border: 1px solid transparent;
+  border-radius: 50%;
+  text-decoration: none;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
+}
+
+.profile-link:hover {
+  background: var(--calendar-hover-surface);
+  border-color: var(--calendar-hover-border);
+}
+
+.profile-link.is-active {
+  background: var(--calendar-emphasis-surface);
+  border-color: var(--color-brand-primary);
+}
+
+.profile-link:focus-visible {
+  box-shadow: var(--shadow-focus);
+  outline: none;
 }
 
 .logout-button {

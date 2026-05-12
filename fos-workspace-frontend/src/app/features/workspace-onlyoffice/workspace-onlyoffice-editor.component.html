@@ -1,0 +1,63 @@
+<section class="feature-page onlyoffice-page">
+  <header class="feature-header onlyoffice-header">
+    <div class="feature-header-copy">
+      <p class="feature-kicker">Document workspace</p>
+      <h1 class="feature-title">OnlyOffice Editor</h1>
+      <p class="feature-subtitle">
+        Open documentId <strong>{{ documentId }}</strong> in {{ mode }} mode.
+      </p>
+      @if (isPdfMode) {
+        <p class="feature-empty">PDF files are opened in viewer mode.</p>
+      }
+    </div>
+
+    <a class="feature-button" routerLink="/workspace/documents">Back to Documents</a>
+  </header>
+
+  @if (errorMessage) {
+    <section class="feature-surface state-card is-error" role="alert">
+      <h2>{{ errorMessage }}</h2>
+      <p>{{ errorDetail }}</p>
+      <p class="state-card-help">
+        The editor configuration could not be generated. Check that the document exists, has a confirmed upload
+        version, and that OnlyOffice/storage settings are running.
+      </p>
+      <a class="feature-button" routerLink="/workspace/documents">Back to Documents</a>
+    </section>
+  }
+
+  @if (loading) {
+    <section class="feature-surface state-card">
+      <h2>Loading</h2>
+      <p>Loading OnlyOffice configuration and script...</p>
+    </section>
+  }
+
+  @if (networkWarning && !errorMessage) {
+    <section class="feature-surface state-card is-warning" role="status">
+      <h2>OnlyOffice Network Warning</h2>
+      <p>{{ networkWarning }}</p>
+      <p class="state-card-help">OnlyOffice could not download this document. Check that the document URL is reachable from the OnlyOffice container.</p>
+    </section>
+  }
+
+  @if (showDebug) {
+    <section class="feature-surface debug-card">
+      <h2>Debug</h2>
+      <p><strong>Gateway endpoint:</strong> <code>http://localhost:8080/api/v1/onlyoffice/config</code></p>
+      <p><strong>Script URL:</strong> <code>{{ onlyOfficeScriptUrl || 'Pending config response...' }}</code></p>
+      <p><strong>DocsAPI available:</strong> <code>{{ docsApiAvailable }}</code></p>
+      @if (networkWarning) {
+        <p><strong>Docker warning:</strong> <code>{{ networkWarning }}</code></p>
+      }
+      <details>
+        <summary>Raw backend config response</summary>
+        <pre>{{ configPreview || 'No config received yet.' }}</pre>
+      </details>
+    </section>
+  }
+
+  <section class="feature-surface editor-card" [class.is-hidden]="loading || !!errorMessage">
+    <div id="onlyoffice-editor-host" class="editor-host" aria-label="OnlyOffice editor container"></div>
+  </section>
+</section>

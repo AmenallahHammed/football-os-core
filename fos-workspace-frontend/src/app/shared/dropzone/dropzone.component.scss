@@ -16,6 +16,11 @@
   padding: 14px;
 }
 
+.dropzone.disabled {
+  opacity: 0.72;
+  pointer-events: none;
+}
+
 .title {
   margin: 0;
   color: var(--color-text-primary);
@@ -42,6 +47,10 @@
 
 .pick-btn:hover {
   background: var(--color-neutral-100);
+}
+
+.pick-btn:disabled {
+  cursor: not-allowed;
 }
 
 .file-input {

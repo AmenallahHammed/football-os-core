@@ -1,28 +1,4 @@
 <section class="calendar-page">
-  <aside class="calendar-icon-rail" aria-label="Workspace modules">
-    <div class="rail-brand" aria-label="Workspace">F</div>
-
-    <nav class="shell-rail-links" aria-label="Primary navigation">
-      @for (item of shellRailItems; track item.label) {
-        @if (item.route) {
-          <a
-            class="shell-rail-link"
-            [class.is-active]="item.active"
-            [routerLink]="item.route"
-            [attr.aria-label]="item.label"
-            [attr.title]="item.label"
-          >
-            <app-workspace-calendar-icon [name]="item.icon" [size]="20"></app-workspace-calendar-icon>
-          </a>
-        } @else {
-          <button type="button" class="shell-rail-link is-disabled" [attr.aria-label]="item.label" [attr.title]="item.label" disabled>
-            <app-workspace-calendar-icon [name]="item.icon" [size]="20"></app-workspace-calendar-icon>
-          </button>
-        }
-      }
-    </nav>
-  </aside>
-
   @if (leftRailOpen) {
     <button type="button" class="left-rail-backdrop" aria-label="Close calendar navigation" (click)="closeLeftRail()"></button>
   }
@@ -228,8 +204,6 @@
             type="button"
             class="icon-btn toolbar-overflow-btn"
             [class.is-open]="moreOptionsMenuOpen"
-            [style.background]="moreOptionsMenuOpen ? 'var(--calendar-hover-surface)' : null"
-            [style.borderColor]="moreOptionsMenuOpen ? '#dadce0' : null"
             aria-label="More options"
             aria-haspopup="menu"
             aria-controls="calendar-more-options-menu"
@@ -515,7 +489,7 @@
       tabindex="-1"
     >
       <header class="create-modal-header">
-        <h3 id="create-event-title">New event</h3>
+        <h3 id="create-event-title">{{ isEditMode ? 'Edit session' : 'New event' }}</h3>
 
         <button type="button" class="icon-btn" aria-label="Close create event modal" (click)="closeCreateDrawer()">
           <app-workspace-calendar-icon class="control-icon" name="x" [size]="18"></app-workspace-calendar-icon>
@@ -540,7 +514,12 @@
           @if (createError) {
             <p class="create-error" role="alert">{{ createError }}</p>
           }
-          <button type="button" class="primary-btn" [disabled]="createDisabled" (click)="createEvent()">Save</button>
+          @if (isEditMode) {
+            <button type="button" class="secondary-btn" (click)="closeCreateDrawer()">Cancel</button>
+          }
+          <button type="button" class="primary-btn" [disabled]="createDisabled" (click)="createEvent()">
+            {{ isEditMode ? 'Save changes' : 'Save' }}
+          </button>
         </div>
       </div>
 
@@ -702,6 +681,84 @@
               }
             </div>
           </section>
+
+          @if (!isEditMode) {
+            <section class="field-group tasks-section">
+              <div class="section-head compact">
+                <div>
+                  <span>Assign Task</span>
+                </div>
+              </div>
+
+              <p class="feature-empty">Define tasks for staff members to complete before or during this session.</p>
+
+              <label class="field-group">
+                <span>Task title</span>
+                <input
+                  type="text"
+                  [(ngModel)]="draftTaskTitle"
+                  maxlength="80"
+                  placeholder="Example: Prepare training equipment"
+                />
+              </label>
+
+              <label class="field-group">
+                <span>Task description</span>
+                <textarea
+                  rows="3"
+                  [(ngModel)]="draftTaskDescription"
+                  maxlength="300"
+                  placeholder="Describe what needs to be done before or during the session"
+                ></textarea>
+              </label>
+
+              <label class="field-group">
+                <span>Assign staff member</span>
+                <select [(ngModel)]="draftTaskAssignedStaffId">
+                  <option value="">Select staff member</option>
+                  @for (person of staffAssigneeOptions; track person.id) {
+                    <option [value]="person.id">{{ person.name }} · {{ person.role }}</option>
+                  }
+                </select>
+              </label>
+
+              @if (taskDraftInlineError) {
+                <p class="create-error" role="alert">{{ taskDraftInlineError }}</p>
+              }
+
+              <div>
+                <button type="button" class="primary-btn" (click)="addTaskDraft()">
+                  <span class="button-label">
+                    <app-workspace-calendar-icon class="control-icon" name="plus" [size]="16"></app-workspace-calendar-icon>
+                    Add Task
+                  </span>
+                </button>
+              </div>
+
+              @if (taskDrafts.length > 0) {
+                <div class="drawer-doc-list">
+                  @for (task of taskDrafts; track task.id) {
+                    <article class="drawer-doc-row">
+                      <div>
+                        <strong>{{ task.title }}</strong>
+                        <span>{{ taskAssignedName(task) }}</span>
+                        <span>{{ taskDescriptionPreview(task) }}</span>
+                      </div>
+
+                      <button
+                        type="button"
+                        class="icon-btn menu-danger"
+                        aria-label="Remove task"
+                        (click)="removeTaskDraft(task.id)"
+                      >
+                        <app-workspace-calendar-icon class="control-icon" name="trash" [size]="16"></app-workspace-calendar-icon>
+                      </button>
+                    </article>
+                  }
+                </div>
+              }
+            </section>
+          }
         </div>
 
         <aside class="create-preview-column" aria-label="Event preview">
@@ -761,13 +818,21 @@
               <h4>{{ eventItem.title }}</h4>
             </div>
 
-            @if (canManageEvents) {
-              <button type="button" class="danger-link" (click)="deleteSelectedEvent()">
-                <span class="button-label">
-                  <app-workspace-calendar-icon class="inline-icon" name="trash" [size]="16"></app-workspace-calendar-icon>
-                  Delete
-                </span>
-              </button>
+            @if (canModifySelectedEvent) {
+              <div class="drawer-event-actions">
+                <button type="button" class="secondary-btn edit-session-btn" (click)="editSelectedEvent($event.currentTarget)">
+                  <span class="button-label">
+                    <app-workspace-calendar-icon class="inline-icon" name="settings" [size]="16"></app-workspace-calendar-icon>
+                    Edit Session
+                  </span>
+                </button>
+                <button type="button" class="danger-link" (click)="deleteSelectedEvent()">
+                  <span class="button-label">
+                    <app-workspace-calendar-icon class="inline-icon" name="trash" [size]="16"></app-workspace-calendar-icon>
+                    Delete Session
+                  </span>
+                </button>
+              </div>
             }
           </div>
 

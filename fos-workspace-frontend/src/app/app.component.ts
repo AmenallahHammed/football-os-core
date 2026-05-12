@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { animate, query, style, transition, trigger } from '@angular/animations';
-import { RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Data, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 import { SidebarComponent } from './core/layout/sidebar/sidebar.component';
 
 @Component({
@@ -27,11 +28,37 @@ import { SidebarComponent } from './core/layout/sidebar/sidebar.component';
   ]
 })
 export class AppComponent {
-  protected getRouteAnimationState(outlet: RouterOutlet): string {
-    return (outlet.activatedRouteData['animation'] as string) ?? 'default';
+  protected routeAnimationState = 'default';
+  protected fullScreenRoute = false;
+  protected fullHeightRoute = false;
+
+  constructor(
+    private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute
+  ) {
+    this.applyRouteLayout(this.deepestRouteData(this.activatedRoute));
+
+    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+      this.applyRouteLayout(this.deepestRouteData(this.activatedRoute));
+    });
   }
 
-  protected isFullScreenRoute(outlet: RouterOutlet): boolean {
-    return outlet.activatedRouteData['fullScreen'] === true;
+  protected onOutletActivated(outlet: RouterOutlet): void {
+    this.applyRouteLayout(outlet.activatedRouteData ?? this.deepestRouteData(this.activatedRoute));
+  }
+
+  private deepestRouteData(route: ActivatedRoute): Data {
+    let current: ActivatedRoute | null = route;
+    while (current?.firstChild) {
+      current = current.firstChild;
+    }
+
+    return current?.snapshot.data ?? {};
+  }
+
+  private applyRouteLayout(data: Data): void {
+    this.routeAnimationState = (data['animation'] as string) ?? 'default';
+    this.fullScreenRoute = data['fullScreen'] === true;
+    this.fullHeightRoute = data['fullHeight'] === true;
   }
 }

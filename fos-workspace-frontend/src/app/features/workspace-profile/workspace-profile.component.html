@@ -1,0 +1,115 @@
+<section class="feature-page workspace-profile-page">
+  <header class="feature-header profile-header">
+    <div class="feature-header-copy">
+      <p class="feature-kicker">Workspace identity</p>
+      <h1 class="feature-title">Profile</h1>
+      <p class="feature-subtitle">View your information, assigned tasks, and required documents.</p>
+    </div>
+
+    <section class="feature-surface profile-identity-card" aria-label="Current user profile">
+      <img class="profile-avatar" [src]="avatarUrl" [alt]="avatarAlt" />
+      <div class="profile-identity-copy">
+        <h2>{{ displayName }}</h2>
+        <p class="role-badge">{{ roleLabel }}</p>
+      </div>
+    </section>
+  </header>
+
+  <section class="feature-surface profile-section">
+    <h2>General Information</h2>
+
+    <dl class="info-grid">
+      @for (field of generalInfoFields; track field.label) {
+        <div class="info-row">
+          <dt>{{ field.label }}</dt>
+          <dd [class.is-muted]="!field.provided">{{ field.value }}</dd>
+        </div>
+      }
+    </dl>
+  </section>
+
+  <section class="feature-surface profile-section">
+    <h2>Assigned Tasks</h2>
+
+    @if (isLoadingAssignments) {
+      <p class="feature-empty">Loading assigned tasks...</p>
+    } @else if (assignedTasks.length === 0) {
+      <p class="feature-empty">No assigned tasks yet.</p>
+      <p class="helper-text">Tasks assigned by coaches will appear here.</p>
+    } @else {
+      <div class="list-stack">
+        @for (task of assignedTasks; track task.id) {
+          <article class="list-item task-item">
+            <div class="list-item-main">
+              <h3>{{ task.title }}</h3>
+              <p>{{ taskDescriptionPreview(task) }}</p>
+              <p class="meta-line">
+                <span>Session: {{ task.relatedSession || 'Not provided' }}</span>
+                <span>Due: {{ formatDueLabel(task.dueAt) }}</span>
+                <span>Assigned by: {{ task.assignedBy || 'Not provided' }}</span>
+              </p>
+            </div>
+            <span class="status-badge" [class.is-done]="task.status === 'Done'" [class.is-overdue]="task.status === 'Overdue'">
+              {{ task.status }}
+            </span>
+          </article>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="feature-surface profile-section">
+    <h2>Missing Documents</h2>
+
+    @if (isLoadingAssignments) {
+      <p class="feature-empty">Loading required documents...</p>
+    } @else if (missingDocuments.length === 0) {
+      <p class="feature-empty">No missing documents.</p>
+      <p class="helper-text">Required documents will appear here when they are assigned.</p>
+    } @else {
+      <div class="list-stack">
+        @for (document of missingDocuments; track document.id) {
+          <article class="list-item document-item">
+            <div class="list-item-main">
+              <h3>{{ document.name }}</h3>
+              <p class="meta-line">
+                <span>Related to: {{ document.relatedSession || 'Not provided' }}</span>
+                <span>Due: {{ formatDueLabel(document.dueAt) }}</span>
+                <span>Assigned by: {{ document.assignedBy || 'Not provided' }}</span>
+              </p>
+            </div>
+
+            <div class="document-actions">
+              <span class="status-badge is-missing">{{ document.status }}</span>
+              <a class="feature-button feature-button--primary upload-link" [routerLink]="['/workspace/documents']" aria-label="Open documents page to upload required document">
+                Upload
+              </a>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </section>
+
+  @if (recentActivity.length > 0) {
+    <section class="feature-surface profile-section">
+      <h2>Recent Activity</h2>
+
+      <div class="list-stack">
+        @for (item of recentActivity; track item.id) {
+          <article class="list-item activity-item">
+            <div class="list-item-main">
+              <h3>{{ item.action }}</h3>
+              <p>{{ item.resource }}</p>
+            </div>
+            <span class="activity-time">{{ item.timestamp }}</span>
+          </article>
+        }
+      </div>
+    </section>
+  }
+
+  @if (assignmentLoadError) {
+    <p class="load-error" role="status">{{ assignmentLoadError }}</p>
+  }
+</section>

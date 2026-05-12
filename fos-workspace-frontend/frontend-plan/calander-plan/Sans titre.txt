@@ -1,0 +1,132 @@
+
+opa-mock/ is a tiny local authorization bypass for the noauth Docker setup.
+- docker-compose.noauth.yml:12-21 starts an nginx container named fos-opa-mock and points fos-workspace-service at it via FOS_POLICY_SERVICE_URL=http://fos-opa-mock.
+- opa-mock/default.conf:4-17 makes that container return hardcoded “allow” responses:
+  - /api/v1/policy/evaluate -> {"decision":"ALLOW","reason":"allowed"}
+  - /v1/data/fos/allow -> {"result": true}
+  - / -> {"result": true}
+- That matches the two policy call shapes used in the repo:
+  - sdk-policy/PolicyClient.java:21-26 calls /api/v1/policy/evaluate
+  - fos-governance-service/.../OpaClient.java:25-34 calls /v1/data/fos/allow
+So, in practice, opa-mock exists to make every policy check succeed during local “no auth” runs.
+One extra detail: opa-mock/allow.json is mounted into the container, but the current nginx config returns inline JSON directly, so that file looks effectively unused right now.
+
+docker-compose.noauth.yml is an override file for local testing, not a full standalone stack. When layered on top of docker-compose.yml, it does 4 things:
+- Disables JWT enforcement in fos-gateway with FOS_SECURITY_ENABLED=false (docker-compose.noauth.yml:5-8).
+- Disables JWT enforcement in fos-workspace-service with FOS_SECURITY_ENABLED=false (docker-compose.noauth.yml:9-12).
+- Redirects workspace policy checks to http://fos-opa-mock via FOS_POLICY_SERVICE_URL (docker-compose.noauth.yml:12).
+- Starts fos-opa-mock, an nginx container that always returns allow responses (docker-compose.noauth.yml:14-21, opa-mock/default.conf:4-17).
+What that means in practice:
+- Gateway auth is bypassed:
+  fos-gateway/.../SecurityConfig.java:22-26 switches to permitAll() when security is off.
+- Workspace auth is bypassed:
+  fos-workspace-service/.../WorkspaceApp.java:32-34 also switches to permitAll().
+- Workspace also falls back to a fake actor/club/role when security is off:
+  for example DocumentService.java:236-256 uses hardcoded fallback IDs/role instead of token claims.
+- Workspace policy checks are bypassed:
+  its PolicyClient normally calls /api/v1/policy/evaluate, but under noauth that goes to the mock and always returns allow.
+What it does not do:
+- It does not remove or disable the keycloak container. The base compose file still defines and starts it (docker-compose.yml:63-87).
+- It does not disable auth in fos-governance-service. That service still defaults to FOS_SECURITY_ENABLED=true because docker-compose.noauth.yml does not override it (docker-compose.yml:151-169, fos-governance-service/.../SecurityConfig.java:19-27).
+- It does not globally bypass OPA for everything. It only reroutes workspace’s policy client to the mock. Governance’s own OPA client still points at OPA_URL from the base compose file (docker-compose.yml:166, OpaClient.java:17-29).
+So the accurate summary is:
+- OPA is bypassed for workspace policy checks.
+- Keycloak/JWT is bypassed for gateway and workspace.
+- Keycloak still runs.
+- Governance is not put into no-auth mode by this file.
+If you want, I can trace which API routes will still hit governance auth and which ones become fully open under this 
+setup.
+
+Yes, that is one valid use of Spring profiles, and in this repo you already did that.
+The dev profiles already bypass security:
+- fos-gateway/src/main/resources/application-dev.yml:38-45 sets fos.security.enabled: false
+- fos-workspace-service/src/main/resources/application-dev.yml:29-40 sets fos.security.enabled: false
+- fos-governance-service/src/main/resources/application-dev.yml:47-55 sets fos.security.enabled: false
+The reason docker-compose.noauth.yml still exists is that it solves a different problem.
+- Spring profile = config inside one Spring app
+- Docker Compose override = config for the whole container stack
+Why that matters here:
+- Your dev profiles are meant for running services directly on your machine with mvn spring-boot:run
+- They use localhost a lot:
+  - workspace dev uses mongodb://localhost:27017 and localhost:9092
+  - governance dev uses jdbc:postgresql://localhost:5432/... and localhost:9092
+- Inside Docker, localhost means “this container”, not “the other containers”
+- So in Docker you use staging, because application-staging.yml expects env vars, and Compose fills those with container hostnames like mongodb, postgres, kafka, keycloak
+So the current split is basically:
+- application-dev.yml = local host-run mode, plus bypasses, plus extra dev stuff
+- docker-compose.yml + staging = containerized stack with proper service wiring
+- docker-compose.noauth.yml = “keep the Docker wiring, but selectively turn off auth/policy friction”
+Also, dev does more than bypass auth. It changes other behavior too:
+- turns on debug logging
+- exposes more actuator endpoints
+- workspace uses noop storage instead of real MinIO
+- governance changes Flyway behavior
+That is the main reason not to just switch the whole Docker stack to dev: you would be changing a lot more than auth.
+So your intuition is right, but the repo currently has two separate knobs:
+- profiles for broad app mode
+- compose override for narrow stack-level overrides
+That’s a reasonable pattern, but it does create overlap and can feel redundant.
+If you want, I can lay out the cleanest simplification options, for example:
+1. Keep dev for host-run and staging + noauth for Docker
+2. Make a dedicated docker-local profile
+3. Make noauth a true Spring profile instead of a Compose override
+
+Yes. They each have a distinct use, but most of them are convenience, not core runtime requirements.
+What Each One Does
+- Makefile
+  - Purpose: short commands for running services from source.
+  - make gateway, make governance, make workspace just call the matching .sh files (Makefile:13-23).
+  - make all starts all three apps in background and writes logs/PIDs to .run/ (Makefile:25-35).
+  - make stop kills those local Spring Boot processes (Makefile:36-57).
+  - Necessary: no. It is a developer convenience layer.
+- run-governance.sh, run-workspace.sh, run-gateway.sh
+  - Purpose: run one Spring app directly from source with the correct Maven -pl flag and fixed port (run-*.sh:5-21).
+  - They protect against running from the wrong directory and avoid the “spring-boot:run at repo root” problem.
+  - Necessary: no. You can run the Maven command yourself.
+  - Useful when: you keep infra in Docker but want to debug one app locally.
+- start.ps1
+  - Purpose: Windows/PowerShell helper for the full Docker stack.
+  - It does:
+    - docker-compose down
+    - docker-compose build --no-cache
+    - docker-compose up -d
+    - then prints service URLs (start.ps1:3-18)
+  - Necessary: no. It is just a wrapper around Docker Compose commands.
+  - Important nuance: it is more aggressive and slower than a normal docker compose up -d --build, because it always tears down and rebuilds with --no-cache.
+- .env.example
+  - Purpose: template for a real local .env file.
+  - README explicitly says to create a local env file from it before starting the stack (README.md:51-58).
+  - .gitignore ignores .env (.gitignore:8), which is exactly why .env.example exists: commit the template, keep the real secrets local.
+  - Necessary: practically yes for onboarding, but not technically mandatory if you set env vars another way.
+What Is Actually Required Today
+- Strictly required to run the repo: none of these wrappers are required.
+- Practically useful:
+  - .env.example: yes, as setup documentation/template.
+  - start.ps1: useful on Windows if you want one command for Docker.
+  - .sh files and Makefile: useful if you run services from source, especially on Bash/WSL/Git Bash.
+What Looks Redundant vs Important
+- Makefile and .sh files overlap.
+  - The Makefile is mostly a nicer front door to the .sh files.
+- start.ps1 is separate.
+  - It targets the Docker workflow, not the host-run Maven workflow.
+- .env.example is the only one that documents expected environment values for humans.
+One Important Finding
+.env.example looks partly stale.
+- The compose stack definitely expects these:
+  - KEYCLOAK_ADMIN
+  - KEYCLOAK_ADMIN_PASSWORD
+  - KEYCLOAK_WEBHOOK_SECRET
+  - OPENSEARCH_INITIAL_ADMIN_PASSWORD
+  - ONLYOFFICE_JWT_SECRET
+  - from docker-compose.yml:74-75,114,168,205
+- But .env.example also contains entries that current compose/code do not really use:
+  - DB_HOST
+  - KEYCLOAK_URL
+  - REDIS_URL
+- And it does not include OPA_URL, even though the compose/app config supports it (docker-compose.yml:166, fos-governance-service/.../application.yml:120-122).
+So the honest answer is:
+- Makefile: optional convenience
+- .sh files: optional convenience
+- start.ps1: optional convenience
+- .env.example: useful and worth keeping, but it should probably be cleaned up because it’s no longer a precise reflection of the current stack
+If you want, I can next give you a “keep / delete / simplify” recommendation for these files based on whether you want a Docker-first workflow or a source-run workflow.

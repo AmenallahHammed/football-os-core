@@ -11,6 +11,8 @@ import { PlayersComponent } from './features/players/players.component';
 import { RequestAccessPageComponent } from './features/request-access-page/request-access-page.component';
 import { SettingsComponent } from './features/settings/settings.component';
 import { WorkspaceCalendarComponent } from './features/workspace-calendar/workspace-calendar.component';
+import { WorkspaceOnlyofficeEditorComponent } from './features/workspace-onlyoffice/workspace-onlyoffice-editor.component';
+import { WorkspaceProfileComponent } from './features/workspace-profile/workspace-profile.component';
 
 export const publicRoutes: Routes = [
   {
@@ -46,21 +48,59 @@ export const authenticatedRoutes: Routes = [
       {
         path: 'calendar',
         component: WorkspaceCalendarComponent,
-        data: { animation: 'workspace-calendar', fullScreen: true }
+        data: { animation: 'workspace-calendar', fullHeight: true }
+      },
+      {
+        path: 'documents/:documentId/editor',
+        component: WorkspaceOnlyofficeEditorComponent,
+        data: { animation: 'workspace-document-editor', fullHeight: true }
+      },
+      {
+        path: 'documents',
+        component: DocumentsComponent,
+        data: { animation: 'documents' }
+      },
+      {
+        path: 'onlyoffice-test/:documentId',
+        component: WorkspaceOnlyofficeEditorComponent,
+        data: { animation: 'workspace-onlyoffice-test', fullHeight: true, onlyofficeDebug: true }
+      },
+      {
+        path: 'notifications',
+        component: NotificationsComponent,
+        data: { animation: 'notifications' }
+      },
+      {
+        path: 'inbox',
+        component: InboxComponent,
+        data: { animation: 'inbox' }
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent,
+        data: { animation: 'settings' }
+      },
+      {
+        path: 'players',
+        component: PlayersComponent,
+        data: { animation: 'players' }
+      },
+      {
+        path: 'profile',
+        component: WorkspaceProfileComponent,
+        data: { animation: 'workspace-profile' }
       }
     ]
   },
   {
     path: 'documents',
-    component: DocumentsComponent,
-    canActivate: [AuthGuard],
-    data: { animation: 'documents' }
+    redirectTo: 'workspace/documents',
+    pathMatch: 'full'
   },
   {
     path: 'players',
-    component: PlayersComponent,
-    canActivate: [AuthGuard],
-    data: { animation: 'players' }
+    redirectTo: 'workspace/players',
+    pathMatch: 'full'
   },
   {
     path: 'players/:id',
@@ -70,21 +110,23 @@ export const authenticatedRoutes: Routes = [
   },
   {
     path: 'notifications',
-    component: NotificationsComponent,
-    canActivate: [AuthGuard],
-    data: { animation: 'notifications' }
+    redirectTo: 'workspace/notifications',
+    pathMatch: 'full'
   },
   {
     path: 'inbox',
-    component: InboxComponent,
-    canActivate: [AuthGuard],
-    data: { animation: 'inbox' }
+    redirectTo: 'workspace/inbox',
+    pathMatch: 'full'
   },
   {
     path: 'settings',
-    component: SettingsComponent,
-    canActivate: [AuthGuard],
-    data: { animation: 'settings' }
+    redirectTo: 'workspace/settings',
+    pathMatch: 'full'
+  },
+  {
+    path: 'profile',
+    redirectTo: 'workspace/profile',
+    pathMatch: 'full'
   },
   {
     path: '**',

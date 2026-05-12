@@ -1,0 +1,7 @@
+changes:
+	color:	white,silver,gray,vomit green,pitch green
+	section 1:
+		.football os text in the center of the page then Under it with a smaller font the writting that is present 		like the digitial ….
+		.i want the background to be an image of a green pitch like a little bit blured (if you want me to provide 		you with this assets if it's better for you )
+	section 2:
+		.this section should explane what is football os and the services Inside it and i want it in a digram like a 		graphe or somthing with icons that are conected somthing like that i will explane it more if needed 	

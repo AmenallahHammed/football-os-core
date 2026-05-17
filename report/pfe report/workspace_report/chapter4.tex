@@ -1,0 +1,290 @@
+\chapter{Implementation and Realization}
+
+\section*{Introduction}
+\addcontentsline{toc}{section}{Introduction}
+
+This chapter presents the implementation of Football OS as a finished software
+product. It covers the software environment, the implemented solution, the main
+graphical interfaces, and the deployment and integration setup.
+
+\section{Development Environment}
+
+\subsection{Software Environment}
+
+\newcommand{\techlogo}[1]{%
+  \begin{minipage}[c][1.55cm][c]{2.0cm}
+    \centering
+    \IfFileExists{#1}{%
+      \includegraphics[height=1.30cm, width=1.65cm, keepaspectratio]{#1}%
+    }{%
+      \fbox{\parbox[c][1.30cm][c]{1.65cm}{\centering \scriptsize Logo}}%
+    }%
+  \end{minipage}%
+}
+
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.35}
+\begin{longtable}{|>{\centering\arraybackslash}p{2.0cm}|>{\raggedright\arraybackslash}p{10.2cm}|}
+\caption{Software environment}
+\label{tab:software-environment}\\
+\hline
+\techlogo{images/tailwind.png} & \textbf{Tailwind CSS}: Utility-first CSS framework used to build customized and responsive user interfaces. \\
+\hline
+\techlogo{images/angular.png} & \textbf{Angular}: Frontend framework used to build the Football OS workspace application. \\
+\hline
+\techlogo{images/typescript.png} & \textbf{TypeScript}: Typed language used for frontend development. \\
+\hline
+\techlogo{images/java.png} & \textbf{Java}: Programming language used for backend services. \\
+\hline
+\techlogo{images/springcloud.png} & \textbf{Spring Boot}: Framework used to build backend microservices. \\
+\hline
+\techlogo{images/PostgreSQL-Logo.png} & \textbf{PostgreSQL}: Relational database used for governance data such as actors, roles, players, teams, and audit information. \\
+\hline
+\techlogo{images/MongoDB_Logo.svg.png} & \textbf{MongoDB}: Document database used by the workspace service for documents, events, notifications, and workspace aggregates. \\
+\hline
+\techlogo{images/KeyCloak.png} & \textbf{Keycloak}: Identity and access management solution used for authentication and user sessions. \\
+\hline
+\techlogo{images/opa.png} & \textbf{Open Policy Agent}: Policy engine used to evaluate authorization rules. \\
+\hline
+\techlogo{images/kafka.png} & \textbf{Apache Kafka}: Messaging platform used for asynchronous event communication. \\
+\hline
+\techlogo{images/minio.png} & \textbf{MinIO}: Object storage system used to store uploaded document files and edited document versions. \\
+\hline
+\techlogo{images/onlyoffice.png} & \textbf{OnlyOffice}: Online document editor used to view and edit documents inside the workspace. \\
+\hline
+\techlogo{images/docker.png} & \textbf{Docker and Docker Compose}: Tools used to run backend services and infrastructure components locally. \\
+\hline
+\techlogo{images/github.png} & \textbf{Git and GitHub}: Version control tools used to manage source code. \\
+\hline
+\techlogo{images/vscode.png} & \textbf{Visual Studio Code / IntelliJ IDEA}: Development environments used for frontend and backend development. \\
+\hline
+\techlogo{images/draw.io.png} & \textbf{PlantUML / Draw.io}: Tools used to create UML and architecture diagrams. \\
+\hline
+\end{longtable}
+\endgroup
+
+\section{Implementation Overview}
+
+Football OS was implemented as a distributed platform. The workspace frontend
+communicates with backend services through the API Gateway. The Workspace
+Service handles documents, calendar/events, notifications, search, and player
+profiles. The Governance Service supports identity, roles, permissions,
+canonical data, and audit. The Shared SDK provides common backend mechanisms
+such as security context, policy client, canonical resolver, storage
+abstraction, and event contracts. MinIO stores uploaded files, MongoDB stores
+workspace metadata and aggregates, and OnlyOffice is integrated for online
+viewing and editing.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{4.6cm}|p{8.8cm}|}
+\hline
+\textbf{Implemented Part} & \textbf{Description} \\
+\hline
+Authentication and secured access & User authentication and protected access to backend resources. \\
+\hline
+Document management & Upload, consultation, versioning, online editing, and archiving of documents. \\
+\hline
+Calendar and event management & Event creation, update, consultation, assignment handling, and archiving. \\
+\hline
+Player profile consultation & Secure aggregated player view based on canonical and workspace data. \\
+\hline
+Notifications & User notifications generated from operational platform actions. \\
+\hline
+Search & Search capabilities across workspace resources with authorization filtering. \\
+\hline
+OnlyOffice integration & Embedded online document viewing and editing workflow. \\
+\hline
+Storage integration & Separation of metadata storage and binary file storage. \\
+\hline
+Authorization and governance integration & Policy-driven access control and governance-based decisions. \\
+\hline
+\end{tabular}
+\caption{Implemented solution overview}
+\end{table}
+
+\section{Main Graphical Interfaces}
+
+\subsection{Authentication Interface}
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{images/authentication-interface.png}{%
+        \includegraphics[width=0.95\textwidth]{images/authentication-interface.png}%
+    }{%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/authentication-interface.png}}%
+    }
+    \caption{Authentication interface}
+    \label{fig:authentication-interface}
+\end{figure}
+
+This interface represents the secure entry point of Football OS. Users must
+authenticate before accessing protected workspace features. The authenticated
+session is then used for backend request authorization.
+
+\subsection{Workspace Main Layout}
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{images/workspace-main-layout.png}{%
+        \includegraphics[width=0.95\textwidth]{images/workspace-main-layout.png}%
+    }{%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/workspace-main-layout.png}}%
+    }
+    \caption{Workspace main layout}
+    \label{fig:workspace-main-layout}
+\end{figure}
+
+This interface presents the main workspace layout. It gives users access to
+the core modules such as documents, calendar, player profiles, notifications,
+and search.
+
+\subsection{Document Management Interface}
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{images/document-management-interface.png}{%
+        \includegraphics[width=0.95\textwidth]{images/document-management-interface.png}%
+    }{%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/document-management-interface.png}}%
+    }
+    \caption{Document management interface}
+    \label{fig:document-management-interface}
+\end{figure}
+
+This interface allows authorized users to consult, upload, organize, and
+archive documents. Access to documents depends on the user role and document
+category.
+
+\subsection{Online Document Viewer and Editor}
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{images/onlyoffice-editor-interface.png}{%
+        \includegraphics[width=0.95\textwidth]{images/onlyoffice-editor-interface.png}%
+    }{%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/onlyoffice-editor-interface.png}}%
+    }
+    \caption{OnlyOffice editor interface}
+    \label{fig:onlyoffice-editor-interface}
+\end{figure}
+
+This interface shows the OnlyOffice integration used to view and edit documents
+online. The platform controls access, while document content is loaded through
+temporary storage links.
+
+\subsection{Calendar Interface}
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{images/calendar-interface.png}{%
+        \includegraphics[width=0.95\textwidth]{images/calendar-interface.png}%
+    }{%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/calendar-interface.png}}%
+    }
+    \caption{Calendar interface}
+    \label{fig:calendar-interface}
+\end{figure}
+
+This interface allows users to view club events and activities. Authorized
+users can create, edit, or archive events according to their role and policy
+rules.
+
+\subsection{Event Details Interface}
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{images/event-details-interface.png}{%
+        \includegraphics[width=0.95\textwidth]{images/event-details-interface.png}%
+    }{%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/event-details-interface.png}}%
+    }
+    \caption{Event details interface}
+    \label{fig:event-details-interface}
+\end{figure}
+
+This interface displays detailed information about a selected event, including
+date, time, location, attendees, tasks, notes, and required documents. Assigned
+users can follow event requirements from this view.
+
+\subsection{Player Profile Interface}
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{images/player-profile-interface.png}{%
+        \includegraphics[width=0.95\textwidth]{images/player-profile-interface.png}%
+    }{%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/player-profile-interface.png}}%
+    }
+    \caption{Player profile interface}
+    \label{fig:player-profile-interface}
+\end{figure}
+
+This interface displays player information and related operational data. The
+visible content depends on the user role, especially for medical and
+administrative documents.
+
+\subsection{Notification Interface}
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{images/notification-interface.png}{%
+        \includegraphics[width=0.95\textwidth]{images/notification-interface.png}%
+    }{%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/notification-interface.png}}%
+    }
+    \caption{Notification interface}
+    \label{fig:notification-interface}
+\end{figure}
+
+This interface displays operational notifications generated from platform
+activities such as event updates, task assignments, or document-related
+actions.
+
+\section{Deployment and Integration}
+
+Football OS was tested in a local Docker-based environment. The deployment
+includes backend services and infrastructure containers. This setup allows
+integration testing of routing, authorization, storage, messaging, and document
+editing workflows.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{4.3cm}|p{9.1cm}|}
+\hline
+\textbf{Service} & \textbf{Role} \\
+\hline
+API Gateway & Routes requests to backend services \\
+\hline
+Governance Service & Manages users, roles, permissions, canonical data, and audit \\
+\hline
+Workspace Service & Manages documents, events, notifications, search, and player profiles \\
+\hline
+PostgreSQL & Stores governance structured data \\
+\hline
+MongoDB & Stores workspace data \\
+\hline
+MinIO & Stores document file content \\
+\hline
+Keycloak & Provides authentication \\
+\hline
+OPA & Evaluates authorization policies \\
+\hline
+Kafka & Supports asynchronous event communication \\
+\hline
+OnlyOffice & Provides document viewing and editing \\
+\hline
+\end{tabular}
+\caption{Deployment and integration components}
+\end{table}
+
+\section*{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
+
+This chapter presented the software environment, implementation overview, main
+graphical interfaces, and deployment/integration of Football OS. The
+implemented product provides secured access to workspace features such as
+document management, calendar events, player profile consultation,
+notifications, search, and online document editing.

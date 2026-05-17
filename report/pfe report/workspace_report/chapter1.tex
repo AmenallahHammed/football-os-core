@@ -1,0 +1,129 @@
+\chapter{Internship Framework Presentation}
+
+This chapter presents the framework of the internship and the context in which the project was carried out. It introduces the host company, studies the existing situation related to football club operations, highlights its main limitations, and presents the proposed solution.
+
+% -------------------------------------------------------
+\section{Company Presentation}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.35\textwidth]{images/logoPerfAnalysis.png}
+    \caption{Perf Analysis Consulting logo}
+    \label{fig:company_logo}
+\end{figure}
+
+\textbf{Perf Analysis Consulting} is a technology startup that develops digital solutions for professional football clubs. Its activities focus on software tools related to performance analysis, coaching management, player profiling, scouting, and internal collaboration.
+
+The internship was carried out within the software development side of the company. The work focused on the development of \textbf{Football OS}, especially its backend foundation, governance mechanisms, and Workspace module.
+
+% -------------------------------------------------------
+\section{Study of the Existing System}
+
+\subsection{Description of the Existing System}
+
+In the context targeted by the company, football club operations are commonly supported by several general-purpose tools. These tools are useful for specific tasks, but they are not designed to work together as a unified system dedicated to club management.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|p{2.5cm}|p{4cm}|p{3.5cm}|p{4cm}|}
+        \hline
+        \textbf{Task} & \textbf{General Tool} & \textbf{Key Use} & \textbf{Limitation} \\
+        \hline
+
+        Communication &
+        \begin{center}
+            \includegraphics[width=0.08\textwidth]{images/WhatsApp.png}\\
+            WhatsApp
+        \end{center} &
+        Messaging and file sharing between staff &
+        Unstructured communication and limited traceability \\
+        \hline
+
+        File Storage &
+        \begin{center}
+            \includegraphics[width=0.10\textwidth]{images/dropboxanddrive.png}\\
+            Google Drive / Dropbox
+        \end{center} &
+        Storing and sharing files &
+        Scattered data and weak integration with club workflows \\
+        \hline
+
+        Scheduling &
+        \begin{center}
+            \includegraphics[width=0.10\textwidth]{images/googlecalnder.png}\\
+            Google Calendar
+        \end{center} &
+        Planning events and meetings &
+        No direct integration with documents, tasks, or player profiles \\
+        \hline
+
+        Medical Tracking &
+        \begin{center}
+            \includegraphics[width=0.08\textwidth]{images/excel.png}\\
+            Microsoft Excel
+        \end{center} &
+        Tracking player medical data &
+        Manual updates, possible data inconsistency, and limited access control \\
+        \hline
+    \end{tabular}
+    \caption{Existing tools used in football club operations and their limitations}
+    \label{tab:existing_tools}
+\end{table}
+
+\paragraph{Previous Internal Solution}
+
+In addition to these tools, the company had previously developed an internal system intended to centralize file storage. This system provided basic file management capabilities, such as file upload, organization, and editing through an integrated document viewer.
+
+However, it remained limited in scope. It mainly addressed file storage and did not include event management, task assignment, advanced search, structured notifications, or a complete role-based access control mechanism. As a result, it did not fully support structured collaboration or controlled operational follow-up.
+
+% -------------------------------------------------------
+\subsection{Critique of the Existing System}
+
+The existing environment presents several limitations that affect the efficiency and organization of football club operations.
+
+\begin{itemize}
+    \item \textbf{Fragmentation:} Staff members often use disconnected platforms, which can lead to scattered files and duplicated information.
+
+    \item \textbf{Limited role-based access control:} Existing tools may provide basic sharing options, but they do not offer a unified permission model adapted to club roles.
+
+    \item \textbf{Limited collaboration features:} The previous internal solution focused mainly on file storage and did not support event planning, task assignment, notifications, or collaborative workflows.
+
+    \item \textbf{Limited search and organization:} Users may need to manually browse folders or separate tools to find relevant information.
+
+    \item \textbf{Lack of unified traceability:} The tools used do not provide a centralized audit trail adapted to the operational needs of the platform.
+\end{itemize}
+
+Beyond these operational issues, the existing environment also lacks a centralized governance layer for identity, permissions, and data consistency. Each tool manages its own information separately, which may lead to duplication and inconsistencies. These limitations show the need for a more unified and controlled solution.
+
+% -------------------------------------------------------
+\subsection{Proposed Solution}
+
+To address these limitations, this project proposes the development of \textbf{Football OS}, a unified platform designed to centralize and structure football club operations.
+
+The proposed solution combines a foundational layer responsible for identity management, access control, canonical data, and traceability with an operational layer focused on daily collaboration workflows. Within this platform, the \textbf{Workspace module} provides features for managing documents, organizing events, consulting player-related information, receiving notifications, and searching workspace content.
+
+\subsubsection*{Core Capabilities}
+
+\begin{itemize}
+    \item \textbf{Governance Foundation:} Management of identity, roles, permissions, canonical data, and audit mechanisms.
+
+    \item \textbf{Workspace Services:} Management of documents, events, notifications, player profiles, and search.
+
+    \item \textbf{Document Management:} Centralized access to files with structured organization.
+
+    \item \textbf{Event Management:} Planning and coordination of club activities through a calendar-based workflow.
+
+    \item \textbf{Controlled Access:} Role-based permissions applied to sensitive actions and resources.
+
+    \item \textbf{Traceability:} Tracking important actions performed in the system.
+\end{itemize}
+
+\subsubsection*{Implementation Approach}
+
+The system is designed as a modular platform that separates core management functions from user-facing features. This approach improves maintainability and supports future extensions while keeping the different parts of the platform integrated.
+
+% -------------------------------------------------------
+\section*{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
+
+This chapter introduced the internship context, the host company, and the existing situation related to football club operations. It also highlighted the main limitations of the current tools and presented Football OS as the proposed solution.

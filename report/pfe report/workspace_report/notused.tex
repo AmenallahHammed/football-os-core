@@ -1,0 +1,211 @@
+\chapter{Architectural and Theoretical Background}
+
+This chapter presents the main architectural principles and technologies
+used in the design of Football OS. The objective is to explain the
+general technical approach behind the system and provide a clear
+understanding of how its components interact at a high level.
+
+% -------------------------------------------------------
+\section{Architectural Foundations}
+
+Football OS is designed as a distributed backend platform composed of
+independent services supported by a shared SDK. The system is organized
+around four main components:
+
+\begin{itemize}
+    \item \textbf{API Gateway}: handles authentication, request enrichment, and routing
+    \item \textbf{Governance Service}: manages identity, authorization policies, and audit logs
+    \item \textbf{Workspace Service}: manages operational features such as documents, events, and notifications
+    \item \textbf{Shared SDK}: provides reusable modules for cross-cutting concerns
+\end{itemize}
+
+All client requests pass through the API Gateway before reaching backend
+services, ensuring consistent security, validation, and routing across
+the platform.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/high-level-architecture.png}
+    \caption{Football Os - high level architecture }
+    \label{fig:high-level-architecture}
+\end{figure}
+
+\subsection{Service-Oriented Architecture}
+
+Football OS follows a service-oriented architecture where each service
+owns its data and business logic. This separation allows components to
+evolve independently and reduces coupling between different domains.
+
+The governance service is responsible for core system concerns such as
+identity and authorization, while the workspace service focuses on
+user-facing operations such as event management and document handling.
+This separation ensures that changes in one domain do not directly impact
+the others.
+
+\subsection{Event-Driven Architecture}
+
+To improve scalability and decoupling, Football OS adopts an event-driven
+architecture based on Apache Kafka.
+
+Instead of relying only on direct service calls, services communicate
+through events. For example, when an event or document is created in the
+workspace service, a corresponding event is published and can be consumed
+by other parts of the system, such as audit or notification components.
+
+This approach allows asynchronous processing, reduces dependencies
+between services, and makes the system more resilient to failures.
+
+\subsection{Layered Architecture}
+
+The system also follows a layered architectural structure to separate
+business logic from infrastructure concerns.
+
+At the core, domain logic defines the system's rules and entities.
+Above it, application services orchestrate workflows. External concerns
+such as databases, messaging systems, and APIs are handled in outer layers.
+
+This structure improves maintainability, testability, and clarity by
+ensuring that core logic remains independent of technical details.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/onion architecture.png}
+    \caption{Football Os - Layered Architecture }
+    \label{fig:high-level-architecture}
+\end{figure}
+% -------------------------------------------------------
+\section{Shared SDK and Design Principles}
+
+A key architectural decision in Football OS is the use of a shared backend
+SDK (\texttt{fos-sdk}) across all services.
+
+The SDK provides reusable modules that handle common concerns such as:
+\begin{itemize}
+    \item Event communication
+    \item Security context handling
+    \item Policy evaluation integration
+    \item Canonical data resolution
+    \item Storage abstraction
+\end{itemize}
+
+By centralizing these functionalities, the SDK avoids duplication and
+ensures consistent behavior across services. This allows each service to
+focus only on its core business logic while relying on standardized
+components for cross-cutting concerns.
+
+The SDK is built using well-known design principles such as abstraction,
+modularity, and separation of concerns, which simplify development and
+improve system coherence.
+
+% -------------------------------------------------------
+\section{Security Model}
+
+\subsection{Authentication}
+
+Authentication in Football OS is handled using Keycloak, which provides
+user management and issues JSON Web Tokens (JWT). Each request includes
+a token that identifies the user and their roles.
+
+The API Gateway validates this token before forwarding the request,
+ensuring that only authenticated users can access the system.
+
+\subsection{Authorization}
+
+Football OS uses an Attribute-Based Access Control (ABAC) model to
+control access to resources.
+
+Access decisions are based on multiple factors, including:
+\begin{itemize}
+    \item The user's role
+    \item The requested action
+    \item The type and state of the resource
+\end{itemize}
+
+This allows fine-grained control over permissions, especially for
+sensitive data such as medical documents.
+
+\subsection{Policy Evaluation}
+
+Authorization logic is externalized using Open Policy Agent (OPA).
+Services delegate access decisions to the governance service, which
+evaluates policies and returns an allow or deny response.
+
+This approach centralizes security rules and allows them to be updated
+without modifying application code.
+
+% -------------------------------------------------------
+\section{Communication Model}
+
+Football OS uses two complementary communication mechanisms:
+
+\begin{itemize}
+    \item \textbf{REST APIs}: for synchronous communication between clients and services
+    \item \textbf{Kafka}: for asynchronous communication between services
+\end{itemize}
+
+All external requests go through the API Gateway, which ensures proper
+authentication and routing. Internally, services may use direct calls
+for immediate decisions and events for background processing.
+
+This hybrid approach balances responsiveness and scalability.
+
+% -------------------------------------------------------
+\section{Data Management}
+
+Football OS uses a hybrid data management strategy to match different
+types of data.
+
+\subsection{MongoDB}
+
+MongoDB is used in the workspace service to store documents, events,
+and notifications. These data structures are often complex and nested,
+making a document-oriented database a suitable choice.
+
+\subsection{PostgreSQL}
+
+PostgreSQL is used in the governance service to manage structured data
+such as users, teams, and audit logs. It provides strong consistency
+and supports relational data modeling.
+
+\subsection{Redis}
+
+Redis is used for caching and rate limiting. It improves performance by
+reducing repeated computations and controlling request traffic at the
+gateway level.
+
+\subsection{Canonical Reference Approach}
+
+To ensure data consistency across services, Football OS avoids duplicating
+data. Instead, services store references to external entities and resolve
+them when needed through the governance service.
+
+% -------------------------------------------------------
+\section{Infrastructure}
+
+\subsection{API Gateway}
+
+The API Gateway acts as the single entry point to the system. It handles
+authentication, request validation, rate limiting, and routing to backend
+services.
+
+\subsection{Containerized Environment}
+
+Docker Compose is used to run the system's infrastructure components,
+including databases, messaging systems, and authentication services.
+This ensures a consistent and reproducible development environment.
+
+\subsection{Object Storage}
+
+MinIO is used as an object storage system for managing uploaded files.
+It provides an S3-compatible interface and is accessed through an
+abstraction layer, allowing flexibility in choosing storage providers.
+
+% -------------------------------------------------------
+\section*{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
+
+This chapter introduced the main architectural concepts and technologies
+used in Football OS. It presented the system as a modular, service-based
+platform supported by a shared SDK and combining both synchronous and
+asynchronous communication.
+
+These concepts provide the foundation for understanding the system
+requirements and detailed design presented in the following chapters.

@@ -1,0 +1,422 @@
+\chapter{Design}
+
+\section*{Introduction}
+\addcontentsline{toc}{section}{Introduction}
+
+This chapter presents the design of Football OS and answers how the platform is
+organized and how the main processes are implemented. It focuses on the global
+architecture, backend module design, data design, processing design, and
+security and authorization design.
+
+\section{Global Architecture Design}
+
+\subsection{Architectural Style}
+
+Football OS follows a Service-Oriented Architecture (SOA). The platform is
+organized into services with clear responsibilities. The API Gateway is the
+entry point for routing and secure access. The Governance Service handles
+users, roles, permissions, canonical players and teams, and audit. The
+Workspace Service handles documents, calendar/events, notifications, search,
+and player profiles. The Shared SDK provides common reusable backend
+mechanisms.
+
+Backend services also follow Onion Architecture principles. Domain and business
+logic remain at the center. Application logic coordinates use cases. Technical
+infrastructure stays outside the core logic. External technologies are accessed
+through adapters or abstractions, including MongoDB, PostgreSQL, MinIO, Kafka,
+OPA, Keycloak, and OnlyOffice.
+
+The Shared SDK supports this Onion design by offering common abstractions such
+as security context, policy client, canonical resolver, storage port, event
+contracts, and audit/testing utilities.
+
+\subsection{General Architecture}
+
+The following diagram shows how the frontend communicates with the backend
+through the Gateway, and how backend services rely on governance, workspace,
+SDK, and supporting infrastructure.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/architecture-logique.png}
+    \caption{Global architecture of the Football OS platform}
+    \label{fig:global-architecture}
+\end{figure}
+
+The frontend sends requests to the API Gateway. The Gateway routes requests to
+the correct backend service. Governance handles identity, roles, authorization,
+canonical data, and audit. Workspace handles operational modules. The SDK
+provides shared abstractions and integration mechanisms. Infrastructure
+components support persistence, messaging, policy evaluation, storage, and
+document editing.
+
+\subsection{Main Components}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{4cm}|p{10cm}|}
+\hline
+\textbf{Component} & \textbf{Responsibility} \\
+\hline
+Frontend Workspace Application & User interface for workspace operations and platform access. \\
+\hline
+API Gateway & Entry point of backend APIs; routes requests and enforces secure access flow. \\
+\hline
+Governance Service & Manages users, roles, permissions, canonical players/teams, policy decisions, and audit tracking. \\
+\hline
+Workspace Service & Manages documents, calendar/events, notifications, search, and player profile aggregation. \\
+\hline
+Shared SDK & Shared foundation/library used by backend services; provides reusable abstractions and common integration mechanisms. \\
+\hline
+Keycloak / Identity Provider & Authenticates users and provides identity context. \\
+\hline
+OPA Policy Engine & Evaluates authorization rules for protected actions and resources. \\
+\hline
+Kafka & Supports asynchronous event messaging and notification propagation. \\
+\hline
+PostgreSQL & Stores governance structured data such as actors, roles, players, teams, and audit logs. \\
+\hline
+MongoDB & Stores workspace aggregates and document metadata/version references, including documents, events, and notifications. \\
+\hline
+MinIO & Stores the actual document file content and file versions. \\
+\hline
+OnlyOffice & Enables online document viewing and editing workflows. \\
+\hline
+\end{tabular}
+\caption{Main components of the Football OS architecture}
+\end{table}
+
+\section{Backend Module Design}
+
+\subsection{API Gateway}
+
+The API Gateway is the entry point of the backend platform. It routes API
+requests from the frontend to the appropriate backend service. It also supports
+the authentication and security flow by forwarding authenticated user context.
+This design hides internal service addresses from the frontend and simplifies
+external access.
+
+\subsection{Governance Service}
+
+The Governance Service manages actors and roles and maintains canonical
+football data such as players and teams. It also supports authorization by
+providing policy decisions through the governance/policy flow. In addition, it
+records audit and activity information for traceability and exposes canonical
+data to other services.
+
+\subsection{Workspace Service}
+
+The Workspace Service implements the daily operational features of the
+platform. It manages documents, events, notifications, search, and player
+profiles. Workspace aggregates are stored in MongoDB. The service integrates
+with Governance for policy and canonical data, with MinIO through the SDK
+storage abstraction, and with OnlyOffice for online document view and edit
+flows.
+
+\subsection{Shared SDK}
+
+The Shared SDK is not a user-facing module. It is reused by backend services to
+avoid duplicated technical plumbing. It provides shared security context,
+policy client, canonical resolver, storage port abstraction, event contracts,
+audit hooks, and test utilities.
+
+\section{Data Design}
+
+\subsection{Main Data Models}
+
+Football OS uses several services and storage technologies. For this reason,
+the data model is presented by domain instead of using one large global class
+diagram. This makes the design easier to read and keeps each diagram focused on
+one responsibility.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{3.5cm}|p{6cm}|p{4.3cm}|}
+\hline
+\textbf{Module} & \textbf{Main data} & \textbf{Storage} \\
+\hline
+Governance & actors, roles, players, teams, audit logs & PostgreSQL \\
+\hline
+Workspace Documents & document metadata, versions, categories, states & MongoDB + MinIO for file content \\
+\hline
+Workspace Events & events, attendees, required documents, staff tasks & MongoDB \\
+\hline
+Notifications & user notifications and read states & MongoDB \\
+\hline
+Identity & users and authentication state & Keycloak \\
+\hline
+Policy rules & authorization rules & OPA \\
+\hline
+\end{tabular}
+\caption{Main data domains and storage technologies}
+\end{table}
+
+\subsection{Governance Class Diagram}
+
+\begin{minipage}{\textwidth}
+The governance class diagram represents the administrative and canonical part
+of the platform. It focuses on the main domain entities used to manage identity,
+club reference data, and traceability. Technical classes such as controllers,
+services, repositories, and policy handlers are not shown in order to keep the
+diagram simple and readable.
+
+\vspace{0.15cm}
+
+\begin{center}
+\includegraphics[width=0.98\textwidth, height=0.70\textheight, keepaspectratio]{images/gov-class-dig.png}
+\captionof{figure}{Governance class diagram}
+\label{fig:governance-class-diagram}
+\end{center}
+\end{minipage}
+
+This diagram shows the main governance entities. Actors represent platform
+users, roles define their permissions, players and teams form the canonical
+football data, and audit entries keep track of important actions.
+
+Expected classes: Actor, Role, Player, Team, AuditLogEntry.
+
+\subsection{Document Management Class Diagram}
+
+\begin{minipage}{\textwidth}
+The document management class diagram shows the main classes used to represent
+documents and their versions. It separates document metadata from the actual
+file content, which is stored in object storage.
+
+\vspace{0.15cm}
+
+\begin{center}
+\includegraphics[width=0.98\textwidth, height=0.70\textheight, keepaspectratio]{images/doc-managment-dig.png}
+\captionof{figure}{Document management class diagram}
+\label{fig:document-class-diagram}
+\end{center}
+\end{minipage}
+
+WorkspaceDocument represents the document record. DocumentVersion represents
+each stored version of the file. The version keeps storage references such as
+bucket and object key. Document categories and states are used to organize
+documents and control their lifecycle.
+
+Expected classes: WorkspaceDocument, DocumentVersion, DocumentCategory,
+DocumentState.
+
+\subsection{Calendar and Event Class Diagram}
+
+\begin{minipage}{\textwidth}
+The calendar and event class diagram shows how events are structured in the
+workspace domain. It includes the event entity and the main elements linked to
+it, such as attendees, required documents, and staff tasks.
+
+\vspace{0.15cm}
+
+\begin{center}
+\includegraphics[width=0.98\textwidth, height=0.70\textheight, keepaspectratio]{images/calender-dig.png}
+\captionof{figure}{Calendar and event class diagram}
+\label{fig:event-class-diagram}
+\end{center}
+\end{minipage}
+
+WorkspaceEvent represents a calendar event. It contains general event
+information such as title, type, start time, end time, location, and
+description. It may also include attendees, required documents, and staff
+tasks. Deleting an event archives it instead of removing it permanently.
+
+Expected classes: WorkspaceEvent, AttendeeRef, RequiredDocument,
+TaskAssignment, EventType, EventState.
+
+\subsection{Storage Mapping}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{4.5cm}|p{9.5cm}|}
+\hline
+\textbf{Storage Element} & \textbf{Used For} \\
+\hline
+PostgreSQL & Governance structured data such as actors, roles, players, teams, and audit logs \\
+\hline
+MongoDB & Workspace aggregates such as documents, document versions, events, and notifications \\
+\hline
+MinIO & Actual uploaded files and edited document versions \\
+\hline
+Keycloak & Authentication and identity provider data \\
+\hline
+OPA & Authorization policy rules \\
+\hline
+\end{tabular}
+\caption{Storage mapping for Football OS}
+\end{table}
+
+The player profile is not represented as a separate class diagram in the main
+chapter because it is built by aggregating canonical player data, workspace
+documents, policy decisions, and storage download links. It is therefore
+explained in the processing design section.
+
+\section{Processing Design}
+
+This section presents the three most important processing flows used by the
+platform.
+
+\subsection{Authentication Process Flow}
+
+This subsection presents the authentication sequence flow of Football OS. It
+shows the interaction between the user, frontend, Gateway, identity provider,
+and backend services during login and token-based access.
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{images/auth-seq.png}{%
+        \includegraphics[width=\textwidth,height=0.62\textheight,keepaspectratio]{images/auth-seq.png}%
+    }{%
+        \IfFileExists{images/seq-dig-auth.png}{%
+            \includegraphics[width=\textwidth,height=0.78\textheight,keepaspectratio]{images/seq-dig-auth.png}%
+        }{%
+            \fbox{\parbox[c][0.35\textheight][c]{0.9\textwidth}{\centering Placeholder: images/auth-seq.png or images/seq-dig-auth.png}}%
+        }%
+    }
+    \caption{Authentication sequence diagram}
+    \label{fig:authentication-sequence}
+\end{figure}
+
+\noindent
+Typical steps to represent in this diagram are:
+\begin{enumerate}[leftmargin=*,itemsep=0.25em,topsep=0.25em]
+    \item The user requests access from the frontend.
+    \item The frontend redirects the user to the identity provider.
+    \item The user authenticates and receives a token-based session.
+    \item The frontend calls backend APIs through the Gateway with the token.
+    \item Backend services validate the authenticated context before processing.
+\end{enumerate}
+
+\subsection{Document Management Flow}
+
+This flow describes how document upload, access, and online editing are
+handled in Football OS.
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{images/doc-mangment-seq.png}{%
+        \includegraphics[width=0.95\textwidth]{images/doc-mangment-seq.png}%
+    }{%
+        \IfFileExists{images/doc-managment-seq.png}{%
+            \includegraphics[width=0.95\textwidth]{images/doc-managment-seq.png}%
+        }{%
+            \fbox{\parbox[c][0.35\textheight][c]{0.9\textwidth}{\centering Placeholder: images/doc-mangment-seq.png}}%
+        }%
+    }
+    \caption{Document management sequence diagram}
+    \label{fig:document-management-sequence}
+\end{figure}
+
+The flow is organized as follows:
+\begin{enumerate}
+    \item The user starts a document upload or opens a document.
+    \item The frontend sends the request through the Gateway.
+    \item The Workspace Service checks authorization through Governance/Policy.
+    \item For upload, Workspace generates an upload URL through StoragePort.
+    \item The file content is stored in MinIO.
+    \item Metadata and version information are stored in MongoDB.
+    \item For online viewing/editing, OnlyOffice opens the document.
+    \item If edited, a new version is stored and metadata is updated.
+\end{enumerate}
+
+\subsection{Calendar and Event Management Flow}
+
+This flow describes how events are created, updated, archived, and how
+notifications are generated.
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{images/calnder-seq.png}{%
+        \includegraphics[width=0.95\textwidth]{images/calnder-seq.png}%
+    }{%
+        \IfFileExists{images/calndar-seq.png}{%
+            \includegraphics[width=0.95\textwidth]{images/calndar-seq.png}%
+        }{%
+            \fbox{\parbox[c][0.35\textheight][c]{0.9\textwidth}{\centering Placeholder: images/calnder-seq.png}}%
+        }%
+    }
+    \caption{Calendar and event management sequence diagram}
+    \label{fig:calendar-event-sequence}
+\end{figure}
+
+The flow is organized as follows:
+\begin{enumerate}
+    \item An authorized user creates, edits, or deletes an event.
+    \item The request passes through the Gateway.
+    \item The Workspace Service checks authorization.
+    \item Event data is validated.
+    \item The event is stored or archived in MongoDB.
+    \item Tasks, attendees, required documents, and notes are saved when provided.
+    \item Notifications are generated for concerned users.
+    \item Important actions are tracked for traceability.
+\end{enumerate}
+
+In this design, delete operations are implemented as archive actions rather
+than hard deletion.
+
+\subsection{Player Profile Consultation Flow}
+
+This flow describes how the platform builds a secured player profile.
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{images/player profile seq.png}{%
+        \includegraphics[width=0.95\textwidth]{images/player profile seq.png}%
+    }{%
+        \fbox{\parbox[c][0.35\textheight][c]{0.9\textwidth}{\centering Placeholder: images/player profile seq.png}}%
+    }
+    \caption{Player profile consultation sequence diagram}
+    \label{fig:player-profile-sequence}
+\end{figure}
+
+The flow is organized as follows:
+\begin{enumerate}
+    \item The user opens a player profile.
+    \item The frontend sends the request through the Gateway.
+    \item The Workspace Service reads the authenticated user context.
+    \item Workspace loads canonical player identity through the Canonical Resolver.
+    \item Workspace checks which tabs the user may access.
+    \item Workspace loads active player-linked documents from MongoDB.
+    \item Documents are grouped by category.
+    \item Temporary download URLs are generated for visible documents.
+    \item The response contains only authorized sections.
+\end{enumerate}
+
+\section{Security and Authorization Design}
+
+Authentication is handled through the identity provider. The Gateway and
+backend services rely on the authenticated user context to process requests.
+Authorization is role-based and policy-driven. Workspace calls Governance/Policy
+to verify whether an action is allowed, and OPA evaluates the policy rules.
+Sensitive resources, especially medical documents, are strongly protected.
+Important actions are tracked to ensure auditability.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|p{6.2cm}|p{7.6cm}|}
+\hline
+\textbf{Action} & \textbf{Authorized roles / rule} \\
+\hline
+Create, edit, delete event & Head Coach and Club Administrator according to backend policy \\
+\hline
+Read events & Coaching staff roles and Club Administrator \\
+\hline
+Access normal documents & Authorized club staff according to policy \\
+\hline
+Access medical documents & Medical Staff and explicitly authorized roles \\
+\hline
+Access admin/contract documents & Club Administrator \\
+\hline
+Manage users and roles & Club Administrator \\
+\hline
+\end{tabular}
+\caption{Authorization design examples}
+\end{table}
+
+\section*{Conclusion}
+\addcontentsline{toc}{section}{Conclusion}
+
+This chapter presented the design of Football OS. It described the global
+architecture, backend modules, data models, and the most important processing
+flows. The selected diagrams show how Gateway, Governance, Workspace, and SDK
+work together to support document management, calendar events, and player
+profile consultation.

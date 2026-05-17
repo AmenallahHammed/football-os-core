@@ -1,0 +1,12 @@
+\chapter*{General Conclusion}
+\addcontentsline{toc}{chapter}{General Conclusion}
+
+This internship project aimed to design and implement Football OS, a modular platform for football organizations that centralizes key operational workflows in one secure workspace. The initial objective was to move from scattered tools to an integrated system that supports authentication, role management, document management, calendar and event management, notifications, search, and player profile consultation.
+
+During the project, the work progressed from analysis to realization. The requirements were specified and formalized through use cases and diagrams, then translated into a structured architecture and design. The solution was organized around an API Gateway, a Governance Service, a Workspace Service, and a Shared SDK, with supporting technologies including Keycloak, OPA, MongoDB, PostgreSQL, MinIO, Kafka, and OnlyOffice. Data design and main processing flows were defined to clarify how the platform should behave and how modules should interact.
+
+The implementation phase produced a functional foundation of the platform. Secure access and role-based authorization were integrated through identity and policy components. Document workflows now support upload, consultation, archiving, and online viewing and editing. Calendar and event workflows support attendees, staff tasks, required documents, and notifications. Player profile consultation is handled according to role permissions, with data persistence distributed between MongoDB and PostgreSQL, and file content stored in MinIO. The Shared SDK also helped reduce repeated technical code across backend services.
+
+At the same time, this work still has limitations. Some frontend and backend integrations require final polishing, and some interfaces are still at a prototype level. The player profile frontend should be fully connected to the secured backend profile API. In addition, broader testing and deployment validation are still needed, and monitoring and production-readiness practices can be improved.
+
+Future work should therefore focus on completing all remaining integrations, improving user experience, and strengthening automated testing at unit, integration, and end-to-end levels. It should also include better monitoring and deployment workflows, richer notification and search capabilities, and the introduction of more advanced football-specific operational processes. These improvements would consolidate Football OS into a more mature and production-ready platform.

@@ -1,7 +1,5 @@
 \babel@toc {english}{}\relax 
-\contentsline {chapter}{List of Figures}{2}{table.caption.1}%
 \contentsline {chapter}{List of Figures}{2}{chapter*.2}%
-\contentsline {chapter}{List of Tables}{3}{chapter*.2}%
 \contentsline {chapter}{List of Tables}{3}{chapter*.3}%
 \contentsline {chapter}{General Introduction}{7}{chapter*.5}%
 \contentsline {chapter}{\numberline {1}Internship Framework Presentation}{8}{chapter.1}%

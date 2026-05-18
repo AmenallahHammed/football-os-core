@@ -417,6 +417,14 @@ INPUT .\Dedication.tex
 INPUT .\Dedication.tex
 INPUT .\Dedication.tex
 INPUT Dedication.tex
+INPUT .\main.lof
+INPUT .\main.lof
+INPUT main.lof
+OUTPUT main.lof
+INPUT .\main.lot
+INPUT .\main.lot
+INPUT main.lot
+OUTPUT main.lot
 INPUT .\main.toc
 INPUT .\main.toc
 INPUT main.toc

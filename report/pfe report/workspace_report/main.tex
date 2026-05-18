@@ -34,8 +34,8 @@
 \usepackage{titlesec}
 \usepackage{url}
 
-\captionsetup[table]{position=above}
-\captionsetup[figure]{position=below}
+\captionsetup[table]{position=above,justification=raggedright,singlelinecheck=false}
+\captionsetup[figure]{position=below,justification=centering,singlelinecheck=false,font=bf,labelfont=bf}
 \numberwithin{equation}{section}
 
 %pagestyle
@@ -49,10 +49,8 @@
 % For Capstone projects only
 \input{Dedication}
 \clearpage
-\addcontentsline{toc}{chapter}{List of Figures}
 \listoffigures
 \clearpage
-\addcontentsline{toc}{chapter}{List of Tables}
 \listoftables
 \clearpage
 \tableofcontents

@@ -25,8 +25,10 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @TestPropertySource(properties = {
+    "fos.security.enabled=true",
     "spring.security.oauth2.resourceserver.jwt.jwk-set-uri=http://localhost:${wiremock.server.port}/protocol/openid-connect/certs",
-    "fos.governance.url=http://localhost:${wiremock.server.port}"
+    "fos.governance.url=http://localhost:${wiremock.server.port}",
+    "fos.workspace.url=http://localhost:${wiremock.server.port}"
 })
 class GatewayJwtTest {
 
@@ -91,6 +93,18 @@ class GatewayJwtTest {
     void should_allow_health_endpoint_without_jwt() {
         webTestClient.get()
                 .uri("/actuator/health")
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void should_allow_onlyoffice_callback_without_keycloak_jwt() {
+        stubFor(post(urlPathMatching("/api/v1/onlyoffice/callback/.*"))
+                .willReturn(okJson("{\"error\":0}")));
+
+        webTestClient.post()
+                .uri("/api/v1/onlyoffice/callback/00000000-0000-0000-0000-000000000001")
+                .bodyValue("{\"status\":1}")
                 .exchange()
                 .expectStatus().isOk();
     }

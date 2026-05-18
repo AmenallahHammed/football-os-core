@@ -12,14 +12,15 @@ graphical interfaces, and the deployment and integration setup.
 \subsection{Software Environment}
 
 \newcommand{\techlogo}[1]{%
-  \begin{minipage}[c][1.55cm][c]{2.0cm}
-    \centering
-    \IfFileExists{#1}{%
-      \includegraphics[height=1.30cm, width=1.65cm, keepaspectratio]{#1}%
-    }{%
-      \fbox{\parbox[c][1.30cm][c]{1.65cm}{\centering \scriptsize Logo}}%
-    }%
-  \end{minipage}%
+    % Use flexible minipage to avoid fixed-height boxes that can cause glue shrinkage
+    \begin{minipage}[c]{2.0cm}
+        \centering
+        \IfFileExists{#1}{%
+            \includegraphics[height=1.30cm, width=1.65cm, keepaspectratio]{#1}%
+        }{%
+            \fbox{\parbox[c]{1.65cm}{\centering \scriptsize Logo}}%
+        }%
+    \end{minipage}%
 }
 
 \begingroup
@@ -79,6 +80,7 @@ viewing and editing.
 
 \begin{table}[H]
 \centering
+\caption{Implemented solution overview}
 \begin{tabular}{|p{4.6cm}|p{8.8cm}|}
 \hline
 \textbf{Implemented Part} & \textbf{Description} \\
@@ -102,7 +104,6 @@ Storage integration & Separation of metadata storage and binary file storage. \\
 Authorization and governance integration & Policy-driven access control and governance-based decisions. \\
 \hline
 \end{tabular}
-\caption{Implemented solution overview}
 \end{table}
 
 \section{Main Graphical Interfaces}
@@ -111,10 +112,10 @@ Authorization and governance integration & Policy-driven access control and gove
 
 \begin{figure}[H]
     \centering
-    \IfFileExists{images/authentication-interface.png}{%
-        \includegraphics[width=0.95\textwidth]{images/authentication-interface.png}%
+    \IfFileExists{images/authentification.png}{%
+        \includegraphics[width=0.95\textwidth]{images/authentification.png}%
     }{%
-        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/authentication-interface.png}}%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/authentification.png}}%
     }
     \caption{Authentication interface}
     \label{fig:authentication-interface}
@@ -122,36 +123,32 @@ Authorization and governance integration & Policy-driven access control and gove
 
 This interface represents the secure entry point of Football OS. Users must
 authenticate before accessing protected workspace features. The authenticated
-session is then used for backend request authorization.
-
-\subsection{Workspace Main Layout}
-
-\begin{figure}[H]
-    \centering
-    \IfFileExists{images/workspace-main-layout.png}{%
-        \includegraphics[width=0.95\textwidth]{images/workspace-main-layout.png}%
-    }{%
-        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/workspace-main-layout.png}}%
-    }
-    \caption{Workspace main layout}
-    \label{fig:workspace-main-layout}
-\end{figure}
-
-This interface presents the main workspace layout. It gives users access to
-the core modules such as documents, calendar, player profiles, notifications,
-and search.
+session is then used for backend request authorization. After successful
+authentication, users are redirected to the calendar interface, which acts as
+the workspace landing page.
 
 \subsection{Document Management Interface}
 
 \begin{figure}[H]
     \centering
-    \IfFileExists{images/document-management-interface.png}{%
-        \includegraphics[width=0.95\textwidth]{images/document-management-interface.png}%
+    \IfFileExists{images/document.png}{%
+        \includegraphics[width=0.95\textwidth]{images/document.png}%
     }{%
-        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/document-management-interface.png}}%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/document.png}}%
     }
     \caption{Document management interface}
     \label{fig:document-management-interface}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{images/upload.png}{%
+        \includegraphics[width=0.95\textwidth]{images/upload.png}%
+    }{%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/upload.png}}%
+    }
+    \caption{Document upload interface}
+    \label{fig:document-upload-interface}
 \end{figure}
 
 This interface allows authorized users to consult, upload, organize, and
@@ -179,16 +176,17 @@ temporary storage links.
 
 \begin{figure}[H]
     \centering
-    \IfFileExists{images/calendar-interface.png}{%
-        \includegraphics[width=0.95\textwidth]{images/calendar-interface.png}%
+    \IfFileExists{images/calander.png}{%
+        \includegraphics[width=0.95\textwidth]{images/calander.png}%
     }{%
-        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/calendar-interface.png}}%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/calander.png}}%
     }
     \caption{Calendar interface}
     \label{fig:calendar-interface}
 \end{figure}
 
-This interface allows users to view club events and activities. Authorized
+This interface is the default landing page after authentication. It allows
+users to view club events and activities. Authorized
 users can create, edit, or archive events according to their role and policy
 rules.
 
@@ -196,10 +194,10 @@ rules.
 
 \begin{figure}[H]
     \centering
-    \IfFileExists{images/event-details-interface.png}{%
-        \includegraphics[width=0.95\textwidth]{images/event-details-interface.png}%
+    \IfFileExists{images/event-details.png}{%
+        \includegraphics[width=0.95\textwidth]{images/event-details.png}%
     }{%
-        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/event-details-interface.png}}%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/event-details.png}}%
     }
     \caption{Event details interface}
     \label{fig:event-details-interface}
@@ -213,13 +211,24 @@ users can follow event requirements from this view.
 
 \begin{figure}[H]
     \centering
-    \IfFileExists{images/player-profile-interface.png}{%
-        \includegraphics[width=0.95\textwidth]{images/player-profile-interface.png}%
+    \IfFileExists{images/player-profile.png}{%
+        \includegraphics[width=0.95\textwidth]{images/player-profile.png}%
     }{%
-        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/player-profile-interface.png}}%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/player-profile.png}}%
     }
     \caption{Player profile interface}
     \label{fig:player-profile-interface}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \IfFileExists{images/player-section.png}{%
+        \includegraphics[width=0.95\textwidth]{images/player-section.png}%
+    }{%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/player-section.png}}%
+    }
+    \caption{Player section interface}
+    \label{fig:player-section-interface}
 \end{figure}
 
 This interface displays player information and related operational data. The
@@ -230,10 +239,10 @@ administrative documents.
 
 \begin{figure}[H]
     \centering
-    \IfFileExists{images/notification-interface.png}{%
-        \includegraphics[width=0.95\textwidth]{images/notification-interface.png}%
+    \IfFileExists{images/notification.png}{%
+        \includegraphics[width=0.95\textwidth]{images/notification.png}%
     }{%
-        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/notification-interface.png}}%
+        \fbox{\parbox[c][0.22\textheight][c]{0.9\textwidth}{\centering Placeholder: images/notification.png}}%
     }
     \caption{Notification interface}
     \label{fig:notification-interface}
@@ -252,6 +261,7 @@ editing workflows.
 
 \begin{table}[H]
 \centering
+\caption{Deployment and integration components}
 \begin{tabular}{|p{4.3cm}|p{9.1cm}|}
 \hline
 \textbf{Service} & \textbf{Role} \\
@@ -277,7 +287,6 @@ Kafka & Supports asynchronous event communication \\
 OnlyOffice & Provides document viewing and editing \\
 \hline
 \end{tabular}
-\caption{Deployment and integration components}
 \end{table}
 
 \section*{Conclusion}

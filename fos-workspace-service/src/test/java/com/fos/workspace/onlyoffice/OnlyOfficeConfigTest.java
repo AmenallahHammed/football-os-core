@@ -41,7 +41,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource(properties = {
         "fos.storage.provider=noop",
         "fos.security.enabled=false",
-        "fos.onlyoffice.document-server-url=http://localhost:8090",
+        "fos.onlyoffice.document-server-url=http://localhost:8084",
+        "fos.onlyoffice.callback-base-url=http://callback-host:8080",
         "fos.onlyoffice.jwt-secret=test-secret-key-must-be-32-chars!!"
 })
 class OnlyOfficeConfigTest extends FosTestContainersBase {
@@ -159,9 +160,11 @@ class OnlyOfficeConfigTest extends FosTestContainersBase {
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().documentServerUrl()).isEqualTo("http://localhost:8090");
+        assertThat(response.getBody().documentServerUrl()).isEqualTo("http://localhost:8084");
         assertThat(response.getBody().token()).isNotBlank();
         assertThat(response.getBody().config().document().fileType()).isEqualTo("docx");
         assertThat(response.getBody().config().document().url()).isNotBlank();
+        assertThat(response.getBody().config().editorConfig().callbackUrl())
+                .isEqualTo("http://callback-host:8080/api/v1/onlyoffice/callback/" + confirmed.documentId());
     }
 }

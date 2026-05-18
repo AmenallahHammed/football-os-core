@@ -101,10 +101,18 @@ fos:
     # azure   = AzureBlobStorageAdapter
     provider: ${STORAGE_PROVIDER:noop}
   onlyoffice:
-    document-server-url: ${ONLYOFFICE_URL:http://localhost:8090}
+    # Public URL returned to the browser for loading OnlyOffice api.js.
+    document-server-url: ${ONLYOFFICE_PUBLIC_URL:${ONLYOFFICE_URL:http://localhost:8084}}
+    # Internal Docker URL reserved for backend-side Document Server calls.
+    internal-url: ${ONLYOFFICE_INTERNAL_URL:http://onlyoffice-documentserver}
+    # Base URL used in editorConfig.callbackUrl. In local Docker this should be
+    # reachable from inside the OnlyOffice container and normally points to the gateway.
+    callback-base-url: ${ONLYOFFICE_CALLBACK_BASE_URL:http://host.docker.internal:8080}
     # Secret shared between this service and OnlyOffice Document Server.
     # Used to sign JWT configs so OnlyOffice accepts them.
     jwt-secret: ${ONLYOFFICE_JWT_SECRET:change-this-in-production}
+    jwt-header: ${ONLYOFFICE_JWT_HEADER:Authorization}
+    jwt-in-body: ${ONLYOFFICE_JWT_IN_BODY:true}
     token-expiry-minutes: 60
 
 # -- MinIO connection (only used when fos.storage.provider=minio) ------------

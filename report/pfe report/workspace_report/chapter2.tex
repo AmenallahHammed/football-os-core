@@ -181,10 +181,15 @@ access to medical documents and medical player-related information.
 \end{figure}
 \end{samepage}
 
+The following compact descriptions summarize the main use cases. They include
+the objective, main scenario, and the principal access constraints, while
+detailed secondary cases can be placed in the appendix.
+
 \subsubsection*{Access Football OS Platform Use Case}
 \small
 \begin{table}[H]
 \centering
+\caption{Compact description of the access platform use case}
 \begin{tabular}{|p{3.8cm}|p{10.2cm}|}
 \hline
 \textbf{Use Case} & Access Football OS Platform \\
@@ -195,6 +200,10 @@ access to medical documents and medical player-related information.
 \hline
 \textbf{Objective} & Allow authorized users to authenticate and access platform features according to their role. \\
 \hline
+\textbf{Preconditions} & The user has a valid platform account and the identity provider is available. \\
+\hline
+\textbf{Constraints / Access Rules} & Unauthenticated users cannot access protected features. The available features depend on the authenticated user's role. \\
+\hline
 \textbf{Main Scenario} &
 \begin{enumerate}[nosep,leftmargin=*]
     \item The user opens the platform.
@@ -204,35 +213,36 @@ access to medical documents and medical player-related information.
 \end{enumerate}
 \\
 \hline
+\textbf{Postconditions} & The user is authenticated and can access the authorized platform features. \\
+\hline
 \end{tabular}
-\caption{Compact description of the access platform use case}
 \end{table}
 \normalsize
 
 \subsection{Calendar and Event Management}
 
-\begin{figure}[H]
-    \centering
-    \IfFileExists{images/calendar-usecase.png}{%
-        \includegraphics[height=0.42\textheight, keepaspectratio]{images/calendar-usecase.png}%
-    }{%
-        \fbox{\parbox[c][0.45\textheight][c]{0.9\textwidth}{\centering Missing image: images/calendar-usecase.png}}%
-    }
-    \caption{Calendar and event management use case diagram}
-    \label{fig:calendar-usecase}
-\end{figure}
-
-\subsubsection*{Calendar and Event Management Use Case}
-\small
-\begin{table}[H]
+\begin{minipage}{\textwidth}
 \centering
-\begin{tabular}{|p{3.8cm}|p{10.2cm}|}
+\includegraphics[width=0.92\textwidth, height=0.35\textheight, keepaspectratio]{images/Calendar and Event Management.png}
+\captionof{figure}{Calendar and event management use case diagram}
+\label{fig:calendar-usecase}
+
+\vspace{0.25cm}
+\noindent\textbf{Calendar and Event Management Use Case}\par
+\centering
+\small
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|p{3.6cm}|p{10.1cm}|}
 \hline
 \textbf{Use Case} & Calendar and Event Management \\
 \hline
 \textbf{Primary Actor} & Head Coach / Club Administrator (management), All authorized staff (consultation) \\
 \hline
 \textbf{Objective} & Plan and follow club events, assignments, and required documents. \\
+\hline
+\textbf{Preconditions} & The user is authenticated and has access to the calendar module. \\
+\hline
+\textbf{Constraints / Access Rules} & Event management actions are limited to authorized roles. In the current scope, the head coach  can manage events, while other authorized staff mainly consult event information. Delete operations are treated as archive actions, not permanent deletion. \\
 \hline
 \textbf{Main Scenario} &
 \begin{enumerate}[nosep,leftmargin=*]
@@ -243,25 +253,28 @@ access to medical documents and medical player-related information.
 \end{enumerate}
 \\
 \hline
+\textbf{Postconditions} & The event is created, updated, consulted, or archived. Concerned users may receive notifications when relevant. \\
+\hline
 \end{tabular}
-\caption{Compact description of calendar and event management}
-\end{table}
+\captionof{table}{Compact description of calendar and event management}
 \normalsize
+\renewcommand{\arraystretch}{1}
+\end{minipage}
 
 \subsection{Document Management}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.82\textwidth]{images/documentManagment.drawio.png}
-    \caption{Document management use case diagram}
-    \label{fig:document-usecase}
-\end{figure}
-
-\subsubsection*{Document Management Use Case}
-\small
-\begin{table}[H]
+\begin{minipage}{\textwidth}
 \centering
-\begin{tabular}{|p{3.8cm}|p{10.2cm}|}
+\includegraphics[width=0.92\textwidth, height=0.35\textheight, keepaspectratio]{images/documentManagment.drawio.png}
+\captionof{figure}{Document management use case diagram}
+\label{fig:document-usecase}
+
+\vspace{0.25cm}
+\noindent\textbf{Document Management Use Case}\par
+\centering
+\small
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|p{3.6cm}|p{10.1cm}|}
 \hline
 \textbf{Use Case} & Document Management \\
 \hline
@@ -270,6 +283,10 @@ access to medical documents and medical player-related information.
 \textbf{Secondary Actors} & Object Storage Provider / Document Editor \\
 \hline
 \textbf{Objective} & Manage document upload, consultation, online edition, and archiving under access rules. \\
+\hline
+\textbf{Preconditions} & The user is authenticated and has permission to access the selected document action. \\
+\hline
+\textbf{Constraints / Access Rules} & Access depends on the user's role and the document category. Medical documents are restricted to medical staff and explicitly authorized roles. The object storage provider stores file content, while the platform manages metadata and versions. \\
 \hline
 \textbf{Main Scenario} &
 \begin{enumerate}[nosep,leftmargin=*]
@@ -280,29 +297,28 @@ access to medical documents and medical player-related information.
 \end{enumerate}
 \\
 \hline
+\textbf{Postconditions} & The document is uploaded, consulted, edited, or archived according to the selected action and authorization rules. \\
+\hline
 \end{tabular}
-\caption{Compact description of document management}
-\end{table}
+\captionof{table}{Compact description of document management}
 \normalsize
+\renewcommand{\arraystretch}{1}
+\end{minipage}
 
 \subsection{Player Profile Consultation}
 
-\begin{figure}[H]
-    \centering
-    \IfFileExists{images/profile-usecase.png}{%
-        \includegraphics[width=0.82\textwidth]{images/profile-usecase.png}%
-    }{%
-        \fbox{\parbox[c][0.35\textheight][c]{0.9\textwidth}{\centering Missing image: images/profile-usecase.png}}%
-    }
-    \caption{Player profile consultation use case diagram}
-    \label{fig:profile-usecase}
-\end{figure}
-
-\subsubsection*{Consult Player Profile Use Case}
-\small
-\begin{table}[H]
+\begin{minipage}{\textwidth}
 \centering
-\begin{tabular}{|p{3.8cm}|p{10.2cm}|}
+\includegraphics[width=0.92\textwidth, height=0.35\textheight, keepaspectratio]{images/Player Profile Consultation.drawio.png}
+\captionof{figure}{Player profile consultation use case diagram}
+\label{fig:profile-usecase}
+
+\vspace{0.25cm}
+\noindent\textbf{Consult Player Profile Use Case}\par
+\centering
+\small
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{|p{3.6cm}|p{10.1cm}|}
 \hline
 \textbf{Use Case} & Consult Player Profile \\
 \hline
@@ -311,6 +327,10 @@ access to medical documents and medical player-related information.
 \textbf{Secondary Actors} & Canonical Player Data Provider / Governance Policy Service \\
 \hline
 \textbf{Objective} & Display player profile information according to role-based permissions. \\
+\hline
+\textbf{Preconditions} & The user is authenticated and the selected player exists in the platform reference data. \\
+\hline
+\textbf{Constraints / Access Rules} & Profile sections are filtered according to role permissions. Medical and sensitive information must only be visible to authorized users. \\
 \hline
 \textbf{Main Scenario} &
 \begin{enumerate}[nosep,leftmargin=*]
@@ -321,10 +341,13 @@ access to medical documents and medical player-related information.
 \end{enumerate}
 \\
 \hline
+\textbf{Postconditions} & The system displays only the player profile sections and linked data that the user is allowed to access. \\
+\hline
 \end{tabular}
-\caption{Compact description of player profile consultation}
-\end{table}
+\captionof{table}{Compact description of player profile consultation}
 \normalsize
+\renewcommand{\arraystretch}{1}
+\end{minipage}
 
 \section*{Conclusion}
 \addcontentsline{toc}{section}{Conclusion}

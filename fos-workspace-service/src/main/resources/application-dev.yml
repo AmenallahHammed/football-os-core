@@ -33,22 +33,26 @@ fos:
   storage:
     # noop = no real MinIO needed. Upload/download return fake URLs.
     # Change to 'minio' when you want to test real file uploads locally.
-    provider: noop
+    provider: ${STORAGE_PROVIDER:noop}
   policy:
     service-url: http://localhost:8081
   canonical:
     service-url: http://localhost:8081
   onlyoffice:
-    document-server-url: http://localhost:8090
+    document-server-url: ${ONLYOFFICE_PUBLIC_URL:${ONLYOFFICE_URL:http://localhost:8084}}
+    internal-url: ${ONLYOFFICE_INTERNAL_URL:http://onlyoffice-documentserver}
+    callback-base-url: ${ONLYOFFICE_CALLBACK_BASE_URL:http://host.docker.internal:8080}
     # Keep this aligned with the OnlyOffice Docker JWT secret to avoid
     # "document security token is not correctly formed" / invalid signature.
     jwt-secret: ${ONLYOFFICE_JWT_SECRET:fos-onlyoffice-secret-key-change-in-production}
+    jwt-header: ${ONLYOFFICE_JWT_HEADER:Authorization}
+    jwt-in-body: ${ONLYOFFICE_JWT_IN_BODY:true}
 
 minio:
-  endpoint: http://localhost:9000
-  access-key: minioadmin
-  secret-key: minioadmin
-  bucket: fos-workspace-dev
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:minioadmin}
+  secret-key: ${MINIO_SECRET_KEY:minioadmin}
+  bucket: ${MINIO_BUCKET:fos-workspace-dev}
 
 mongock:
   migration-scan-package: com.fos.workspace.db.migration

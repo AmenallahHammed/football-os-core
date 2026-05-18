@@ -57,6 +57,11 @@ export class OnlyofficeScriptLoaderService {
     });
 
     this.loadByUrl.set(scriptUrl, loadPromise);
-    return loadPromise.then(() => scriptUrl);
+    return loadPromise
+      .then(() => scriptUrl)
+      .catch((error) => {
+        this.loadByUrl.delete(scriptUrl);
+        throw error;
+      });
   }
 }

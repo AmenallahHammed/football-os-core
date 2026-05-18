@@ -1,7 +1,7 @@
 # Infra-only Docker Compose for hybrid local development.
 # App services (fos-governance-service, fos-workspace-service, fos-gateway)
 # run natively on the host via Maven.
-# opensearch and onlyoffice are commented out to save RAM.
+# opensearch is commented out to save RAM.
 # Usage: docker compose -f docker-compose.infra.yml up -d
 
 services:
@@ -128,24 +128,39 @@ services:
   #     timeout: 10s
   #     retries: 5
 
-  # Disabled to reduce local RAM usage. Uncomment to re-enable.
-  # onlyoffice:
-  #   image: onlyoffice/documentserver:7.5
-  #   container_name: fos-onlyoffice
-  #   ports:
-  #     - "8090:80"
-  #   environment:
-  #     JWT_ENABLED: "true"
-  #     JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:-fos-onlyoffice-secret-key-change-in-production}
-  #   volumes:
-  #     - fos-onlyoffice-data:/var/www/onlyoffice/Data
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost/healthcheck"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
+  onlyoffice:
+    image: onlyoffice/documentserver:9.3.1.2
+    container_name: fos-onlyoffice
+    ports:
+      - "8084:80"
+    environment:
+      JWT_ENABLED: ${ONLYOFFICE_JWT_ENABLED:-true}
+      JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:?ONLYOFFICE_JWT_SECRET is required}
+      JWT_HEADER: ${ONLYOFFICE_JWT_HEADER:-Authorization}
+      JWT_IN_BODY: ${ONLYOFFICE_JWT_IN_BODY:-true}
+      ALLOW_PRIVATE_IP_ADDRESS: ${ALLOW_PRIVATE_IP_ADDRESS:-true}
+      ALLOW_META_IP_ADDRESS: ${ALLOW_META_IP_ADDRESS:-true}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - fos-onlyoffice-data:/var/www/onlyoffice/Data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      default:
+        aliases:
+          - onlyoffice-documentserver
 
 volumes:
   fos-pg-data:
   fos-mongo-data:
   fos-minio-data:
+  fos-onlyoffice-data:
+
+networks:
+  default:
+    name: fos-net
+    driver: bridge

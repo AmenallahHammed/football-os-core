@@ -1,76 +1,79 @@
 \babel@toc {english}{}\relax 
-\contentsline {chapter}{General Introduction}{6}{chapter*.3}%
-\contentsline {chapter}{\numberline {1}Internship Framework Presentation}{7}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Company Presentation}{7}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Study of the Existing System}{8}{section.1.2}%
-\contentsline {subsection}{\numberline {1.2.1}Description of the Existing System}{8}{subsection.1.2.1}%
-\contentsline {paragraph}{Previous Internal Solution}{9}{table.caption.5}%
-\contentsline {subsection}{\numberline {1.2.2}Critique of the Existing System}{9}{subsection.1.2.2}%
-\contentsline {subsection}{\numberline {1.2.3}Proposed Solution}{9}{subsection.1.2.3}%
-\contentsline {section}{Conclusion}{10}{subsection.1.2.3}%
-\contentsline {chapter}{\numberline {2}Specification of Needs}{11}{chapter.2}%
-\contentsline {section}{Introduction}{11}{section*.6}%
-\contentsline {section}{\numberline {2.1}Functional Requirements}{11}{section.2.1}%
-\contentsline {subsection}{\numberline {2.1.1}User Access and Authentication}{11}{subsection.2.1.1}%
-\contentsline {subsection}{\numberline {2.1.2}User and Role Management}{12}{subsection.2.1.2}%
-\contentsline {subsection}{\numberline {2.1.3}Club Reference Data Management}{12}{subsection.2.1.3}%
-\contentsline {subsection}{\numberline {2.1.4}Document Management}{12}{subsection.2.1.4}%
-\contentsline {subsection}{\numberline {2.1.5}Calendar and Event Management}{12}{subsection.2.1.5}%
-\contentsline {subsection}{\numberline {2.1.6}Player Profile Consultation}{13}{subsection.2.1.6}%
-\contentsline {subsection}{\numberline {2.1.7}Notifications and Search}{13}{subsection.2.1.7}%
-\contentsline {subsection}{\numberline {2.1.8}Access Control and Activity Tracking}{13}{subsection.2.1.8}%
-\contentsline {section}{\numberline {2.2}Non-Functional Requirements}{13}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Security}{14}{subsection.2.2.1}%
-\contentsline {subsection}{\numberline {2.2.2}Usability}{14}{subsection.2.2.2}%
-\contentsline {subsection}{\numberline {2.2.3}Performance}{14}{subsection.2.2.3}%
-\contentsline {subsection}{\numberline {2.2.4}Maintainability and Extensibility}{14}{subsection.2.2.4}%
-\contentsline {subsection}{\numberline {2.2.5}Reliability and Traceability}{14}{subsection.2.2.5}%
-\contentsline {section}{\numberline {2.3}Use Case Diagrams}{15}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}Presentation of Actors}{15}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}Global Platform Use Case}{16}{subsection.2.3.2}%
-\contentsline {subsection}{\numberline {2.3.3}Calendar and Event Management}{17}{subsection.2.3.3}%
-\contentsline {subsection}{\numberline {2.3.4}Document Management}{18}{subsection.2.3.4}%
-\contentsline {subsection}{\numberline {2.3.5}Player Profile Consultation}{19}{subsection.2.3.5}%
-\contentsline {section}{Conclusion}{20}{table.caption.14}%
-\contentsline {chapter}{\numberline {3}Design}{21}{chapter.3}%
-\contentsline {section}{Introduction}{21}{section*.15}%
-\contentsline {section}{\numberline {3.1}Global Architecture Design}{21}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}Architectural Style}{21}{subsection.3.1.1}%
-\contentsline {subsection}{\numberline {3.1.2}General Architecture}{22}{subsection.3.1.2}%
-\contentsline {subsection}{\numberline {3.1.3}Main Components}{23}{subsection.3.1.3}%
-\contentsline {section}{\numberline {3.2}Backend Module Design}{23}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}API Gateway}{23}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Governance Service}{24}{subsection.3.2.2}%
-\contentsline {subsection}{\numberline {3.2.3}Workspace Service}{24}{subsection.3.2.3}%
-\contentsline {subsection}{\numberline {3.2.4}Shared SDK}{24}{subsection.3.2.4}%
-\contentsline {section}{\numberline {3.3}Data Design}{24}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Main Data Models}{24}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}Governance Class Diagram}{26}{subsection.3.3.2}%
-\contentsline {subsection}{\numberline {3.3.3}Document Management Class Diagram}{27}{subsection.3.3.3}%
-\contentsline {subsection}{\numberline {3.3.4}Calendar and Event Class Diagram}{28}{subsection.3.3.4}%
-\contentsline {subsection}{\numberline {3.3.5}Storage Mapping}{29}{subsection.3.3.5}%
-\contentsline {section}{\numberline {3.4}Processing Design}{29}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Authentication Process Flow}{29}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Document Management Flow}{30}{subsection.3.4.2}%
-\contentsline {subsection}{\numberline {3.4.3}Calendar and Event Management Flow}{32}{subsection.3.4.3}%
-\contentsline {subsection}{\numberline {3.4.4}Player Profile Consultation Flow}{33}{subsection.3.4.4}%
-\contentsline {section}{\numberline {3.5}Security and Authorization Design}{33}{section.3.5}%
-\contentsline {section}{Conclusion}{34}{table.caption.24}%
-\contentsline {chapter}{\numberline {4}Implementation and Realization}{35}{chapter.4}%
-\contentsline {section}{Introduction}{35}{section*.25}%
-\contentsline {section}{\numberline {4.1}Development Environment}{35}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Software Environment}{35}{subsection.4.1.1}%
-\contentsline {section}{\numberline {4.2}Implementation Overview}{37}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Main Graphical Interfaces}{38}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Authentication Interface}{38}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Workspace Main Layout}{38}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {4.3.3}Document Management Interface}{39}{subsection.4.3.3}%
-\contentsline {subsection}{\numberline {4.3.4}Online Document Viewer and Editor}{39}{subsection.4.3.4}%
-\contentsline {subsection}{\numberline {4.3.5}Calendar Interface}{40}{subsection.4.3.5}%
-\contentsline {subsection}{\numberline {4.3.6}Event Details Interface}{40}{subsection.4.3.6}%
-\contentsline {subsection}{\numberline {4.3.7}Player Profile Interface}{41}{subsection.4.3.7}%
-\contentsline {subsection}{\numberline {4.3.8}Notification Interface}{41}{subsection.4.3.8}%
-\contentsline {section}{\numberline {4.4}Deployment and Integration}{41}{section.4.4}%
-\contentsline {section}{Conclusion}{42}{table.caption.35}%
-\contentsline {chapter}{General Conclusion}{43}{chapter*.36}%
-\contentsline {chapter}{Bibliography and Webography}{45}{chapter*.37}%
+\contentsline {chapter}{List of Figures}{2}{table.caption.1}%
+\contentsline {chapter}{List of Figures}{2}{chapter*.2}%
+\contentsline {chapter}{List of Tables}{3}{chapter*.2}%
+\contentsline {chapter}{List of Tables}{3}{chapter*.3}%
+\contentsline {chapter}{General Introduction}{7}{chapter*.5}%
+\contentsline {chapter}{\numberline {1}Internship Framework Presentation}{8}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Company Presentation}{8}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Study of the Existing System}{9}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Description of the Existing System}{9}{subsection.1.2.1}%
+\contentsline {paragraph}{Previous Internal Solution}{10}{table.caption.7}%
+\contentsline {subsection}{\numberline {1.2.2}Critique of the Existing System}{10}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Proposed Solution}{10}{subsection.1.2.3}%
+\contentsline {section}{Conclusion}{11}{subsection.1.2.3}%
+\contentsline {chapter}{\numberline {2}Specification of Needs}{12}{chapter.2}%
+\contentsline {section}{Introduction}{12}{section*.8}%
+\contentsline {section}{\numberline {2.1}Functional Requirements}{12}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}User Access and Authentication}{12}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}User and Role Management}{13}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Club Reference Data Management}{13}{subsection.2.1.3}%
+\contentsline {subsection}{\numberline {2.1.4}Document Management}{13}{subsection.2.1.4}%
+\contentsline {subsection}{\numberline {2.1.5}Calendar and Event Management}{13}{subsection.2.1.5}%
+\contentsline {subsection}{\numberline {2.1.6}Player Profile Consultation}{14}{subsection.2.1.6}%
+\contentsline {subsection}{\numberline {2.1.7}Notifications and Search}{14}{subsection.2.1.7}%
+\contentsline {subsection}{\numberline {2.1.8}Access Control and Activity Tracking}{14}{subsection.2.1.8}%
+\contentsline {section}{\numberline {2.2}Non-Functional Requirements}{14}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Security}{15}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Usability}{15}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Performance}{15}{subsection.2.2.3}%
+\contentsline {subsection}{\numberline {2.2.4}Maintainability and Extensibility}{15}{subsection.2.2.4}%
+\contentsline {subsection}{\numberline {2.2.5}Reliability and Traceability}{15}{subsection.2.2.5}%
+\contentsline {section}{\numberline {2.3}Use Case Diagrams}{16}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Presentation of Actors}{16}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Global Platform Use Case}{17}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Calendar and Event Management}{19}{subsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.3.4}Document Management}{20}{subsection.2.3.4}%
+\contentsline {subsection}{\numberline {2.3.5}Player Profile Consultation}{21}{subsection.2.3.5}%
+\contentsline {section}{Conclusion}{22}{table.2.4}%
+\contentsline {chapter}{\numberline {3}Design}{23}{chapter.3}%
+\contentsline {section}{Introduction}{23}{section*.11}%
+\contentsline {section}{\numberline {3.1}Global Architecture Design}{23}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Architectural Style}{23}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}General Architecture}{24}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.3}Main Components}{25}{subsection.3.1.3}%
+\contentsline {section}{\numberline {3.2}Backend Module Design}{25}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}API Gateway}{25}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Governance Service}{26}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Workspace Service}{26}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Shared SDK}{26}{subsection.3.2.4}%
+\contentsline {section}{\numberline {3.3}Data Design}{26}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Main Data Models}{26}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Governance Class Diagram}{28}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Document Management Class Diagram}{29}{subsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.3.4}Calendar and Event Class Diagram}{30}{subsection.3.3.4}%
+\contentsline {subsection}{\numberline {3.3.5}Storage Mapping}{31}{subsection.3.3.5}%
+\contentsline {section}{\numberline {3.4}Processing Design}{31}{section.3.4}%
+\contentsline {subsection}{\numberline {3.4.1}Authentication Process Flow}{31}{subsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.4.2}Document Management Flow}{32}{subsection.3.4.2}%
+\contentsline {subsection}{\numberline {3.4.3}Calendar and Event Management Flow}{34}{subsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.4.4}Player Profile Consultation Flow}{35}{subsection.3.4.4}%
+\contentsline {section}{\numberline {3.5}Security and Authorization Design}{35}{section.3.5}%
+\contentsline {section}{Conclusion}{36}{table.caption.20}%
+\contentsline {chapter}{\numberline {4}Implementation and Realization}{37}{chapter.4}%
+\contentsline {section}{Introduction}{37}{section*.21}%
+\contentsline {section}{\numberline {4.1}Development Environment}{37}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Software Environment}{37}{subsection.4.1.1}%
+\contentsline {section}{\numberline {4.2}Implementation Overview}{38}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Main Graphical Interfaces}{40}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Authentication Interface}{40}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Document Management Interface}{41}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Online Document Viewer and Editor}{42}{subsection.4.3.3}%
+\contentsline {subsection}{\numberline {4.3.4}Calendar Interface}{42}{subsection.4.3.4}%
+\contentsline {subsection}{\numberline {4.3.5}Event Details Interface}{43}{subsection.4.3.5}%
+\contentsline {subsection}{\numberline {4.3.6}Player Profile Interface}{43}{subsection.4.3.6}%
+\contentsline {subsection}{\numberline {4.3.7}Notification Interface}{44}{subsection.4.3.7}%
+\contentsline {section}{\numberline {4.4}Deployment and Integration}{45}{section.4.4}%
+\contentsline {section}{Conclusion}{45}{table.caption.32}%
+\contentsline {chapter}{General Conclusion}{46}{chapter*.33}%
+\contentsline {chapter}{Bibliography and Webography}{47}{chapter*.34}%

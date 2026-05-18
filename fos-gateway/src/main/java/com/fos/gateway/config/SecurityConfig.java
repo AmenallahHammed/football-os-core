@@ -30,7 +30,10 @@ public class SecurityConfig {
         http.cors(cors -> {})
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .authorizeExchange(exchanges -> exchanges
-                .pathMatchers("/actuator/health").permitAll()
+                .pathMatchers(
+                    "/actuator/health",
+                    "/api/v1/onlyoffice/callback/**",
+                    "/api/v1/onlyoffice/health").permitAll()
                 .anyExchange().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2

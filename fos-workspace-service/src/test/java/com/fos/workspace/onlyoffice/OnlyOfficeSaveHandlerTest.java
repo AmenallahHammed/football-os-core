@@ -12,6 +12,8 @@ import com.fos.workspace.document.infrastructure.persistence.WorkspaceDocumentRe
 import com.fos.workspace.onlyoffice.application.OnlyOfficeSaveHandler;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +41,8 @@ import static org.mockito.Mockito.when;
 
 class OnlyOfficeSaveHandlerTest {
 
+    private static final String JWT_SECRET = "test-secret-key-must-be-32-chars!!";
+
     private WorkspaceDocumentRepository documentRepository;
     private StoragePort storagePort;
     private FosKafkaProducer kafkaProducer;
@@ -50,7 +54,7 @@ class OnlyOfficeSaveHandlerTest {
         documentRepository = mock(WorkspaceDocumentRepository.class);
         storagePort = mock(StoragePort.class);
         kafkaProducer = mock(FosKafkaProducer.class);
-        saveHandler = new OnlyOfficeSaveHandler(documentRepository, storagePort, kafkaProducer, new ObjectMapper());
+        saveHandler = new OnlyOfficeSaveHandler(documentRepository, storagePort, kafkaProducer, new ObjectMapper(), JWT_SECRET);
 
         wireMock = new WireMockServer(WireMockConfiguration.options().dynamicPort());
         wireMock.start();
@@ -91,6 +95,37 @@ class OnlyOfficeSaveHandlerTest {
         assertThat(document.currentVersion().getVersionNumber()).isEqualTo(2);
         assertThat(document.currentVersion().getStorageObjectKey()).isEqualTo(expectedKey);
         assertThat(document.currentVersion().getFileSizeBytes()).isEqualTo((long) updatedBytes.length);
+    }
+
+    @Test
+    void should_upload_from_onlyoffice_jwt_body_callback() {
+        WorkspaceDocument document = documentWithInitialVersion();
+        UUID documentId = document.getResourceId();
+        byte[] updatedBytes = "updated-document-content".getBytes(StandardCharsets.UTF_8);
+
+        wireMock.stubFor(get(urlEqualTo("/download/doc"))
+                .willReturn(aResponse().withStatus(200).withBody(updatedBytes)));
+
+        when(documentRepository.findByResourceId(documentId)).thenReturn(Optional.of(document));
+
+        String downloadUrl = "http://localhost:" + wireMock.port() + "/download/doc";
+        String token = Jwts.builder()
+                .claim("status", 2)
+                .claim("url", downloadUrl)
+                .signWith(Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8)))
+                .compact();
+        saveHandler.handleCallback(documentId, "{\"token\":\"" + token + "\"}");
+
+        String expectedKey = "documents/" + documentId + "/v2_test.docx";
+        verify(storagePort).putObject(
+                eq("fos-workspace"),
+                eq(expectedKey),
+                any(InputStream.class),
+                eq((long) updatedBytes.length),
+                eq("application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
+        verify(storagePort).confirmUpload("fos-workspace", expectedKey);
+        verify(documentRepository).save(document);
+        verify(kafkaProducer).emit(any());
     }
 
     @Test

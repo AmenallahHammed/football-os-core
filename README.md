@@ -73,7 +73,7 @@ Hybrid local dev, lower RAM usage:
 - Ensure a local `.env.dev` file exists with the dev-only defaults needed by `keycloak` and `fos-opa-mock`.
 - `docker-compose.infra.yml` starts only infrastructure services.
 - `run-dev.sh` loads `.env.dev`, starts infra, and prints the native Maven commands for the three app services.
-- `opensearch` and `onlyoffice` stay disabled in this mode to reduce memory use.
+- `opensearch` stays disabled in this mode to reduce memory use. OnlyOffice is enabled for local document editor testing.
 
 ```bash
 ./run-dev.sh
@@ -113,7 +113,8 @@ npm ci
 - Lowest practical hybrid subset for normal backend work: `postgres`, `mongodb`, `zookeeper`, `kafka`, `redis`, `fos-opa-mock`.
 - Add `minio` only when testing real object storage.
 - Add `keycloak` only when testing real auth.
-- `opensearch` and `onlyoffice` are disabled in `docker-compose.infra.yml` to reduce local RAM usage.
+- `opensearch` is disabled in `docker-compose.infra.yml` to reduce local RAM usage.
+- OnlyOffice is exposed on `8084`; set `HOST_LAN_IP` and `ONLYOFFICE_PUBLIC_URL` in `.env` before testing documents from the frontend.
 - Do not run a native app service on the same port as a Docker container from the full stack.
 
 Why `mvn spring-boot:run` fails at repo root:
@@ -204,6 +205,7 @@ Default local ports:
 - governance: `8081`
 - workspace: `8082`
 - frontend: `4200`
+- OnlyOffice Document Server: `8084`
 
 ## Testing and Build
 

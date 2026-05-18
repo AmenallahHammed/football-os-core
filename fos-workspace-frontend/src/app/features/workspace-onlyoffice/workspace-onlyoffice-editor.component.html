@@ -44,7 +44,7 @@
   @if (showDebug) {
     <section class="feature-surface debug-card">
       <h2>Debug</h2>
-      <p><strong>Gateway endpoint:</strong> <code>http://localhost:8080/api/v1/onlyoffice/config</code></p>
+      <p><strong>Gateway endpoint:</strong> <code>{{ gatewayOnlyofficeConfigUrl }}</code></p>
       <p><strong>Script URL:</strong> <code>{{ onlyOfficeScriptUrl || 'Pending config response...' }}</code></p>
       <p><strong>DocsAPI available:</strong> <code>{{ docsApiAvailable }}</code></p>
       @if (networkWarning) {

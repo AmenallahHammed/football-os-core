@@ -43,9 +43,9 @@ public class OnlyOfficeConfigService {
     private final FosSecurityContext securityContext;
     private final boolean securityEnabled;
     private final String documentServerUrl;
+    private final String callbackBaseUrl;
     private final String jwtSecret;
     private final int tokenExpiryMinutes;
-    private final int serverPort;
 
     public OnlyOfficeConfigService(WorkspaceDocumentRepository documentRepository,
                                    StoragePort storagePort,
@@ -53,18 +53,18 @@ public class OnlyOfficeConfigService {
                                    FosSecurityContext securityContext,
                                    @Value("${fos.security.enabled:true}") boolean securityEnabled,
                                    @Value("${fos.onlyoffice.document-server-url}") String documentServerUrl,
+                                   @Value("${fos.onlyoffice.callback-base-url}") String callbackBaseUrl,
                                    @Value("${fos.onlyoffice.jwt-secret}") String jwtSecret,
-                                   @Value("${fos.onlyoffice.token-expiry-minutes:60}") int tokenExpiryMinutes,
-                                   @Value("${server.port:8082}") int serverPort) {
+                                   @Value("${fos.onlyoffice.token-expiry-minutes:60}") int tokenExpiryMinutes) {
         this.documentRepository = documentRepository;
         this.storagePort = storagePort;
         this.policyClient = policyClient;
         this.securityContext = securityContext;
         this.securityEnabled = securityEnabled;
-        this.documentServerUrl = documentServerUrl;
+        this.documentServerUrl = trimTrailingSlashes(documentServerUrl);
+        this.callbackBaseUrl = trimTrailingSlashes(callbackBaseUrl);
         this.jwtSecret = jwtSecret;
         this.tokenExpiryMinutes = tokenExpiryMinutes;
-        this.serverPort = serverPort;
     }
 
     public OnlyOfficeConfigResponse generateConfig(OnlyOfficeConfigRequest request) {
@@ -105,7 +105,7 @@ public class OnlyOfficeConfigService {
 
         String documentType = resolveDocumentType(fileType);
         String onlyOfficeKey = document.getResourceId() + "_v" + document.currentVersion().getVersionNumber();
-        String callbackUrl = "http://localhost:" + serverPort + "/api/v1/onlyoffice/callback/" + document.getResourceId();
+        String callbackUrl = callbackBaseUrl + "/api/v1/onlyoffice/callback/" + document.getResourceId();
 
         var documentConfig = new OnlyOfficeConfigResponse.DocumentConfig(
                 fileType,
@@ -142,6 +142,13 @@ public class OnlyOfficeConfigService {
                 .expiration(expiry)
                 .signWith(key)
                 .compact();
+    }
+
+    private String trimTrailingSlashes(String value) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException("OnlyOffice URL configuration must not be blank");
+        }
+        return value.replaceAll("/+$", "");
     }
 
     private String resolveFileType(String contentType) {

@@ -10,13 +10,19 @@ import com.fos.sdk.storage.StoragePort;
 import com.fos.workspace.document.domain.DocumentVersion;
 import com.fos.workspace.document.domain.WorkspaceDocument;
 import com.fos.workspace.document.infrastructure.persistence.WorkspaceDocumentRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.crypto.SecretKey;
 import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 /**
@@ -50,16 +56,19 @@ public class OnlyOfficeSaveHandler {
     private final FosKafkaProducer kafkaProducer;
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
+    private final String jwtSecret;
 
     public OnlyOfficeSaveHandler(WorkspaceDocumentRepository documentRepository,
                                   StoragePort storagePort,
                                   FosKafkaProducer kafkaProducer,
-                                  ObjectMapper objectMapper) {
+                                  ObjectMapper objectMapper,
+                                  @Value("${fos.onlyoffice.jwt-secret}") String jwtSecret) {
         this.documentRepository = documentRepository;
         this.storagePort = storagePort;
         this.kafkaProducer = kafkaProducer;
         this.objectMapper = objectMapper;
         this.restTemplate = new RestTemplate();
+        this.jwtSecret = jwtSecret;
     }
 
     /**
@@ -70,8 +79,14 @@ public class OnlyOfficeSaveHandler {
      */
     public void handleCallback(UUID documentId, String callbackBody) {
         try {
-            JsonNode payload = objectMapper.readTree(callbackBody);
-            int status = payload.get("status").asInt();
+            JsonNode payload = resolveCallbackPayload(callbackBody);
+            JsonNode statusNode = payload.get("status");
+            if (statusNode == null || !statusNode.canConvertToInt()) {
+                log.warn("OnlyOffice callback ignored: missing numeric status for documentId={}", documentId);
+                return;
+            }
+
+            int status = statusNode.asInt();
 
             // Status 2 = ready to save (most common save trigger)
             // Status 6 = forced save
@@ -80,7 +95,13 @@ public class OnlyOfficeSaveHandler {
                 return;
             }
 
-            String downloadUrl = payload.get("url").asText();
+            JsonNode urlNode = payload.get("url");
+            if (urlNode == null || urlNode.asText().isBlank()) {
+                log.warn("OnlyOffice save callback ignored: missing download url for documentId={}", documentId);
+                return;
+            }
+
+            String downloadUrl = urlNode.asText();
             log.info("OnlyOffice save callback: documentId={} status={} url={}",
                     documentId, status, downloadUrl);
 
@@ -140,5 +161,28 @@ public class OnlyOfficeSaveHandler {
                     documentId, e.getMessage(), e);
             // Do NOT rethrow - OnlyOffice needs us to return 200 regardless
         }
+    }
+
+    private JsonNode resolveCallbackPayload(String callbackBody) throws Exception {
+        JsonNode body = objectMapper.readTree(callbackBody);
+        JsonNode tokenNode = body.get("token");
+        if (tokenNode == null || tokenNode.asText().isBlank()) {
+            return body;
+        }
+
+        Claims claims = Jwts.parser()
+                .verifyWith(signingKey())
+                .build()
+                .parseSignedClaims(tokenNode.asText())
+                .getPayload();
+        return objectMapper.valueToTree(claims);
+    }
+
+    private SecretKey signingKey() {
+        byte[] secretBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
+        if (secretBytes.length < 32) {
+            throw new IllegalStateException("OnlyOffice JWT secret must be at least 32 bytes");
+        }
+        return Keys.hmacShaKeyFor(secretBytes);
     }
 }

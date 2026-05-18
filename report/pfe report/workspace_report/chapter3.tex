@@ -54,6 +54,7 @@ document editing.
 
 \begin{table}[H]
 \centering
+\caption{Main components of the Football OS architecture}
 \begin{tabular}{|p{4cm}|p{10cm}|}
 \hline
 \textbf{Component} & \textbf{Responsibility} \\
@@ -83,7 +84,6 @@ MinIO & Stores the actual document file content and file versions. \\
 OnlyOffice & Enables online document viewing and editing workflows. \\
 \hline
 \end{tabular}
-\caption{Main components of the Football OS architecture}
 \end{table}
 
 \section{Backend Module Design}
@@ -131,6 +131,7 @@ one responsibility.
 
 \begin{table}[H]
 \centering
+\caption{Main data domains and storage technologies}
 \begin{tabular}{|p{3.5cm}|p{6cm}|p{4.3cm}|}
 \hline
 \textbf{Module} & \textbf{Main data} & \textbf{Storage} \\
@@ -148,7 +149,6 @@ Identity & users and authentication state & Keycloak \\
 Policy rules & authorization rules & OPA \\
 \hline
 \end{tabular}
-\caption{Main data domains and storage technologies}
 \end{table}
 
 \subsection{Governance Class Diagram}
@@ -227,6 +227,7 @@ TaskAssignment, EventType, EventState.
 
 \begin{table}[H]
 \centering
+\caption{Storage mapping for Football OS}
 \begin{tabular}{|p{4.5cm}|p{9.5cm}|}
 \hline
 \textbf{Storage Element} & \textbf{Used For} \\
@@ -242,7 +243,6 @@ Keycloak & Authentication and identity provider data \\
 OPA & Authorization policy rules \\
 \hline
 \end{tabular}
-\caption{Storage mapping for Football OS}
 \end{table}
 
 The player profile is not represented as a separate class diagram in the main
@@ -392,6 +392,7 @@ Important actions are tracked to ensure auditability.
 
 \begin{table}[H]
 \centering
+\caption{Authorization design examples}
 \begin{tabular}{|p{6.2cm}|p{7.6cm}|}
 \hline
 \textbf{Action} & \textbf{Authorized roles / rule} \\
@@ -409,7 +410,6 @@ Access admin/contract documents & Club Administrator \\
 Manage users and roles & Club Administrator \\
 \hline
 \end{tabular}
-\caption{Authorization design examples}
 \end{table}
 
 \section*{Conclusion}

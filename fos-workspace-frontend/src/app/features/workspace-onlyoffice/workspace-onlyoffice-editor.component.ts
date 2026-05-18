@@ -41,6 +41,7 @@ export class WorkspaceOnlyofficeEditorComponent implements OnInit, OnDestroy {
   private editorInstance: { destroyEditor?: () => void } | null = null;
 
   protected readonly isProduction = environment.production;
+  protected readonly gatewayOnlyofficeConfigUrl = `${environment.gatewayBaseUrl.replace(/\/+$/, '')}/api/v1/onlyoffice/config`;
   protected documentId = '';
   protected documentName = '';
   protected fileTypeHint = '';
@@ -134,7 +135,7 @@ export class WorkspaceOnlyofficeEditorComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.debugLog('OnlyOffice config endpoint', `${environment.gatewayBaseUrl}/api/v1/onlyoffice/config`);
+    this.debugLog('OnlyOffice config endpoint', this.gatewayOnlyofficeConfigUrl);
     this.debugLog('OnlyOffice requested documentId', this.documentId);
     this.debugLog('OnlyOffice requested mode', this.mode);
 
@@ -210,7 +211,7 @@ export class WorkspaceOnlyofficeEditorComponent implements OnInit, OnDestroy {
 
   private mapHttpError(error: HttpErrorResponse): string {
     if (error.status === 0) {
-      return 'Cannot reach gateway at http://localhost:8080.';
+      return `Cannot reach gateway at ${environment.gatewayBaseUrl}.`;
     }
 
     if (error.status === 400) {
@@ -434,7 +435,7 @@ export class WorkspaceOnlyofficeEditorComponent implements OnInit, OnDestroy {
   }
 
   private resolveDocumentServerBaseUrl(responseUrl: string | null | undefined): string {
-    const fallback = environment.onlyOfficeDocumentServerUrl.replace(/\/+$/, '');
+    const fallback = this.resolveFallbackDocumentServerBaseUrl();
     const raw = (responseUrl ?? '').trim();
     if (!raw) {
       return fallback;
@@ -452,6 +453,17 @@ export class WorkspaceOnlyofficeEditorComponent implements OnInit, OnDestroy {
     } catch {
       return fallback;
     }
+  }
+
+  private resolveFallbackDocumentServerBaseUrl(): string {
+    const configured = environment.onlyOfficeDocumentServerUrl.trim();
+    if (configured) {
+      return configured.replace(/\/+$/, '');
+    }
+
+    const protocol = window.location.protocol === 'https:' ? 'https' : 'http';
+    const hostname = window.location.hostname || 'localhost';
+    return `${protocol}://${hostname}:8084`;
   }
 
   private debugLog(label: string, payload: unknown): void {

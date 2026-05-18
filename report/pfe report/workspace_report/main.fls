@@ -417,11 +417,6 @@ INPUT .\Dedication.tex
 INPUT .\Dedication.tex
 INPUT .\Dedication.tex
 INPUT Dedication.tex
-INPUT .\Acknowledgments.tex
-INPUT .\Acknowledgments.tex
-INPUT .\Acknowledgments.tex
-INPUT .\Acknowledgments.tex
-INPUT Acknowledgments.tex
 INPUT .\main.toc
 INPUT .\main.toc
 INPUT main.toc
@@ -486,6 +481,20 @@ INPUT .\images\footballosgeneralusecase.drawio.png
 INPUT .\images\footballosgeneralusecase.drawio.png
 INPUT .\images\footballosgeneralusecase.drawio.png
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\lm\ec-lmr10.tfm
+INPUT .\images\Calendar and Event Management.png
+INPUT .\images\Calendar and Event Management.png
+INPUT .\images\Calendar and Event Management.png
+INPUT .\images\Calendar and Event Management.png
+INPUT .\images\Calendar and Event Management.png
+INPUT .\images\Calendar and Event Management.png
+INPUT .\images\Calendar and Event Management.png
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\lm\rm-lmr10.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\lm\lmmi10.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\lm\lmsy10.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam10.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
+INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\lm\ec-lmbx10.tfm
 INPUT .\images\documentManagment.drawio.png
 INPUT .\images\documentManagment.drawio.png
 INPUT .\images\documentManagment.drawio.png
@@ -493,6 +502,13 @@ INPUT .\images\documentManagment.drawio.png
 INPUT .\images\documentManagment.drawio.png
 INPUT .\images\documentManagment.drawio.png
 INPUT .\images\documentManagment.drawio.png
+INPUT .\images\Player Profile Consultation.drawio.png
+INPUT .\images\Player Profile Consultation.drawio.png
+INPUT .\images\Player Profile Consultation.drawio.png
+INPUT .\images\Player Profile Consultation.drawio.png
+INPUT .\images\Player Profile Consultation.drawio.png
+INPUT .\images\Player Profile Consultation.drawio.png
+INPUT .\images\Player Profile Consultation.drawio.png
 INPUT .\chapter3.tex
 INPUT .\chapter3.tex
 INPUT .\chapter3.tex
@@ -561,13 +577,6 @@ INPUT .\images\tailwind.png
 INPUT .\images\tailwind.png
 INPUT .\images\tailwind.png
 INPUT .\images\tailwind.png
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\lm\rm-lmr10.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\lm\lmmi10.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\lm\lmsy10.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam10.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
-INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\lm\ec-lmbx10.tfm
 INPUT .\images\angular.png
 INPUT .\images\angular.png
 INPUT .\images\angular.png
@@ -658,6 +667,54 @@ INPUT .\images\draw.io.png
 INPUT .\images\draw.io.png
 INPUT .\images\draw.io.png
 INPUT .\images\draw.io.png
+INPUT .\images\authentification.png
+INPUT .\images\authentification.png
+INPUT .\images\authentification.png
+INPUT .\images\authentification.png
+INPUT .\images\authentification.png
+INPUT .\images\authentification.png
+INPUT .\images\document.png
+INPUT .\images\document.png
+INPUT .\images\document.png
+INPUT .\images\document.png
+INPUT .\images\document.png
+INPUT .\images\document.png
+INPUT .\images\upload.png
+INPUT .\images\upload.png
+INPUT .\images\upload.png
+INPUT .\images\upload.png
+INPUT .\images\upload.png
+INPUT .\images\upload.png
+INPUT .\images\calander.png
+INPUT .\images\calander.png
+INPUT .\images\calander.png
+INPUT .\images\calander.png
+INPUT .\images\calander.png
+INPUT .\images\calander.png
+INPUT .\images\event-details.png
+INPUT .\images\event-details.png
+INPUT .\images\event-details.png
+INPUT .\images\event-details.png
+INPUT .\images\event-details.png
+INPUT .\images\event-details.png
+INPUT .\images\player-profile.png
+INPUT .\images\player-profile.png
+INPUT .\images\player-profile.png
+INPUT .\images\player-profile.png
+INPUT .\images\player-profile.png
+INPUT .\images\player-profile.png
+INPUT .\images\player-section.png
+INPUT .\images\player-section.png
+INPUT .\images\player-section.png
+INPUT .\images\player-section.png
+INPUT .\images\player-section.png
+INPUT .\images\player-section.png
+INPUT .\images\notification.png
+INPUT .\images\notification.png
+INPUT .\images\notification.png
+INPUT .\images\notification.png
+INPUT .\images\notification.png
+INPUT .\images\notification.png
 INPUT .\GeneralConclusion.tex
 INPUT .\GeneralConclusion.tex
 INPUT .\GeneralConclusion.tex

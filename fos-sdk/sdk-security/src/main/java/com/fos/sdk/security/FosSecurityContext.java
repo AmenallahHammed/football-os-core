@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,11 +44,12 @@ public class FosSecurityContext {
 
     @SuppressWarnings("unchecked")
     public List<String> roles() {
-        Object roles = jwt().getClaim("roles");
-        if (roles instanceof List<?> list) {
-            return (List<String>) list;
-        }
-        return List.of();
+        Jwt jwt = jwt();
+        LinkedHashSet<String> resolvedRoles = new LinkedHashSet<>();
+        addRoles(resolvedRoles, jwt.getClaim("roles"));
+        addRoles(resolvedRoles, readNestedClaim(jwt, "realm_access", "roles"));
+        addRoles(resolvedRoles, readNestedClaim(jwt, "resource_access", "fos-workspace-frontend", "roles"));
+        return List.copyOf(resolvedRoles);
     }
 
     public boolean hasRole(String role) {
@@ -64,12 +66,34 @@ public class FosSecurityContext {
 
     @SuppressWarnings("unchecked")
     private String readNestedClaimAsString(Jwt jwt, String parentClaim, String nestedClaim) {
-        Object parent = jwt.getClaim(parentClaim);
-        if (!(parent instanceof Map<?, ?> parentMap)) {
-            return null;
-        }
-        Object value = parentMap.get(nestedClaim);
+        Object value = readNestedClaim(jwt, parentClaim, nestedClaim);
         return value instanceof String stringValue ? stringValue : null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Object readNestedClaim(Jwt jwt, String... claimPath) {
+        Object current = jwt.getClaims();
+        for (String pathSegment : claimPath) {
+            if (!(current instanceof Map<?, ?> currentMap)) {
+                return null;
+            }
+            current = currentMap.get(pathSegment);
+            if (current == null) {
+                return null;
+            }
+        }
+        return current;
+    }
+
+    private void addRoles(LinkedHashSet<String> roles, Object claimValue) {
+        if (!(claimValue instanceof List<?> claimRoles)) {
+            return;
+        }
+        for (Object role : claimRoles) {
+            if (role instanceof String roleValue) {
+                roles.add(roleValue);
+            }
+        }
     }
 
     private String normalizeClubClaim(String value) {

@@ -29,7 +29,7 @@ declare global {
 })
 export class WorkspaceOnlyofficeEditorComponent implements OnInit, OnDestroy {
   private static readonly EDITOR_CONTAINER_ID = 'onlyoffice-editor-host';
-  private static readonly SUPPORTED_EXTENSIONS = new Set(['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'odt', 'ods', 'odp', 'pdf']);
+  private static readonly SUPPORTED_EXTENSIONS = new Set(['docx', 'xlsx', 'pptx', 'pdf']);
   private static readonly UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
   private readonly route = inject(ActivatedRoute);

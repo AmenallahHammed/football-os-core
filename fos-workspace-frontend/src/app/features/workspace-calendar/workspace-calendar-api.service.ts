@@ -96,7 +96,7 @@ interface WorkspaceCalendarPageResponse<T> {
 export class WorkspaceCalendarApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.gatewayBaseUrl.replace(/\/+$/, '');
-  private readonly teamRefId = '00000000-0000-0000-0000-000000000001';
+  private readonly teamRefId = environment.devFallbackTeamId;
 
   listEvents(): Observable<WorkspaceCalendarApiEvent[]> {
     const params = new HttpParams().set('teamRefId', this.teamRefId).set('size', '200');

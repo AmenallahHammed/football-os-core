@@ -69,6 +69,27 @@ class FosSecurityContextTest {
     }
 
     @Test
+    void should_extract_roles_from_realm_access_claim() {
+        setUpSecurityContextWithClaims("actor-001", List.of(),
+                java.util.Map.of(
+                        "fos_club_id", "club-001",
+                        "realm_access", java.util.Map.of("roles", List.of("ROLE_HEAD_COACH", "ROLE_ANALYST"))));
+
+        assertThat(context.roles()).contains("ROLE_HEAD_COACH", "ROLE_ANALYST");
+    }
+
+    @Test
+    void should_extract_roles_from_client_resource_access_claim() {
+        setUpSecurityContextWithClaims("actor-001", List.of(),
+                java.util.Map.of(
+                        "fos_club_id", "club-001",
+                        "resource_access", java.util.Map.of(
+                                "fos-workspace-frontend", java.util.Map.of("roles", List.of("ROLE_CLUB_ADMIN")))));
+
+        assertThat(context.roles()).contains("ROLE_CLUB_ADMIN");
+    }
+
+    @Test
     void should_throw_when_no_security_context() {
         SecurityContextHolder.clearContext();
         assertThatThrownBy(context::actorId)

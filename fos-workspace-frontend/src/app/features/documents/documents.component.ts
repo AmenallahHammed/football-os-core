@@ -24,7 +24,7 @@ import {
   DocumentsApiService
 } from './documents-api.service';
 
-const SUPPORTED_ONLYOFFICE_EXTENSIONS = new Set(['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'odt', 'ods', 'odp', 'pdf']);
+const SUPPORTED_ONLYOFFICE_EXTENSIONS = new Set(['docx', 'xlsx', 'pptx', 'pdf']);
 const SUPPORTED_UPLOAD_EXTENSIONS = new Set([
   'doc',
   'docx',

@@ -1,13 +1,21 @@
 $ErrorActionPreference = "Stop"
 
+Write-Host "This script restarts the full local Docker stack and rebuilds images." -ForegroundColor Yellow
+Write-Host "It does not delete volumes or data. Never replace this with 'docker compose down -v'." -ForegroundColor Yellow
+$confirmation = Read-Host "Continue? Type YES to proceed"
+if ($confirmation -ne "YES") {
+  Write-Host "Aborted by user." -ForegroundColor Yellow
+  exit 1
+}
+
 Write-Host "[1/4] Stopping existing stack..." -ForegroundColor Cyan
-docker-compose down
+docker compose down
 
 Write-Host "[2/4] Building images (no cache)..." -ForegroundColor Cyan
-docker-compose build --no-cache
+docker compose build --no-cache
 
 Write-Host "[3/4] Starting stack in detached mode..." -ForegroundColor Cyan
-docker-compose up -d
+docker compose up -d
 
 Write-Host "[4/4] Services started:" -ForegroundColor Green
 Write-Host "- Gateway:             http://localhost:8080"

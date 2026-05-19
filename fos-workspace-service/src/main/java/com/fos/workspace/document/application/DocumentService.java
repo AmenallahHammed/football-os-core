@@ -41,9 +41,10 @@ public class DocumentService {
     private static final Logger log = LoggerFactory.getLogger(DocumentService.class);
     private static final Duration DOWNLOAD_URL_EXPIRY = Duration.ofHours(1);
     private static final Duration UPLOAD_URL_EXPIRY = Duration.ofMinutes(15);
-    private static final UUID FALLBACK_ACTOR_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
-    private static final UUID FALLBACK_CLUB_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
-    private static final String FALLBACK_ROLE = "ROLE_CLUB_ADMIN";
+    // Local no-auth development fallback values only.
+    private static final UUID LOCAL_NOAUTH_FALLBACK_ACTOR_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final UUID LOCAL_NOAUTH_FALLBACK_CLUB_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final String LOCAL_NOAUTH_FALLBACK_ROLE = "ROLE_CLUB_ADMIN";
     private static final String DOCUMENT_UPLOADED_TOPIC = "fos.workspace.document.uploaded";
 
     private final WorkspaceDocumentRepository documentRepository;
@@ -107,7 +108,8 @@ public class DocumentService {
                         "documentId", saved.getResourceId().toString(),
                         "event", "document_upload_initiated",
                         "category", saved.getCategory().name(),
-                        "objectKey", objectKey
+                        "objectKey", objectKey,
+                        "uploaderActorId", actorId.toString()
                 )))
                 .build());
 
@@ -147,7 +149,8 @@ public class DocumentService {
                         "documentId", saved.getResourceId().toString(),
                         "version", version.getVersionNumber(),
                         "category", saved.getCategory().name(),
-                        "event", "document_upload_confirmed"
+                        "event", "document_upload_confirmed",
+                        "uploaderActorId", actorId.toString()
                 )))
                 .build());
 
@@ -159,7 +162,8 @@ public class DocumentService {
                         "documentId", saved.getResourceId().toString(),
                         "versionId", version.getVersionId().toString(),
                         "objectKey", version.getStorageObjectKey(),
-                        "bucket", version.getStorageBucket()
+                        "bucket", version.getStorageBucket(),
+                        "uploaderActorId", actorId.toString()
                 )))
                 .build());
 
@@ -234,12 +238,12 @@ public class DocumentService {
     }
 
     private UUID currentActorId() {
-        return securityEnabled ? securityContext.getActorId() : FALLBACK_ACTOR_ID;
+        return securityEnabled ? securityContext.getActorId() : LOCAL_NOAUTH_FALLBACK_ACTOR_ID;
     }
 
     private UUID currentClubId() {
         if (!securityEnabled) {
-            return FALLBACK_CLUB_ID;
+            return LOCAL_NOAUTH_FALLBACK_CLUB_ID;
         }
         String clubId = securityContext.clubId();
         if (clubId == null || clubId.isBlank()) {
@@ -253,7 +257,7 @@ public class DocumentService {
     }
 
     private String currentActorRole() {
-        return securityEnabled ? securityContext.getRole() : FALLBACK_ROLE;
+        return securityEnabled ? securityContext.getRole() : LOCAL_NOAUTH_FALLBACK_ROLE;
     }
 
     private Map<String, Object> buildTenantPolicyContext(UUID clubId) {

@@ -89,7 +89,7 @@ interface CalendarViewOption {
   label: string;
 }
 
-const CURRENT_USER_ID = '11111111-1111-1111-1111-111111111101';
+const CURRENT_USER_ID = environment.devFallbackActorId;
 // TODO(calendar-auth): Remove this temporary frontend-only fallback when local dev has an auth-backed user role source.
 // It only controls calendar UI visibility while environment.auth.enabled is false; backend policy remains authoritative.
 const TEMP_DISABLED_AUTH_ROLE: CalendarRole = 'head-coach';

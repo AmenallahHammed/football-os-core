@@ -31,9 +31,10 @@ import java.util.UUID;
 public class OnlyOfficeConfigService {
 
     private static final Duration FILE_URL_EXPIRY = Duration.ofMinutes(30);
-    private static final UUID FALLBACK_ACTOR_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
-    private static final UUID FALLBACK_CLUB_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
-    private static final String FALLBACK_ROLE = "ROLE_CLUB_ADMIN";
+    // Local no-auth development fallback values only.
+    private static final UUID LOCAL_NOAUTH_FALLBACK_ACTOR_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final UUID LOCAL_NOAUTH_FALLBACK_CLUB_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final String LOCAL_NOAUTH_FALLBACK_ROLE = "ROLE_CLUB_ADMIN";
     private static final Set<String> VIEWABLE_FILE_TYPES = Set.of("docx", "xlsx", "pptx", "pdf");
     private static final Set<String> EDITABLE_FILE_TYPES = Set.of("docx", "xlsx", "pptx");
 
@@ -207,12 +208,12 @@ public class OnlyOfficeConfigService {
     }
 
     private UUID currentActorId() {
-        return securityEnabled ? securityContext.getActorId() : FALLBACK_ACTOR_ID;
+        return securityEnabled ? securityContext.getActorId() : LOCAL_NOAUTH_FALLBACK_ACTOR_ID;
     }
 
     private UUID currentClubId() {
         if (!securityEnabled) {
-            return FALLBACK_CLUB_ID;
+            return LOCAL_NOAUTH_FALLBACK_CLUB_ID;
         }
         String clubId = securityContext.clubId();
         if (clubId == null || clubId.isBlank()) {
@@ -226,7 +227,7 @@ public class OnlyOfficeConfigService {
     }
 
     private String currentActorRole() {
-        return securityEnabled ? securityContext.getRole() : FALLBACK_ROLE;
+        return securityEnabled ? securityContext.getRole() : LOCAL_NOAUTH_FALLBACK_ROLE;
     }
 
     private Map<String, Object> buildTenantPolicyContext(UUID clubId) {

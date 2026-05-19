@@ -1,6 +1,7 @@
 package com.fos.workspace.notification.application;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fos.sdk.events.AbstractFosConsumer;
 import com.fos.sdk.events.SignalEnvelope;
 import com.fos.workspace.notification.domain.NotificationType;
@@ -81,7 +82,7 @@ public class WorkspaceKafkaConsumer extends AbstractFosConsumer {
             case "fos.workspace.document.uploaded" -> {
                 // For document uploads, we could notify linked players or team members.
                 // For Phase 1, we notify the uploader with a confirmation.
-                UUID uploaderId = extractActorId(envelope.actorRef());
+                UUID uploaderId = extractUploaderActorId(envelope);
                 if (uploaderId == null) return;
 
                 WorkspaceNotification notification = WorkspaceNotification.create(
@@ -146,5 +147,20 @@ public class WorkspaceKafkaConsumer extends AbstractFosConsumer {
             log.warn("Could not extract actorId from actorRef: {}", actorRefString);
             return null;
         }
+    }
+
+    private UUID extractUploaderActorId(SignalEnvelope envelope) {
+        JsonNode payload = envelope.payload();
+        if (payload != null) {
+            JsonNode uploaderActorId = payload.get("uploaderActorId");
+            if (uploaderActorId != null && uploaderActorId.isTextual()) {
+                try {
+                    return UUID.fromString(uploaderActorId.asText().trim());
+                } catch (IllegalArgumentException e) {
+                    log.warn("Invalid uploaderActorId in payload: {}", uploaderActorId.asText());
+                }
+            }
+        }
+        return extractActorId(envelope.actorRef());
     }
 }

@@ -77,6 +77,16 @@ class OnlyOfficeSaveHandlerTest {
 
     @Test
     void should_upload_and_append_new_version_after_successful_onlyoffice_save() {
+        saveHandler = new OnlyOfficeSaveHandler(
+                documentRepository,
+                storagePort,
+                kafkaProducer,
+                new ObjectMapper(),
+                JWT_SECRET,
+                false,
+                "http://localhost:8084",
+                "http://localhost:" + wireMock.port());
+
         WorkspaceDocument document = documentWithInitialVersion();
         UUID documentId = document.getResourceId();
         byte[] updatedBytes = "updated-document-content".getBytes(StandardCharsets.UTF_8);
@@ -134,6 +144,21 @@ class OnlyOfficeSaveHandlerTest {
         verify(storagePort).confirmUpload("fos-workspace", expectedKey);
         verify(documentRepository).save(document);
         verify(kafkaProducer).emit(any());
+    }
+
+    @Test
+    void should_reject_unsigned_callback_when_jwt_is_enabled() {
+        WorkspaceDocument document = documentWithInitialVersion();
+        UUID documentId = document.getResourceId();
+        when(documentRepository.findByResourceId(documentId)).thenReturn(Optional.of(document));
+
+        saveHandler.handleCallback(documentId, "{\"status\":2,\"url\":\"http://localhost:" + wireMock.port() + "/download/doc\"}");
+
+        verify(documentRepository, never()).save(any());
+        verify(storagePort, never()).putObject(anyString(), anyString(), any(InputStream.class), anyLong(), anyString());
+        verify(storagePort, never()).confirmUpload(anyString(), anyString());
+        verify(kafkaProducer, never()).emit(any());
+        assertThat(document.currentVersion().getVersionNumber()).isEqualTo(1);
     }
 
     @Test

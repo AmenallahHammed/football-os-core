@@ -33,9 +33,10 @@ import java.util.UUID;
 @Service
 public class EventService {
 
-    private static final UUID FALLBACK_ACTOR_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
-    private static final UUID FALLBACK_CLUB_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
-    private static final String FALLBACK_ROLE = "ROLE_CLUB_ADMIN";
+    // Local no-auth development fallback values only.
+    private static final UUID LOCAL_NOAUTH_FALLBACK_ACTOR_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final UUID LOCAL_NOAUTH_FALLBACK_CLUB_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    private static final String LOCAL_NOAUTH_FALLBACK_ROLE = "ROLE_CLUB_ADMIN";
     private static final String EVENT_CREATED_TOPIC = "fos.workspace.event.created";
     private static final String EVENT_UPDATED_TOPIC = "fos.workspace.event.updated";
 
@@ -204,12 +205,12 @@ public class EventService {
     }
 
     private UUID currentActorId() {
-        return securityEnabled ? securityContext.getActorId() : FALLBACK_ACTOR_ID;
+        return securityEnabled ? securityContext.getActorId() : LOCAL_NOAUTH_FALLBACK_ACTOR_ID;
     }
 
     private UUID currentClubId() {
         if (!securityEnabled) {
-            return FALLBACK_CLUB_ID;
+            return LOCAL_NOAUTH_FALLBACK_CLUB_ID;
         }
         String clubId = securityContext.clubId();
         if (clubId == null || clubId.isBlank()) {
@@ -223,7 +224,7 @@ public class EventService {
     }
 
     private String currentActorRole() {
-        return securityEnabled ? securityContext.getRole() : FALLBACK_ROLE;
+        return securityEnabled ? securityContext.getRole() : LOCAL_NOAUTH_FALLBACK_ROLE;
     }
 
     private Map<String, Object> buildTenantPolicyContext(UUID clubId) {

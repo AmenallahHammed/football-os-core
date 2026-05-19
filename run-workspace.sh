@@ -17,5 +17,5 @@ fi
 # Print a clear startup message for the developer.
 echo "Starting ${SERVICE_NAME} on http://localhost:${PORT}"
 
-# Run only this app module to avoid root-reactor ambiguity.
-mvn "-Dspring-boot.run.arguments=--server.port=${PORT}" -pl "${MODULE}" spring-boot:run
+# Run the target module and build required local dependencies on clean machines.
+mvn "-Dspring-boot.run.arguments=--server.port=${PORT}" -pl "${MODULE}" -am spring-boot:run

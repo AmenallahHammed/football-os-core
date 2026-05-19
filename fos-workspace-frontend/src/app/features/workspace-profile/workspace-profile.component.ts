@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 
+import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/auth/auth.service';
 import { WorkspaceDataService } from '../../core/data/workspace-data.service';
 import { EventParticipant } from '../../shared/models/event.model';
@@ -46,7 +47,7 @@ interface ProfileMissingDocumentItem {
 export class WorkspaceProfileComponent implements OnInit, OnDestroy {
   // TODO(profile-api): Replace fallback profile fields and local document mapping when a dedicated
   // workspace profile endpoint exposes phone, job title, joined date, and actor-scoped assignments.
-  private static readonly FALLBACK_ACTOR_ID = '11111111-1111-1111-1111-111111111101';
+  private static readonly FALLBACK_ACTOR_ID = environment.devFallbackActorId;
   private static readonly DEFAULT_AVATAR_URL =
     'https://images.unsplash.com/photo-1557862921-37829c790f19?auto=format&fit=crop&w=300&q=80';
 

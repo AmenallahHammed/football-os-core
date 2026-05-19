@@ -179,7 +179,7 @@ public class OnlyOfficeSaveHandler {
         JsonNode tokenNode = body.get("token");
         if (tokenNode == null || tokenNode.asText().isBlank()) {
             if (jwtEnabled) {
-                log.warn("OnlyOffice callback missing token while JWT is enabled; processing unsigned payload");
+                throw new IllegalArgumentException("OnlyOffice callback token is required when JWT is enabled");
             }
             return body;
         }

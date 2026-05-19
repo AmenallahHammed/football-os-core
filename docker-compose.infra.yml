@@ -95,7 +95,11 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?KEYCLOAK_ADMIN_PASSWORD is required}
       KC_HOSTNAME_STRICT: "false"
       KC_HTTP_ENABLED: "true"
-    command: start-dev
+    command:
+      - start-dev
+      - --import-realm
+    volumes:
+      - ./keycloak/fos-realm.local.json:/opt/keycloak/data/import/fos-realm.local.json:ro
     depends_on:
       postgres:
         condition: service_healthy

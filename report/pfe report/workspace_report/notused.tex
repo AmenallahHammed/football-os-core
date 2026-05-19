@@ -13,10 +13,10 @@ independent services supported by a shared SDK. The system is organized
 around four main components:
 
 \begin{itemize}
-    \item \textbf{API Gateway}: handles authentication, request enrichment, and routing
-    \item \textbf{Governance Service}: manages identity, authorization policies, and audit logs
-    \item \textbf{Workspace Service}: manages operational features such as documents, events, and notifications
-    \item \textbf{Shared SDK}: provides reusable modules for cross-cutting concerns
+    \item \textbf{API Gateway}: handles authentication, request enrichment, and routing,
+    \item \textbf{Governance Service}: manages identity, authorization policies, and audit logs,
+    \item \textbf{Workspace Service}: manages operational features such as documents, events, and notifications,
+    \item \textbf{Shared SDK}: provides reusable modules for cross-cutting concerns.
 \end{itemize}
 
 All client requests pass through the API Gateway before reaching backend
@@ -79,11 +79,11 @@ SDK (\texttt{fos-sdk}) across all services.
 
 The SDK provides reusable modules that handle common concerns such as:
 \begin{itemize}
-    \item Event communication
-    \item Security context handling
-    \item Policy evaluation integration
-    \item Canonical data resolution
-    \item Storage abstraction
+    \item Event communication,
+    \item Security context handling,
+    \item Policy evaluation integration,
+    \item Canonical data resolution,
+    \item Storage abstraction.
 \end{itemize}
 
 By centralizing these functionalities, the SDK avoids duplication and
@@ -114,9 +114,9 @@ control access to resources.
 
 Access decisions are based on multiple factors, including:
 \begin{itemize}
-    \item The user's role
-    \item The requested action
-    \item The type and state of the resource
+    \item The user's role,
+    \item The requested action,
+    \item The type and state of the resource.
 \end{itemize}
 
 This allows fine-grained control over permissions, especially for
@@ -137,8 +137,8 @@ without modifying application code.
 Football OS uses two complementary communication mechanisms:
 
 \begin{itemize}
-    \item \textbf{REST APIs}: for synchronous communication between clients and services
-    \item \textbf{Kafka}: for asynchronous communication between services
+    \item \textbf{REST APIs}: for synchronous communication between clients and services,
+    \item \textbf{Kafka}: for asynchronous communication between services.
 \end{itemize}
 
 All external requests go through the API Gateway, which ensures proper

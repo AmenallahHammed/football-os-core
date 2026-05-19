@@ -15,70 +15,70 @@ Functional requirements describe the business services that Football OS must pro
 \subsection{User Access and Authentication}
 The system must:
 \begin{itemize}
-    \item Authenticate users through an external identity provider.
-    \item Allow only authenticated users to access protected features.
-    \item Associate each authenticated user with a club role.
+    \item Authenticate users through an external identity provider,
+    \item Allow only authenticated users to access protected features,
+    \item Associate each authenticated user with a club role,
     \item Block unauthenticated access to protected resources.
 \end{itemize}
 
 \subsection{User and Role Management}
 The system must:
 \begin{itemize}
-    \item Allow the club administrator to manage users.
-    \item Allow role assignment and role updates.
-    \item Support role-based permissions for platform actions.
+    \item Allow the club administrator to manage users,
+    \item Allow role assignment and role updates,
+    \item Support role-based permissions for platform actions,
     \item Keep role information consistent with identity data.
 \end{itemize}
 
 \subsection{Club Reference Data Management}
 The system must:
 \begin{itemize}
-    \item Manage reference data for players and teams.
-    \item Provide consistent player and team references across modules.
+    \item Manage reference data for players and teams,
+    \item Provide consistent player and team references across modules,
     \item Restrict modification of reference data to authorized roles.
 \end{itemize}
 
 \subsection{Document Management}
 The system must:
 \begin{itemize}
-    \item Allow authorized users to upload, consult, and archive documents.
-    \item Support versioning and online viewing or editing when applicable.
-    \item Protect sensitive documents, including medical documents.
+    \item Allow authorized users to upload, consult, and archive documents,
+    \item Support versioning and online viewing or editing when applicable,
+    \item Protect sensitive documents, including medical documents,
     \item Enforce authorization rules for every document action.
 \end{itemize}
 
 \subsection{Calendar and Event Management}
 The system must:
 \begin{itemize}
-    \item Allow authorized users to create, update, and archive events.
-    \item Manage event details, attendees, tasks, and required documents.
-    \item Allow staff to consult event schedules and details.
+    \item Allow authorized users to create, update, and archive events,
+    \item Manage event details, attendees, tasks, and required documents,
+    \item Allow staff to consult event schedules and details,
     \item Trigger reminders and event-related notifications.
 \end{itemize}
 
 \subsection{Player Profile Consultation}
 The system must:
 \begin{itemize}
-    \item Allow authorized users to search and consult player profiles.
-    \item Combine official player identity data with workspace data.
-    \item Show profile sections according to role permissions.
+    \item Allow authorized users to search and consult player profiles,
+    \item Combine official player identity data with workspace data,
+    \item Show profile sections according to role permissions,
     \item Restrict medical content to authorized medical roles.
 \end{itemize}
 
 \subsection{Notifications and Search}
 The system must:
 \begin{itemize}
-    \item Notify users about relevant operational events and updates.
-    \item Allow users to consult and manage notification status.
-    \item Provide search across key resources such as documents and events.
+    \item Notify users about relevant operational events and updates,
+    \item Allow users to consult and manage notification status,
+    \item Provide search across key resources such as documents and events,
     \item Filter results according to authorization rules.
 \end{itemize}
 
 \subsection{Access Control and Activity Tracking}
 The system must:
 \begin{itemize}
-    \item Enforce role-based access control on sensitive actions.
-    \item Record important actions for accountability.
+    \item Enforce role-based access control on sensitive actions,
+    \item Record important actions for accountability,
     \item Preserve traceability of requests and operations.
 \end{itemize}
 
@@ -92,40 +92,40 @@ Non-functional requirements define the expected quality of the platform.
 \subsection{Security}
 The platform must:
 \begin{itemize}
-    \item Protect access through authentication and authorization.
-    \item Prevent unauthorized access to sensitive resources.
+    \item Protect access through authentication and authorization,
+    \item Prevent unauthorized access to sensitive resources,
     \item Protect data exchanges between platform components.
 \end{itemize}
 
 \subsection{Usability}
 The platform must:
 \begin{itemize}
-    \item Provide clear interfaces for daily staff workflows.
-    \item Keep navigation simple across core modules.
+    \item Provide clear interfaces for daily staff workflows,
+    \item Keep navigation simple across core modules,
     \item Give understandable feedback for user actions.
 \end{itemize}
 
 \subsection{Performance}
 The platform must:
 \begin{itemize}
-    \item Respond efficiently to common operations.
-    \item Support efficient search and consultation.
+    \item Respond efficiently to common operations,
+    \item Support efficient search and consultation,
     \item Handle background operations without blocking key user flows.
 \end{itemize}
 
 \subsection{Maintainability and Extensibility}
 The platform must:
 \begin{itemize}
-    \item Keep modules separated by responsibility.
-    \item Use reusable contracts and shared mechanisms.
+    \item Keep modules separated by responsibility,
+    \item Use reusable contracts and shared mechanisms,
     \item Support future features and integrations without major redesign.
 \end{itemize}
 
 \subsection{Reliability and Traceability}
 The platform must:
 \begin{itemize}
-    \item Preserve consistent behavior during daily usage.
-    \item Handle failures without losing important data.
+    \item Preserve consistent behavior during daily usage,
+    \item Handle failures without losing important data,
     \item Keep actions and decisions traceable for audit purposes.
 \end{itemize}
 
@@ -138,18 +138,18 @@ This section presents the main UML use case diagrams that describe how users int
 
 \textbf{Primary actors:}
 \begin{itemize}
-    \item \textbf{Club Administrator}: manages users, roles, and governance data.
-    \item \textbf{Head Coach}: manages events and operational coordination.
-    \item \textbf{Coaching Staff}: consults events, documents, and player information.
+    \item \textbf{Club Administrator}: manages users, roles, and governance data,
+    \item \textbf{Head Coach}: manages events and operational coordination,
+    \item \textbf{Coaching Staff}: consults events, documents, and player information,
     \item \textbf{Medical Staff}: accesses medical information according to permissions.
 \end{itemize}
 
 \textbf{Supporting actors and systems:}
 \begin{itemize}
-    \item \textbf{Identity Provider}: performs user authentication.
-    \item \textbf{Document Editor}: enables online document viewing and editing.
-    \item \textbf{Object Storage Provider}: stores document files.
-    \item \textbf{Canonical Player Data Provider}: provides official player identity data.
+    \item \textbf{Identity Provider}: performs user authentication,
+    \item \textbf{Document Editor}: enables online document viewing and editing,
+    \item \textbf{Object Storage Provider}: stores document files,
+    \item \textbf{Canonical Player Data Provider}: provides official player identity data,
     \item \textbf{Governance Policy Service}: evaluates authorization rules.
 \end{itemize}
 
@@ -205,7 +205,7 @@ detailed secondary cases can be placed in the appendix.
 \textbf{Constraints / Access Rules} & Unauthenticated users cannot access protected features. The available features depend on the authenticated user's role. \\
 \hline
 \textbf{Main Scenario} &
-\begin{enumerate}[nosep,leftmargin=*]
+\begin{enumerate}
     \item The user opens the platform.
     \item The system requests authentication.
     \item The user authenticates through the identity provider.
@@ -245,7 +245,7 @@ detailed secondary cases can be placed in the appendix.
 \textbf{Constraints / Access Rules} & Event management actions are limited to authorized roles. In the current scope, the head coach  can manage events, while other authorized staff mainly consult event information. Delete operations are treated as archive actions, not permanent deletion. \\
 \hline
 \textbf{Main Scenario} &
-\begin{enumerate}[nosep,leftmargin=*]
+\begin{enumerate}
     \item The user opens the calendar module.
     \item The user creates, updates, consults, or archives an event.
     \item The system checks authorization and saves the requested action.
@@ -269,10 +269,10 @@ detailed secondary cases can be placed in the appendix.
 \label{fig:document-usecase}
 
 \vspace{0.25cm}
-\noindent\textbf{Document Management Use Case}\par
 \centering
 \small
 \renewcommand{\arraystretch}{1.05}
+\captionof{table}{Compact description of document management}
 \begin{tabular}{|p{3.6cm}|p{10.1cm}|}
 \hline
 \textbf{Use Case} & Document Management \\
@@ -288,7 +288,7 @@ detailed secondary cases can be placed in the appendix.
 \textbf{Constraints / Access Rules} & Access depends on the user's role and the document category. Medical documents are restricted to medical staff and explicitly authorized roles. The object storage provider stores file content, while the platform manages metadata and versions. \\
 \hline
 \textbf{Main Scenario} &
-\begin{enumerate}[nosep,leftmargin=*]
+\begin{enumerate}
     \item The user opens the document module and selects an action.
     \item The system verifies permissions and executes the action.
     \item The system stores or retrieves document data and versions.
@@ -299,7 +299,6 @@ detailed secondary cases can be placed in the appendix.
 \textbf{Postconditions} & The document is uploaded, consulted, edited, or archived according to the selected action and authorization rules. \\
 \hline
 \end{tabular}
-\captionof{table}{Compact description of document management}
 \normalsize
 \renewcommand{\arraystretch}{1}
 \end{minipage}
@@ -313,10 +312,10 @@ detailed secondary cases can be placed in the appendix.
 \label{fig:profile-usecase}
 
 \vspace{0.25cm}
-\noindent\textbf{Consult Player Profile Use Case}\par
 \centering
 \small
 \renewcommand{\arraystretch}{1.05}
+\captionof{table}{Compact description of player profile consultation}
 \begin{tabular}{|p{3.6cm}|p{10.1cm}|}
 \hline
 \textbf{Use Case} & Consult Player Profile \\
@@ -332,7 +331,7 @@ detailed secondary cases can be placed in the appendix.
 \textbf{Constraints / Access Rules} & Profile sections are filtered according to role permissions. Medical and sensitive information must only be visible to authorized users. \\
 \hline
 \textbf{Main Scenario} &
-\begin{enumerate}[nosep,leftmargin=*]
+\begin{enumerate}
     \item The user searches for or selects a player.
     \item The system retrieves official identity and linked workspace data.
     \item The system evaluates access rights for each profile section.
@@ -343,7 +342,6 @@ detailed secondary cases can be placed in the appendix.
 \textbf{Postconditions} & The system displays only the player profile sections and linked data that the user is allowed to access. \\
 \hline
 \end{tabular}
-\captionof{table}{Compact description of player profile consultation}
 \normalsize
 \renewcommand{\arraystretch}{1}
 \end{minipage}

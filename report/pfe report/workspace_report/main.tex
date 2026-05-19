@@ -17,31 +17,65 @@
 \usepackage{enumitem}
 \usepackage{fancyhdr}
 \usepackage{float}
-\usepackage{geometry}
+\usepackage[a4paper, margin=2.5cm]{geometry}
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{indentfirst}
-\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage{newtxtext,newtxmath}
+\else
+  \usepackage{fontspec}
+  \setmainfont{Times New Roman}
+\fi
 \usepackage{longtable}
 \usepackage{makecell}
 \usepackage{mathrsfs}
 \usepackage{microtype}
+\usepackage{needspace}
 \usepackage[nottoc]{tocbibind}
 \usepackage[pages=some]{background}
+\usepackage{ragged2e}
 \usepackage{siunitx}
+\usepackage{setspace}
 \usepackage{textpos}
 \usepackage{tikz}
 \usepackage{titlesec}
 \usepackage{url}
+\usepackage{etoolbox}
 
-\captionsetup[table]{position=above,justification=raggedright,singlelinecheck=false}
+\captionsetup[table]{position=above,justification=raggedright,singlelinecheck=false,font=bf,labelfont=bf}
 \captionsetup[figure]{position=below,justification=centering,singlelinecheck=false,font=bf,labelfont=bf}
 \numberwithin{equation}{section}
+\onehalfspacing
+\justifying
+\setlist[itemize]{label=\textbullet,leftmargin=1.2cm,itemsep=2pt,topsep=3pt}
+\setlist[enumerate]{leftmargin=1.2cm,itemsep=2pt,topsep=3pt}
+
+\titleformat{\chapter}[hang]{\bfseries\Large}{Chapitre \thechapter :}{0.7em}{}
+\titleformat{\section}{\bfseries\large}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\bfseries\normalsize}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\bfseries\normalsize}{\thesubsubsection}{0.7em}{}
+
+\pretocmd{\chapter}{\Needspace{8\baselineskip}}{}{}
+\pretocmd{\section}{\Needspace{5\baselineskip}}{}{}
+\pretocmd{\subsection}{\Needspace{5\baselineskip}}{}{}
+\pretocmd{\subsubsection}{\Needspace{5\baselineskip}}{}{}
 
 %pagestyle
 \pagestyle{fancy}
 \fancyhf{}
-\cfoot{\thepage}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyfoot[C]{\thepage}
+\setlength{\headheight}{15pt}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0.4pt}
+}
 \newcommand{\euro}{\EUR\xspace}
 
 \begin{document}

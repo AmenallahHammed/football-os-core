@@ -136,8 +136,8 @@ services:
     environment:
       JWT_ENABLED: ${ONLYOFFICE_JWT_ENABLED:-true}
       JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:?ONLYOFFICE_JWT_SECRET is required}
-      JWT_HEADER: ${ONLYOFFICE_JWT_HEADER:-Authorization}
-      JWT_IN_BODY: ${ONLYOFFICE_JWT_IN_BODY:-true}
+      JWT_HEADER: Authorization
+      JWT_IN_BODY: "true"
       ALLOW_PRIVATE_IP_ADDRESS: ${ALLOW_PRIVATE_IP_ADDRESS:-true}
       ALLOW_META_IP_ADDRESS: ${ALLOW_META_IP_ADDRESS:-true}
     extra_hosts:

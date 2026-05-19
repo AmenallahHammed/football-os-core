@@ -3,6 +3,7 @@ package com.fos.gateway.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -30,6 +31,9 @@ public class SecurityConfig {
         http.cors(cors -> {})
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
             .authorizeExchange(exchanges -> exchanges
+                // Preflight CORS requests must remain public; browsers do not
+                // attach user JWTs to OPTIONS checks.
+                .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .pathMatchers(
                     "/actuator/health",
                     "/api/v1/onlyoffice/callback/**",

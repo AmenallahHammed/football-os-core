@@ -140,8 +140,8 @@ services:
     environment:
       JWT_ENABLED: ${ONLYOFFICE_JWT_ENABLED:-true}
       JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:?ONLYOFFICE_JWT_SECRET is required}
-      JWT_HEADER: ${ONLYOFFICE_JWT_HEADER:-Authorization}
-      JWT_IN_BODY: ${ONLYOFFICE_JWT_IN_BODY:-true}
+      JWT_HEADER: Authorization
+      JWT_IN_BODY: "true"
       ALLOW_PRIVATE_IP_ADDRESS: ${ALLOW_PRIVATE_IP_ADDRESS:-true}
       ALLOW_META_IP_ADDRESS: ${ALLOW_META_IP_ADDRESS:-true}
     extra_hosts:
@@ -209,15 +209,17 @@ services:
       GOVERNANCE_URL: http://fos-governance-service:8081
       STORAGE_PROVIDER: minio
       MINIO_ENDPOINT: http://minio:9000
+      MINIO_PUBLIC_ENDPOINT: ${MINIO_PUBLIC_ENDPOINT:-http://host.docker.internal:9000}
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
-      ONLYOFFICE_URL: ${ONLYOFFICE_PUBLIC_URL:?ONLYOFFICE_PUBLIC_URL is required}
       ONLYOFFICE_PUBLIC_URL: ${ONLYOFFICE_PUBLIC_URL:?ONLYOFFICE_PUBLIC_URL is required}
-      ONLYOFFICE_INTERNAL_URL: http://onlyoffice-documentserver
-      ONLYOFFICE_CALLBACK_BASE_URL: http://fos-gateway:8080
+      ONLYOFFICE_URL: ${ONLYOFFICE_PUBLIC_URL:?ONLYOFFICE_PUBLIC_URL is required}
+      ONLYOFFICE_INTERNAL_URL: ${ONLYOFFICE_INTERNAL_URL:-http://onlyoffice-documentserver}
+      ONLYOFFICE_CALLBACK_BASE_URL: ${ONLYOFFICE_CALLBACK_BASE_URL:-http://fos-gateway:8080}
       ONLYOFFICE_JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:?ONLYOFFICE_JWT_SECRET is required}
-      ONLYOFFICE_JWT_HEADER: ${ONLYOFFICE_JWT_HEADER:-Authorization}
-      ONLYOFFICE_JWT_IN_BODY: ${ONLYOFFICE_JWT_IN_BODY:-true}
+      ONLYOFFICE_JWT_ENABLED: ${ONLYOFFICE_JWT_ENABLED:-true}
+      ONLYOFFICE_JWT_HEADER: Authorization
+      ONLYOFFICE_JWT_IN_BODY: "true"
     depends_on:
       mongodb:
         condition: service_healthy

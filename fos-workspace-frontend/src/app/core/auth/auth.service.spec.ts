@@ -97,6 +97,21 @@ describe('AuthService', () => {
     expect(service.currentClubId()).toBe('00000000-0000-0000-0000-000000000001');
   });
 
+  it('accepts legacy club claim aliases and canonical club reference format', async () => {
+    const service = setup();
+    const token = jwtWithPayload({
+      sub: '11111111-1111-1111-1111-111111111101',
+      club_id: 'club:aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
+    });
+
+    oauthService.hasValidAccessToken.and.returnValue(true);
+    oauthService.getAccessToken.and.returnValue(token);
+
+    await service.initializeAuth();
+
+    expect(service.currentClubId()).toBe('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa');
+  });
+
   it('treats disabled auth as locally authenticated without tokens', () => {
     const service = setup(false);
 

@@ -207,6 +207,22 @@ Default local ports:
 - frontend: `4200`
 - OnlyOffice Document Server: `8084`
 
+OnlyOffice local connectivity quick check:
+
+```bash
+docker compose config
+docker compose up -d
+curl -I http://localhost:8084/web-apps/apps/api/documents/api.js
+curl -I http://localhost:8080/actuator/health
+```
+
+Notes:
+
+- The frontend must call gateway APIs on `http://localhost:8080` (not workspace `8082` directly).
+- `HOST_LAN_IP` defaults to `localhost` for same-machine testing. For another device on LAN, set it to your machine real IP.
+- If the editor opens but cannot save, verify `ONLYOFFICE_CALLBACK_BASE_URL` is reachable from inside the `fos-onlyoffice` container.
+- If the editor opens but cannot load the file, inspect `document.url` in `/api/v1/onlyoffice/config` response and confirm MinIO URL reachability from both browser and ONLYOFFICE.
+
 ## Testing and Build
 
 Backend:

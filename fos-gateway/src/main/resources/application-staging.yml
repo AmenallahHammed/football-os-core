@@ -10,6 +10,31 @@
 # ----------------------------------------------------------------------------
 
 spring:
+  cloud:
+    gateway:
+      # Local Docker QA: allow Angular dev server to call gateway through 8080.
+      # Keep this scoped to staging profile to avoid relaxing production defaults.
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - http://localhost:4200
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - Authorization
+              - Content-Type
+              - X-FOS-Request-Id
+              - X-FOS-Actor-Id
+              - Accept
+              - Origin
+            allowCredentials: true
   data:
     redis:
       host: ${REDIS_HOST}

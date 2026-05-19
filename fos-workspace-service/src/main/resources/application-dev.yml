@@ -45,11 +45,13 @@ fos:
     # Keep this aligned with the OnlyOffice Docker JWT secret to avoid
     # "document security token is not correctly formed" / invalid signature.
     jwt-secret: ${ONLYOFFICE_JWT_SECRET:fos-onlyoffice-secret-key-change-in-production}
+    jwt-enabled: ${ONLYOFFICE_JWT_ENABLED:true}
     jwt-header: ${ONLYOFFICE_JWT_HEADER:Authorization}
     jwt-in-body: ${ONLYOFFICE_JWT_IN_BODY:true}
 
 minio:
   endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  public-endpoint: ${MINIO_PUBLIC_ENDPOINT:${MINIO_ENDPOINT:http://localhost:9000}}
   access-key: ${MINIO_ACCESS_KEY:minioadmin}
   secret-key: ${MINIO_SECRET_KEY:minioadmin}
   bucket: ${MINIO_BUCKET:fos-workspace-dev}

@@ -1,8 +1,11 @@
 package com.fos.sdk.canonical;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -27,6 +30,8 @@ public class CanonicalServiceClient {
     public PlayerDTO getPlayer(UUID id) {
         return restClient.get()
                 .uri("/api/v1/players/{id}", id)
+                .headers(headers -> resolveAuthorizationHeader()
+                        .ifPresent(value -> headers.set(HttpHeaders.AUTHORIZATION, value)))
                 .retrieve()
                 .body(PlayerDTO.class);
     }
@@ -34,6 +39,8 @@ public class CanonicalServiceClient {
     public TeamDTO getTeam(UUID id) {
         return restClient.get()
                 .uri("/api/v1/teams/{id}", id)
+                .headers(headers -> resolveAuthorizationHeader()
+                        .ifPresent(value -> headers.set(HttpHeaders.AUTHORIZATION, value)))
                 .retrieve()
                 .body(TeamDTO.class);
     }
@@ -49,6 +56,8 @@ public class CanonicalServiceClient {
                                 .queryParam("dob", dob)
                                 .queryParam("nationality", nationality)
                                 .build())
+                    .headers(headers -> resolveAuthorizationHeader()
+                            .ifPresent(value -> headers.set(HttpHeaders.AUTHORIZATION, value)))
                     .retrieve()
                     .body(PlayerDTO.class);
             return Optional.ofNullable(result);
@@ -67,11 +76,24 @@ public class CanonicalServiceClient {
                                 .queryParam("name", name)
                                 .queryParam("country", country)
                                 .build())
+                    .headers(headers -> resolveAuthorizationHeader()
+                            .ifPresent(value -> headers.set(HttpHeaders.AUTHORIZATION, value)))
                     .retrieve()
                     .body(TeamDTO.class);
             return Optional.ofNullable(result);
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+
+    private Optional<String> resolveAuthorizationHeader() {
+        if (!(RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes servletAttributes)) {
+            return Optional.empty();
+        }
+        String value = servletAttributes.getRequest().getHeader(HttpHeaders.AUTHORIZATION);
+        if (value == null || value.isBlank()) {
+            return Optional.empty();
+        }
+        return Optional.of(value.trim());
     }
 }

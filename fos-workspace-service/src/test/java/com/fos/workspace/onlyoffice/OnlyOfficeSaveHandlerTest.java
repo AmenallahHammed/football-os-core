@@ -51,13 +51,21 @@ class OnlyOfficeSaveHandlerTest {
 
     @BeforeEach
     void setUp() {
+        wireMock = new WireMockServer(WireMockConfiguration.options().dynamicPort());
+        wireMock.start();
+
         documentRepository = mock(WorkspaceDocumentRepository.class);
         storagePort = mock(StoragePort.class);
         kafkaProducer = mock(FosKafkaProducer.class);
-        saveHandler = new OnlyOfficeSaveHandler(documentRepository, storagePort, kafkaProducer, new ObjectMapper(), JWT_SECRET);
-
-        wireMock = new WireMockServer(WireMockConfiguration.options().dynamicPort());
-        wireMock.start();
+        saveHandler = new OnlyOfficeSaveHandler(
+                documentRepository,
+                storagePort,
+                kafkaProducer,
+                new ObjectMapper(),
+                JWT_SECRET,
+                true,
+                "http://localhost:8084",
+                "http://localhost:" + wireMock.port());
     }
 
     @AfterEach

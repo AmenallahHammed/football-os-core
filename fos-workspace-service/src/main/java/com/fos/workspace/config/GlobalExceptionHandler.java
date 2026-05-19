@@ -3,8 +3,11 @@ package com.fos.workspace.config;
 import com.fos.sdk.core.ErrorResponse;
 import com.fos.sdk.events.RequestContext;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -14,6 +17,7 @@ import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -40,5 +44,15 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleConflict(IllegalStateException ex) {
         return ErrorResponse.of("CONFLICT", ex.getMessage(), RequestContext.get());
+    }
+
+    @ExceptionHandler(HttpClientErrorException.Unauthorized.class)
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    public ErrorResponse handleUpstreamUnauthorized(HttpClientErrorException.Unauthorized ex) {
+        log.warn("Downstream service unauthorized request: {}", ex.getMessage());
+        return ErrorResponse.of(
+                "UPSTREAM_UNAUTHORIZED",
+                "Workspace dependency rejected the request with 401 Unauthorized",
+                RequestContext.get());
     }
 }

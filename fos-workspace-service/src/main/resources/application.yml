@@ -111,6 +111,7 @@ fos:
     # Secret shared between this service and OnlyOffice Document Server.
     # Used to sign JWT configs so OnlyOffice accepts them.
     jwt-secret: ${ONLYOFFICE_JWT_SECRET:change-this-in-production}
+    jwt-enabled: ${ONLYOFFICE_JWT_ENABLED:true}
     jwt-header: ${ONLYOFFICE_JWT_HEADER:Authorization}
     jwt-in-body: ${ONLYOFFICE_JWT_IN_BODY:true}
     token-expiry-minutes: 60
@@ -118,6 +119,7 @@ fos:
 # -- MinIO connection (only used when fos.storage.provider=minio) ------------
 minio:
   endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  public-endpoint: ${MINIO_PUBLIC_ENDPOINT:${MINIO_ENDPOINT:http://localhost:9000}}
   access-key: ${MINIO_ACCESS_KEY:minioadmin}
   secret-key: ${MINIO_SECRET_KEY:minioadmin}
   bucket: ${MINIO_BUCKET:fos-workspace}

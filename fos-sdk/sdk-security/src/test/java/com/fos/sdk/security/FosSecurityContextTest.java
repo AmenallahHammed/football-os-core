@@ -29,6 +29,38 @@ class FosSecurityContextTest {
     }
 
     @Test
+    void should_extract_club_id_from_legacy_claim_name() {
+        setUpSecurityContextWithClaims("actor-001", List.of("ROLE_PLAYER"),
+                java.util.Map.of("club_id", "11111111-1111-1111-1111-111111111111"));
+
+        assertThat(context.clubId()).isEqualTo("11111111-1111-1111-1111-111111111111");
+    }
+
+    @Test
+    void should_extract_club_id_from_camel_case_claim_name() {
+        setUpSecurityContextWithClaims("actor-001", List.of("ROLE_PLAYER"),
+                java.util.Map.of("clubId", "22222222-2222-2222-2222-222222222222"));
+
+        assertThat(context.clubId()).isEqualTo("22222222-2222-2222-2222-222222222222");
+    }
+
+    @Test
+    void should_extract_club_id_from_tenant_claim() {
+        setUpSecurityContextWithClaims("actor-001", List.of("ROLE_PLAYER"),
+                java.util.Map.of("tenant", java.util.Map.of("clubId", "33333333-3333-3333-3333-333333333333")));
+
+        assertThat(context.clubId()).isEqualTo("33333333-3333-3333-3333-333333333333");
+    }
+
+    @Test
+    void should_normalize_canonical_club_reference() {
+        setUpSecurityContextWithClaims("actor-001", List.of("ROLE_PLAYER"),
+                java.util.Map.of("fos_club_id", "club:44444444-4444-4444-4444-444444444444"));
+
+        assertThat(context.clubId()).isEqualTo("44444444-4444-4444-4444-444444444444");
+    }
+
+    @Test
     void should_return_true_when_actor_has_role() {
         setUpSecurityContext("actor-001", "club-001", List.of("ROLE_HEAD_COACH", "ROLE_ASSISTANT_COACH"));
 
@@ -45,15 +77,19 @@ class FosSecurityContextTest {
     }
 
     private void setUpSecurityContext(String actorId, String clubId, List<String> roles) {
-        Jwt jwt = Jwt.withTokenValue("token")
+        setUpSecurityContextWithClaims(actorId, roles, java.util.Map.of("fos_club_id", clubId));
+    }
+
+    private void setUpSecurityContextWithClaims(String actorId, List<String> roles, java.util.Map<String, Object> claims) {
+        Jwt.Builder jwtBuilder = Jwt.withTokenValue("token")
             .header("alg", "RS256")
             .claim("sub", actorId)
-            .claim("fos_club_id", clubId)
             .claim("roles", roles)
             .issuedAt(Instant.now())
-            .expiresAt(Instant.now().plusSeconds(3600))
-            .build();
-        var auth = new JwtAuthenticationToken(jwt);
+            .expiresAt(Instant.now().plusSeconds(3600));
+        claims.forEach((claimName, claimValue) -> jwtBuilder.claim(claimName, claimValue));
+        Jwt builtJwt = jwtBuilder.build();
+        var auth = new JwtAuthenticationToken(builtJwt);
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 }

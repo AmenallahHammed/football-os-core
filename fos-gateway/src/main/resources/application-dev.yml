@@ -40,7 +40,12 @@ spring:
               - DELETE
               - OPTIONS
             allowedHeaders:
-              - "*"
+              - Authorization
+              - Content-Type
+              - X-FOS-Request-Id
+              - X-FOS-Actor-Id
+              - Accept
+              - Origin
             allowCredentials: true
       default-filters:
         - name: RequestRateLimiter

@@ -202,7 +202,9 @@ export class AuthService {
     }
 
     this.authenticatedState.set(this.oauthService.hasValidAccessToken());
-    this.tokenClaimsState.set(this.readAccessTokenClaims());
+    const claims = this.readAccessTokenClaims();
+    this.tokenClaimsState.set(claims);
+    this.logTokenClaimDiagnostics(claims, this.decodeJwtPayload(this.oauthService.getAccessToken() || ''));
   }
 
   private readAccessTokenClaims(): AuthTokenClaims | null {
@@ -217,7 +219,7 @@ export class AuthService {
       return null;
     }
 
-    const clubId = payload['fos_club_id'];
+    const clubId = this.readClubIdClaim(payload);
 
     return {
       sub: subject,
@@ -269,6 +271,66 @@ export class AuthService {
   private readStringClaim(payload: Record<string, unknown>, claim: string): string | null {
     const value = payload[claim];
     return typeof value === 'string' ? value : null;
+  }
+
+  private readClubIdClaim(payload: Record<string, unknown>): string | null {
+    const claimCandidates = [
+      this.readStringClaim(payload, 'fos_club_id'),
+      this.readStringClaim(payload, 'club_id'),
+      this.readStringClaim(payload, 'clubId'),
+      this.readStringClaim(this.readNestedObject(payload, 'tenant'), 'clubId')
+    ];
+
+    for (const candidate of claimCandidates) {
+      const normalized = this.normalizeClubClaim(candidate);
+      if (normalized) {
+        return normalized;
+      }
+    }
+
+    return null;
+  }
+
+  private normalizeClubClaim(value: string | null): string | null {
+    if (!value) {
+      return null;
+    }
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return null;
+    }
+    const canonicalMatch = /^club:([0-9a-fA-F-]{36})$/.exec(trimmed);
+    if (canonicalMatch) {
+      return canonicalMatch[1];
+    }
+    return trimmed;
+  }
+
+  private readNestedObject(payload: Record<string, unknown>, key: string): Record<string, unknown> {
+    const value = payload[key];
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+      return {};
+    }
+    return value as Record<string, unknown>;
+  }
+
+  private logTokenClaimDiagnostics(claims: AuthTokenClaims | null, payload: Record<string, unknown> | null): void {
+    if (environment.production || !claims) {
+      return;
+    }
+
+    console.info('[Auth] Decoded access token claims (dev)', {
+      claimKeys: payload ? Object.keys(payload) : [],
+      subject: claims.sub,
+      roles: claims.roles,
+      clubClaims: {
+        fos_club_id: this.readStringClaim(payload ?? {}, 'fos_club_id'),
+        club_id: this.readStringClaim(payload ?? {}, 'club_id'),
+        clubId: this.readStringClaim(payload ?? {}, 'clubId'),
+        tenantClubId: this.readStringClaim(this.readNestedObject(payload ?? {}, 'tenant'), 'clubId'),
+        normalized: claims.fos_club_id
+      }
+    });
   }
 
   private normalizeRole(role: string): string {

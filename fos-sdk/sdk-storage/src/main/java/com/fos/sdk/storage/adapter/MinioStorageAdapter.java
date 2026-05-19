@@ -16,15 +16,19 @@ import java.util.concurrent.TimeUnit;
 public class MinioStorageAdapter implements StoragePort {
 
     private final MinioClient minioClient;
+    private final MinioClient presignClient;
     private final String defaultBucket;
 
     public MinioStorageAdapter(
             @org.springframework.beans.factory.annotation.Value("${minio.endpoint:http://localhost:9000}") String endpoint,
+            @org.springframework.beans.factory.annotation.Value("${minio.public-endpoint:${minio.endpoint:http://localhost:9000}}") String publicEndpoint,
             @org.springframework.beans.factory.annotation.Value("${minio.access-key:minioadmin}") String accessKey,
             @org.springframework.beans.factory.annotation.Value("${minio.secret-key:minioadmin}") String secretKey,
             @org.springframework.beans.factory.annotation.Value("${minio.bucket:fos-files}") String bucket) {
         this.minioClient = MinioClient.builder()
             .endpoint(endpoint).credentials(accessKey, secretKey).build();
+        this.presignClient = MinioClient.builder()
+            .endpoint(publicEndpoint).credentials(accessKey, secretKey).build();
         this.defaultBucket = bucket;
     }
 
@@ -33,7 +37,7 @@ public class MinioStorageAdapter implements StoragePort {
                                                 String contentType, Duration expiry) {
         try {
             ensureBucket(bucket);
-            String url = minioClient.getPresignedObjectUrl(
+            String url = presignClient.getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs.builder()
                     .method(Method.PUT).bucket(bucket).object(objectKey)
                     .expiry((int) expiry.toSeconds(), TimeUnit.SECONDS).build());
@@ -46,7 +50,7 @@ public class MinioStorageAdapter implements StoragePort {
     @Override
     public String generateDownloadUrl(String bucket, String objectKey, Duration expiry) {
         try {
-            return minioClient.getPresignedObjectUrl(
+            return presignClient.getPresignedObjectUrl(
                 GetPresignedObjectUrlArgs.builder()
                     .method(Method.GET).bucket(bucket).object(objectKey)
                     .expiry((int) expiry.toSeconds(), TimeUnit.SECONDS).build());

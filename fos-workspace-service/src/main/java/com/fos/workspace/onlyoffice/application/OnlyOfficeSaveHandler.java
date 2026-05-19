@@ -22,6 +22,8 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.SecretKey;
 import java.io.ByteArrayInputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
@@ -57,18 +59,27 @@ public class OnlyOfficeSaveHandler {
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
     private final String jwtSecret;
+    private final String documentServerUrl;
+    private final String internalDocumentServerUrl;
+    private final boolean jwtEnabled;
 
     public OnlyOfficeSaveHandler(WorkspaceDocumentRepository documentRepository,
                                   StoragePort storagePort,
                                   FosKafkaProducer kafkaProducer,
                                   ObjectMapper objectMapper,
-                                  @Value("${fos.onlyoffice.jwt-secret}") String jwtSecret) {
+                                  @Value("${fos.onlyoffice.jwt-secret}") String jwtSecret,
+                                  @Value("${fos.onlyoffice.jwt-enabled:true}") boolean jwtEnabled,
+                                  @Value("${fos.onlyoffice.document-server-url}") String documentServerUrl,
+                                  @Value("${fos.onlyoffice.internal-url}") String internalDocumentServerUrl) {
         this.documentRepository = documentRepository;
         this.storagePort = storagePort;
         this.kafkaProducer = kafkaProducer;
         this.objectMapper = objectMapper;
         this.restTemplate = new RestTemplate();
         this.jwtSecret = jwtSecret;
+        this.jwtEnabled = jwtEnabled;
+        this.documentServerUrl = trimTrailingSlashes(documentServerUrl);
+        this.internalDocumentServerUrl = trimTrailingSlashes(internalDocumentServerUrl);
     }
 
     /**
@@ -101,7 +112,7 @@ public class OnlyOfficeSaveHandler {
                 return;
             }
 
-            String downloadUrl = urlNode.asText();
+            String downloadUrl = resolveDownloadUrl(urlNode.asText());
             log.info("OnlyOffice save callback: documentId={} status={} url={}",
                     documentId, status, downloadUrl);
 
@@ -167,6 +178,9 @@ public class OnlyOfficeSaveHandler {
         JsonNode body = objectMapper.readTree(callbackBody);
         JsonNode tokenNode = body.get("token");
         if (tokenNode == null || tokenNode.asText().isBlank()) {
+            if (jwtEnabled) {
+                log.warn("OnlyOffice callback missing token while JWT is enabled; processing unsigned payload");
+            }
             return body;
         }
 
@@ -184,5 +198,49 @@ public class OnlyOfficeSaveHandler {
             throw new IllegalStateException("OnlyOffice JWT secret must be at least 32 bytes");
         }
         return Keys.hmacShaKeyFor(secretBytes);
+    }
+
+    private String resolveDownloadUrl(String rawUrl) {
+        try {
+            URI source = new URI(rawUrl);
+            if (!shouldRewriteDownloadHost(source.getHost())) {
+                return rawUrl;
+            }
+
+            URI internal = new URI(internalDocumentServerUrl);
+            URI rewritten = new URI(
+                    internal.getScheme(),
+                    source.getUserInfo(),
+                    internal.getHost(),
+                    internal.getPort(),
+                    source.getPath(),
+                    source.getQuery(),
+                    source.getFragment());
+            log.debug("Rewrote OnlyOffice callback download URL from {} to {}", rawUrl, rewritten);
+            return rewritten.toString();
+        } catch (URISyntaxException ex) {
+            log.warn("OnlyOffice callback provided invalid download URL: {}", rawUrl);
+            return rawUrl;
+        }
+    }
+
+    private boolean shouldRewriteDownloadHost(String host) {
+        if (host == null || host.isBlank()) {
+            return false;
+        }
+        if ("localhost".equalsIgnoreCase(host) || "127.0.0.1".equals(host)) {
+            return true;
+        }
+
+        try {
+            URI publicUrl = new URI(documentServerUrl);
+            return host.equalsIgnoreCase(publicUrl.getHost());
+        } catch (URISyntaxException ex) {
+            return false;
+        }
+    }
+
+    private String trimTrailingSlashes(String value) {
+        return value == null ? "" : value.replaceAll("/+$", "");
     }
 }

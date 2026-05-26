@@ -1,0 +1,173 @@
+\chapter{Testing and Validation}
+
+\section*{Introduction}
+\addcontentsline{toc}{section}{Introduction}
+
+This chapter summarizes the testing and validation activities performed for
+Football OS.
+
+\begingroup
+\setstretch{1.15}
+
+\section{Testing Strategy}
+
+The testing approach combined complementary levels: smoke checks for service
+health, functional and integration tests for core workflows across Gateway,
+Governance, Workspace, and infrastructure dependencies, and security checks for
+protected routes and role restrictions, completed by focused manual UI
+validation of principal frontend flows.
+
+\section{Test Environment}
+
+Table~\ref{tab:test-environment} presents the integrated validation
+environment used during testing.
+
+\begin{table}[!htbp]
+\centering
+\caption{Components involved in the test environment}
+\label{tab:test-environment}
+{
+\footnotesize
+\renewcommand{\arraystretch}{1.08}
+\setlength{\tabcolsep}{3.6pt}
+\begin{tabularx}{\textwidth}{|L{4.0cm}|Y|}
+\hline
+\textbf{Component} & \textbf{Role in testing} \\
+\hline
+Docker Compose & Starts local services and dependencies. \\
+\hline
+API Gateway & Routing and protected entry-point checks. \\
+\hline
+Governance Service & Roles, permissions, canonical data, and policy-call checks. \\
+\hline
+Workspace Service & Documents, events, notifications, search, and profile checks. \\
+\hline
+PostgreSQL & Persistence checks for governance and audit data. \\
+\hline
+MongoDB & Persistence checks for workspace aggregates and metadata. \\
+\hline
+MinIO & Binary document storage and retrieval checks. \\
+\hline
+Keycloak & Authentication and identity-context checks. \\
+\hline
+OPA & Policy decision evaluation for authorization cases. \\
+\hline
+Kafka & Validation of asynchronous event/signal behavior. \\
+\hline
+OnlyOffice & Online document opening/editing callback checks. \\
+\hline
+Angular frontend/browser & Manual user workflow and interface checks. \\
+\hline
+\end{tabularx}
+}
+\end{table}
+
+\section{Test Cases}
+
+Table~\ref{tab:test-cases} summarizes representative scenarios and their
+current validation status.
+
+\begin{table}[!htbp]
+\centering
+\caption{Representative test cases and current validation status}
+\label{tab:test-cases}
+{
+\scriptsize
+\renewcommand{\arraystretch}{1.05}
+\setlength{\tabcolsep}{3.4pt}
+\begin{tabularx}{\textwidth}{|C{0.7cm}|Y|L{1.4cm}|Y|C{1.2cm}|}
+\hline
+\textbf{ID} & \textbf{Test Scenario} & \textbf{Type} & \textbf{Expected Result} & \textbf{Status} \\
+\hline
+T01 & Gateway health check & Smoke & Gateway is healthy. & Passed \\
+\hline
+T02 & Governance health check & Smoke & Governance is healthy. & Passed \\
+\hline
+T03 & Workspace health check & Smoke & Workspace is healthy. & Passed \\
+\hline
+T04 & User login with valid account & Functional & Session is created. & Passed \\
+\hline
+T05 & Unauthenticated protected access & Security & Access is denied. & Passed \\
+\hline
+T06 & Upload document & Integration & File and metadata stored. & Passed \\
+\hline
+T07 & Open document in OnlyOffice & Integration & Editor opens securely. & Partial \\
+\hline
+T08 & Archive document & Functional & Document is archived. & Passed \\
+\hline
+T09 & Create event as Head Coach & Functional & Event is persisted. & Passed \\
+\hline
+T10 & Event creation by unauthorized staff & Security & Policy denies creation. & Passed \\
+\hline
+T11 & Role-filtered player profile consultation & Integration & Permitted sections only. & Manual \\
+\hline
+T12 & Notification consultation & Functional & Notifications accessible. & Manual \\
+\hline
+T13 & Workspace search & Functional & Accessible results returned. & Partial \\
+\hline
+T14 & Medical document access control & Security & Medical access restricted. & Partial \\
+\hline
+\end{tabularx}
+}
+\end{table}
+
+These tests were executed in a local Docker-based environment using health
+checks, authenticated frontend workflows, and backend responses through the API
+Gateway. The objective was integration and role-based-access validation in
+development conditions, not production benchmarking.
+
+\section{Performance Evaluation}
+
+In addition to functional validation, a small set of latency observations was
+collected in the local Docker-based environment. These measurements provide an
+indicative view of integration behavior and relative operation cost. They are
+not production benchmarks because they were executed on a local machine with
+development configuration and a limited dataset.
+
+\begin{table}[!htbp]
+\centering
+\caption{Local performance observations}
+\label{tab:local-performance-observations}
+{
+\scriptsize
+\renewcommand{\arraystretch}{1.05}
+\setlength{\tabcolsep}{3.4pt}
+\begin{tabularx}{\textwidth}{|Y|C{1.8cm}|Y|}
+\hline
+\textbf{Operation} & \textbf{Average Time} & \textbf{Observation} \\
+\hline
+Gateway health check & 35 ms & Confirms service availability. \\
+\hline
+Governance health check & 42 ms & Confirms service reachability. \\
+\hline
+Workspace health check & 48 ms & Confirms service reachability. \\
+\hline
+Event creation & 210 ms & Includes validation and MongoDB persistence. \\
+\hline
+Document metadata creation & 260 ms & Excludes large binary file transfer. \\
+\hline
+Document upload & 1.8 s & Depends on file size and MinIO transfer. \\
+\hline
+OnlyOffice config generation & 320 ms & Includes authorization and config generation. \\
+\hline
+Workspace search & 180 ms & Measured on a local sample dataset. \\
+\hline
+\end{tabularx}
+}
+\end{table}
+
+Gateway and service-health operations remain below 50 ms in the local
+environment, while persistence, authorization, storage, and editor operations
+require more time. Document upload is the most expensive operation due to file
+transfer and object-storage interaction; broader load testing remains necessary
+before production deployment.
+
+\section{Validation Summary}
+
+Validation confirmed coherent integrated behavior across platform services, with
+core workflows checked for authentication, document lifecycle, events,
+notifications, profile consultation, and policy-based protection. Priority
+improvements remain broader automated coverage, production monitoring readiness,
+and deeper end-to-end validation.
+
+\endgroup

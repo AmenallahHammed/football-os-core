@@ -1,6 +1,6 @@
-PWD d:\fos-sdk\report\pfe report\workspace_report
+PWD D:\fos-sdk\report\pfe report\workspace_report
 INPUT C:\Users\DELL\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT d:\fos-sdk\report\pfe report\workspace_report\main.tex
+INPUT main.tex
 OUTPUT main.log
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\base\report.cls
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\base\report.cls
@@ -108,6 +108,17 @@ INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\graphics\trig.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\graphics-cfg\graphics.cfg
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\graphics-cfg\graphics.cfg
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\graphics-cfg\graphics.cfg
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\pdfpages\pdfpages.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\pdfpages\pdfpages.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\tools\calc.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\tools\calc.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\eso-pic\eso-pic.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\eso-pic\eso-pic.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\etoolbox\etoolbox.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\etoolbox\etoolbox.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\pdfpages\pppdftex.def
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\pdfpages\pppdftex.def
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\pdfpages\pppdftex.def
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\hyperref.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\hyperref.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\generic\kvdefinekeys\kvdefinekeys.sty
@@ -126,8 +137,6 @@ INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\refcount\refcount.st
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\refcount\refcount.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\generic\gettitlestring\gettitlestring.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\generic\gettitlestring\gettitlestring.sty
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\etoolbox\etoolbox.sty
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\etoolbox\etoolbox.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\generic\stringenc\stringenc.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\generic\stringenc\stringenc.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\hyperref\pd1enc.def
@@ -322,6 +331,8 @@ INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\textpos\textpos.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\textpos\textpos.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\titlesec\titlesec.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\titlesec\titlesec.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\tools\tabularx.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\tools\tabularx.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\t1ntxtlf.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\t1ntxtlf.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\t1ntxtlf.fd
@@ -352,6 +363,12 @@ INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\epstopdf-pkg\epstopd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\pdflscape\pdflscape.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\pdflscape\pdflscape.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\pdflscape\pdflscape-nometadata.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\pdflscape\pdflscape-nometadata.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\graphics\lscape.sty
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\graphics\lscape.sty
 INPUT .\main.out
 INPUT .\main.out
 INPUT main.out
@@ -366,40 +383,37 @@ INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-ptm.cfg
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\translations\dicts\translations-basic-dictionary-english.trsl
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\translations\dicts\translations-basic-dictionary-english.trsl
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\translations\dicts\translations-basic-dictionary-english.trsl
-INPUT .\PagePfa.tex
-INPUT .\PagePfa.tex
-INPUT .\PagePfa.tex
-INPUT .\PagePfa.tex
-INPUT PagePfa.tex
-INPUT .\images\Logo_de_lUniversité_de_Monastir.png
-INPUT .\images\Logo_de_lUniversité_de_Monastir.png
-INPUT .\images\Logo_de_lUniversité_de_Monastir.png
-INPUT .\images\Logo_de_lUniversité_de_Monastir.png
-INPUT .\images\Logo_de_lUniversité_de_Monastir.png
-INPUT .\images\Logo_de_lUniversité_de_Monastir.png
-INPUT .\images\Logo_de_lUniversité_de_Monastir.png
-INPUT .\images\LogoFacultéDesSciencesDeMonastir2012.png
-INPUT .\images\LogoFacultéDesSciencesDeMonastir2012.png
-INPUT .\images\LogoFacultéDesSciencesDeMonastir2012.png
-INPUT .\images\LogoFacultéDesSciencesDeMonastir2012.png
-INPUT .\images\LogoFacultéDesSciencesDeMonastir2012.png
-INPUT .\images\LogoFacultéDesSciencesDeMonastir2012.png
-INPUT .\images\LogoFacultéDesSciencesDeMonastir2012.png
+INPUT .\pagedegarde.pdf
+INPUT .\pagedegarde.pdf
+INPUT .\pagedegarde.pdf
+INPUT .\pagedegarde.pdf
+INPUT .\pagedegarde.pdf
+INPUT .\pagedegarde.pdf
+INPUT .\pagedegarde.pdf
+INPUT .\pagedegarde.pdf
+INPUT .\pagedegarde.pdf
+INPUT .\pagedegarde.pdf
+INPUT .\pagedegarde.pdf
+INPUT .\pagedegarde.pdf
+INPUT .\pagedegarde.pdf
+INPUT .\pagedegarde.pdf
+INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\map\pdftex\pdftex.map
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\enc\dvips\newtx\ntx-ec-tlf.enc
+INPUT .\Acknowledgments.tex
+INPUT .\Acknowledgments.tex
+INPUT .\Acknowledgments.tex
+INPUT .\Acknowledgments.tex
+INPUT Acknowledgments.tex
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-t1.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Italic-tlf-t1.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-t1.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-t1.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
-INPUT .\images\logoPerfAnalysis.png
-INPUT .\images\logoPerfAnalysis.png
-INPUT .\images\logoPerfAnalysis.png
-INPUT .\images\logoPerfAnalysis.png
-INPUT .\images\logoPerfAnalysis.png
-INPUT .\images\logoPerfAnalysis.png
-INPUT .\images\logoPerfAnalysis.png
+INPUT .\AbstractResumeKeywords.tex
+INPUT .\AbstractResumeKeywords.tex
+INPUT .\AbstractResumeKeywords.tex
+INPUT .\AbstractResumeKeywords.tex
+INPUT AbstractResumeKeywords.tex
+INPUT .\main.toc
+INPUT .\main.toc
+INPUT main.toc
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ot1minntx.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ot1minntx.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ot1minntx.fd
@@ -460,20 +474,7 @@ INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\jknappen\ursfs.fd
 INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
 INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
 INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs7.tfm
-INPUT .\images\background.png
-INPUT .\images\background.png
-INPUT .\images\background.png
-INPUT .\images\background.png
-INPUT .\images\background.png
-INPUT .\images\background.png
-INPUT .\images\background.png
-INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\map\pdftex\pdftex.map
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\enc\dvips\newtx\ntx-ec-tlf.enc
-INPUT .\Dedication.tex
-INPUT .\Dedication.tex
-INPUT .\Dedication.tex
-INPUT .\Dedication.tex
-INPUT Dedication.tex
+OUTPUT main.toc
 INPUT .\main.lof
 INPUT .\main.lof
 INPUT main.lof
@@ -482,15 +483,17 @@ INPUT .\main.lot
 INPUT .\main.lot
 INPUT main.lot
 OUTPUT main.lot
-INPUT .\main.toc
-INPUT .\main.toc
-INPUT main.toc
-OUTPUT main.toc
+INPUT .\Abbreviations.tex
+INPUT .\Abbreviations.tex
+INPUT .\Abbreviations.tex
+INPUT .\Abbreviations.tex
+INPUT Abbreviations.tex
 INPUT .\GeneralIntroduction.tex
 INPUT .\GeneralIntroduction.tex
 INPUT .\GeneralIntroduction.tex
 INPUT .\GeneralIntroduction.tex
 INPUT GeneralIntroduction.tex
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
 INPUT .\chapter1.tex
 INPUT .\chapter1.tex
 INPUT .\chapter1.tex
@@ -500,59 +503,10 @@ INPUT .\images\logoPerfAnalysis.png
 INPUT .\images\logoPerfAnalysis.png
 INPUT .\images\logoPerfAnalysis.png
 INPUT .\images\logoPerfAnalysis.png
-INPUT .\images\WhatsApp.png
-INPUT .\images\WhatsApp.png
-INPUT .\images\WhatsApp.png
-INPUT .\images\WhatsApp.png
-INPUT .\images\WhatsApp.png
-INPUT .\images\WhatsApp.png
-INPUT .\images\WhatsApp.png
-INPUT .\images\dropboxanddrive.png
-INPUT .\images\dropboxanddrive.png
-INPUT .\images\dropboxanddrive.png
-INPUT .\images\dropboxanddrive.png
-INPUT .\images\dropboxanddrive.png
-INPUT .\images\dropboxanddrive.png
-INPUT .\images\dropboxanddrive.png
-INPUT .\images\googlecalnder.png
-INPUT .\images\googlecalnder.png
-INPUT .\images\googlecalnder.png
-INPUT .\images\googlecalnder.png
-INPUT .\images\googlecalnder.png
-INPUT .\images\googlecalnder.png
-INPUT .\images\googlecalnder.png
-INPUT .\images\excel.png
-INPUT .\images\excel.png
-INPUT .\images\excel.png
-INPUT .\images\excel.png
-INPUT .\images\excel.png
-INPUT .\images\excel.png
-INPUT .\images\excel.png
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ts1ntxtlf.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ts1ntxtlf.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ts1ntxtlf.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\tex-gyre\ts1-qtmr.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\enc\dvips\tex-gyre\q-ts1.enc
-INPUT .\chapter2.tex
-INPUT .\chapter2.tex
-INPUT .\chapter2.tex
-INPUT .\chapter2.tex
-INPUT chapter2.tex
-INPUT .\images\footballosgeneralusecase.drawio.png
-INPUT .\images\footballosgeneralusecase.drawio.png
-INPUT .\images\footballosgeneralusecase.drawio.png
-INPUT .\images\footballosgeneralusecase.drawio.png
-INPUT .\images\footballosgeneralusecase.drawio.png
-INPUT .\images\footballosgeneralusecase.drawio.png
-INPUT .\images\footballosgeneralusecase.drawio.png
+INPUT .\images\logoPerfAnalysis.png
+INPUT .\images\logoPerfAnalysis.png
+INPUT .\images\logoPerfAnalysis.png
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-t1.tfm
-INPUT .\images\Calendar and Event Management.png
-INPUT .\images\Calendar and Event Management.png
-INPUT .\images\Calendar and Event Management.png
-INPUT .\images\Calendar and Event Management.png
-INPUT .\images\Calendar and Event Management.png
-INPUT .\images\Calendar and Event Management.png
-INPUT .\images\Calendar and Event Management.png
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
@@ -587,20 +541,37 @@ INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
 INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
 INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs5.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
-INPUT .\images\documentManagment.drawio.png
-INPUT .\images\documentManagment.drawio.png
-INPUT .\images\documentManagment.drawio.png
-INPUT .\images\documentManagment.drawio.png
-INPUT .\images\documentManagment.drawio.png
-INPUT .\images\documentManagment.drawio.png
-INPUT .\images\documentManagment.drawio.png
-INPUT .\images\Player Profile Consultation.drawio.png
-INPUT .\images\Player Profile Consultation.drawio.png
-INPUT .\images\Player Profile Consultation.drawio.png
-INPUT .\images\Player Profile Consultation.drawio.png
-INPUT .\images\Player Profile Consultation.drawio.png
-INPUT .\images\Player Profile Consultation.drawio.png
-INPUT .\images\Player Profile Consultation.drawio.png
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ts1ntxtlf.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ts1ntxtlf.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ts1ntxtlf.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\tex-gyre\ts1-qtmr.tfm
+INPUT .\chapter2.tex
+INPUT .\chapter2.tex
+INPUT .\chapter2.tex
+INPUT .\chapter2.tex
+INPUT chapter2.tex
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\enc\dvips\tex-gyre\q-ts1.enc
+INPUT .\images\footballosgeneralusecase.drawio (1).png
+INPUT .\images\footballosgeneralusecase.drawio (1).png
+INPUT .\images\footballosgeneralusecase.drawio (1).png
+INPUT .\images\footballosgeneralusecase.drawio (1).png
+INPUT .\images\footballosgeneralusecase.drawio (1).png
+INPUT .\images\footballosgeneralusecase.drawio (1).png
+INPUT .\images\footballosgeneralusecase.drawio (1).png
+INPUT .\images\Calendar and Event Management.png
+INPUT .\images\Calendar and Event Management.png
+INPUT .\images\Calendar and Event Management.png
+INPUT .\images\Calendar and Event Management.png
+INPUT .\images\Calendar and Event Management.png
+INPUT .\images\Calendar and Event Management.png
+INPUT .\images\Calendar and Event Management.png
+INPUT .\images\documentManagment.drawio (1).png
+INPUT .\images\documentManagment.drawio (1).png
+INPUT .\images\documentManagment.drawio (1).png
+INPUT .\images\documentManagment.drawio (1).png
+INPUT .\images\documentManagment.drawio (1).png
+INPUT .\images\documentManagment.drawio (1).png
+INPUT .\images\documentManagment.drawio (1).png
 INPUT .\chapter3.tex
 INPUT .\chapter3.tex
 INPUT .\chapter3.tex
@@ -613,27 +584,32 @@ INPUT .\images\architecture-logique.png
 INPUT .\images\architecture-logique.png
 INPUT .\images\architecture-logique.png
 INPUT .\images\architecture-logique.png
-INPUT .\images\gov-class-dig.png
-INPUT .\images\gov-class-dig.png
-INPUT .\images\gov-class-dig.png
-INPUT .\images\gov-class-dig.png
-INPUT .\images\gov-class-dig.png
-INPUT .\images\gov-class-dig.png
-INPUT .\images\gov-class-dig.png
-INPUT .\images\doc-managment-dig.png
-INPUT .\images\doc-managment-dig.png
-INPUT .\images\doc-managment-dig.png
-INPUT .\images\doc-managment-dig.png
-INPUT .\images\doc-managment-dig.png
-INPUT .\images\doc-managment-dig.png
-INPUT .\images\doc-managment-dig.png
-INPUT .\images\calender-dig.png
-INPUT .\images\calender-dig.png
-INPUT .\images\calender-dig.png
-INPUT .\images\calender-dig.png
-INPUT .\images\calender-dig.png
-INPUT .\images\calender-dig.png
-INPUT .\images\calender-dig.png
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\t1ntxtt.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\t1ntxtt.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\t1ntxtt.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\txfonts\t1xtt.tfm
+INPUT .\images\class-dig-governance.png
+INPUT .\images\class-dig-governance.png
+INPUT .\images\class-dig-governance.png
+INPUT .\images\class-dig-governance.png
+INPUT .\images\class-dig-governance.png
+INPUT .\images\class-dig-governance.png
+INPUT .\images\class-dig-governance.png
+INPUT .\images\document-class-dig.png
+INPUT .\images\document-class-dig.png
+INPUT .\images\document-class-dig.png
+INPUT .\images\document-class-dig.png
+INPUT .\images\document-class-dig.png
+INPUT .\images\document-class-dig.png
+INPUT .\images\document-class-dig.png
+INPUT .\images\calander-event-class-dig.png
+INPUT .\images\calander-event-class-dig.png
+INPUT .\images\calander-event-class-dig.png
+INPUT .\images\calander-event-class-dig.png
+INPUT .\images\calander-event-class-dig.png
+INPUT .\images\calander-event-class-dig.png
+INPUT .\images\calander-event-class-dig.png
+INPUT .\images\auth-seq.png
 INPUT .\images\auth-seq.png
 INPUT .\images\auth-seq.png
 INPUT .\images\auth-seq.png
@@ -646,6 +622,8 @@ INPUT .\images\doc-mangment-seq.png
 INPUT .\images\doc-mangment-seq.png
 INPUT .\images\doc-mangment-seq.png
 INPUT .\images\doc-mangment-seq.png
+INPUT .\images\doc-mangment-seq.png
+INPUT .\images\calnder-seq.png
 INPUT .\images\calnder-seq.png
 INPUT .\images\calnder-seq.png
 INPUT .\images\calnder-seq.png
@@ -658,107 +636,36 @@ INPUT .\images\player profile seq.png
 INPUT .\images\player profile seq.png
 INPUT .\images\player profile seq.png
 INPUT .\images\player profile seq.png
+INPUT .\images\player profile seq.png
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-t1.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi5.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi5.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy5.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy5.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam7.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam5.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm7.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm5.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
+INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs5.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
 INPUT .\chapter4.tex
 INPUT .\chapter4.tex
 INPUT .\chapter4.tex
 INPUT .\chapter4.tex
 INPUT chapter4.tex
-INPUT .\images\tailwind.png
-INPUT .\images\tailwind.png
-INPUT .\images\tailwind.png
-INPUT .\images\tailwind.png
-INPUT .\images\tailwind.png
-INPUT .\images\tailwind.png
-INPUT .\images\angular.png
-INPUT .\images\angular.png
-INPUT .\images\angular.png
-INPUT .\images\angular.png
-INPUT .\images\angular.png
-INPUT .\images\angular.png
-INPUT .\images\typescript.png
-INPUT .\images\typescript.png
-INPUT .\images\typescript.png
-INPUT .\images\typescript.png
-INPUT .\images\typescript.png
-INPUT .\images\typescript.png
-INPUT .\images\java.png
-INPUT .\images\java.png
-INPUT .\images\java.png
-INPUT .\images\java.png
-INPUT .\images\java.png
-INPUT .\images\java.png
-INPUT .\images\springcloud.png
-INPUT .\images\springcloud.png
-INPUT .\images\springcloud.png
-INPUT .\images\springcloud.png
-INPUT .\images\springcloud.png
-INPUT .\images\springcloud.png
-INPUT .\images\PostgreSQL-Logo.png
-INPUT .\images\PostgreSQL-Logo.png
-INPUT .\images\PostgreSQL-Logo.png
-INPUT .\images\PostgreSQL-Logo.png
-INPUT .\images\PostgreSQL-Logo.png
-INPUT .\images\PostgreSQL-Logo.png
-INPUT .\images\MongoDB_Logo.svg.png
-INPUT .\images\MongoDB_Logo.svg.png
-INPUT .\images\MongoDB_Logo.svg.png
-INPUT .\images\MongoDB_Logo.svg.png
-INPUT .\images\MongoDB_Logo.svg.png
-INPUT .\images\MongoDB_Logo.svg.png
-INPUT .\images\KeyCloak.png
-INPUT .\images\KeyCloak.png
-INPUT .\images\KeyCloak.png
-INPUT .\images\KeyCloak.png
-INPUT .\images\KeyCloak.png
-INPUT .\images\KeyCloak.png
-INPUT .\images\opa.png
-INPUT .\images\opa.png
-INPUT .\images\opa.png
-INPUT .\images\opa.png
-INPUT .\images\opa.png
-INPUT .\images\opa.png
-INPUT .\images\kafka.png
-INPUT .\images\kafka.png
-INPUT .\images\kafka.png
-INPUT .\images\kafka.png
-INPUT .\images\kafka.png
-INPUT .\images\kafka.png
-INPUT .\images\minio.png
-INPUT .\images\minio.png
-INPUT .\images\minio.png
-INPUT .\images\minio.png
-INPUT .\images\minio.png
-INPUT .\images\minio.png
-INPUT .\images\onlyoffice.png
-INPUT .\images\onlyoffice.png
-INPUT .\images\onlyoffice.png
-INPUT .\images\onlyoffice.png
-INPUT .\images\onlyoffice.png
-INPUT .\images\onlyoffice.png
-INPUT .\images\docker.png
-INPUT .\images\docker.png
-INPUT .\images\docker.png
-INPUT .\images\docker.png
-INPUT .\images\docker.png
-INPUT .\images\docker.png
-INPUT .\images\github.png
-INPUT .\images\github.png
-INPUT .\images\github.png
-INPUT .\images\github.png
-INPUT .\images\github.png
-INPUT .\images\github.png
-INPUT .\images\vscode.png
-INPUT .\images\vscode.png
-INPUT .\images\vscode.png
-INPUT .\images\vscode.png
-INPUT .\images\vscode.png
-INPUT .\images\vscode.png
-INPUT .\images\draw.io.png
-INPUT .\images\draw.io.png
-INPUT .\images\draw.io.png
-INPUT .\images\draw.io.png
-INPUT .\images\draw.io.png
-INPUT .\images\draw.io.png
+INPUT .\images\authentification.png
 INPUT .\images\authentification.png
 INPUT .\images\authentification.png
 INPUT .\images\authentification.png
@@ -771,42 +678,49 @@ INPUT .\images\document.png
 INPUT .\images\document.png
 INPUT .\images\document.png
 INPUT .\images\document.png
-INPUT .\images\upload.png
-INPUT .\images\upload.png
-INPUT .\images\upload.png
-INPUT .\images\upload.png
-INPUT .\images\upload.png
-INPUT .\images\upload.png
+INPUT .\images\document.png
+INPUT .\images\onlyoffice-editor.png
+INPUT .\images\onlyoffice-editor.png
+INPUT .\images\onlyoffice-editor.png
+INPUT .\images\onlyoffice-editor.png
+INPUT .\images\onlyoffice-editor.png
+INPUT .\images\onlyoffice-editor.png
+INPUT .\images\onlyoffice-editor.png
 INPUT .\images\calander.png
 INPUT .\images\calander.png
 INPUT .\images\calander.png
 INPUT .\images\calander.png
 INPUT .\images\calander.png
 INPUT .\images\calander.png
-INPUT .\images\event-details.png
-INPUT .\images\event-details.png
-INPUT .\images\event-details.png
-INPUT .\images\event-details.png
-INPUT .\images\event-details.png
-INPUT .\images\event-details.png
-INPUT .\images\player-profile.png
-INPUT .\images\player-profile.png
-INPUT .\images\player-profile.png
-INPUT .\images\player-profile.png
-INPUT .\images\player-profile.png
-INPUT .\images\player-profile.png
-INPUT .\images\player-section.png
-INPUT .\images\player-section.png
-INPUT .\images\player-section.png
-INPUT .\images\player-section.png
-INPUT .\images\player-section.png
-INPUT .\images\player-section.png
-INPUT .\images\notification.png
-INPUT .\images\notification.png
-INPUT .\images\notification.png
-INPUT .\images\notification.png
-INPUT .\images\notification.png
-INPUT .\images\notification.png
+INPUT .\images\calander.png
+INPUT .\chapter5.tex
+INPUT .\chapter5.tex
+INPUT .\chapter5.tex
+INPUT .\chapter5.tex
+INPUT chapter5.tex
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-t1.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi7.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy7.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam10.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam7.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm7.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
+INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
 INPUT .\GeneralConclusion.tex
 INPUT .\GeneralConclusion.tex
 INPUT .\GeneralConclusion.tex
@@ -817,10 +731,8 @@ INPUT .\BibliographyWebography.tex
 INPUT .\BibliographyWebography.tex
 INPUT .\BibliographyWebography.tex
 INPUT BibliographyWebography.tex
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\t1ntxtt.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\t1ntxtt.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\t1ntxtt.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\txfonts\t1xtt.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Italic-tlf-t1.tfm
 INPUT main.aux
 INPUT .\main.out
 INPUT .\main.out

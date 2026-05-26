@@ -26,7 +26,10 @@ public class FosSecurityContext {
 
     public String getRole() {
         List<String> r = roles();
-        return r.isEmpty() ? "UNKNOWN" : r.get(0);
+        return r.stream()
+                .filter(role -> role != null && role.startsWith("ROLE_"))
+                .findFirst()
+                .orElseGet(() -> r.isEmpty() ? "UNKNOWN" : r.get(0));
     }
 
     public String actorId() {

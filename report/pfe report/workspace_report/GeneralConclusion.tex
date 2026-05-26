@@ -1,12 +1,51 @@
 \chapter*{General Conclusion}
 \addcontentsline{toc}{chapter}{General Conclusion}
+\markboth{General Conclusion}{General Conclusion}
 
-This internship project aimed to design and implement Football OS, a modular platform for football organizations that centralizes key operational workflows in one secure workspace. The initial objective was to move from scattered tools to an integrated system that supports authentication, role management, document management, calendar and event management, notifications, search, and player profile consultation.
+\begingroup
+\normalfont
+\normalsize
+\setstretch{1.15}
 
-The work progressed from requirements analysis to architecture and implementation. The requirements were formalized through use cases and diagrams, then translated into a design centered on the API Gateway, Governance Service, Workspace Service, and Shared SDK, supported by Keycloak, OPA, MongoDB, PostgreSQL, MinIO, Kafka, and OnlyOffice.
+This internship project resulted in the design and implementation of Football
+OS, a unified digital platform for football club operations. The objective was
+to reduce fragmentation caused by separate tools and to provide a secured
+workspace for document management, event planning, player profile consultation,
+notifications, and search. The final solution was built as a
+microservices-oriented backend organized in a monorepo, structured around the
+API Gateway, the Governance Service, the Workspace Service, and the Shared SDK.
+\vspace{0.15cm}
 
-The implementation delivered a functional platform foundation. Secure access and role-based authorization were integrated through identity and policy components. Document workflows now support upload, consultation, archiving, and online editing; calendar workflows support attendees, tasks, required documents, and notifications; and player profile consultation is filtered by role permissions. Persistence is distributed between MongoDB and PostgreSQL, while file content is stored in MinIO. The Shared SDK reduced repeated technical code across backend services.
+The implemented platform covers the main functional scope defined in this
+report. Authentication and protected routing are integrated end to end,
+governance roles and policy decisions control sensitive actions, and document
+workflows are handled through version-aware metadata separated from object
+storage. Calendar and event operations support planning and coordinated
+follow-up, while player profile access is filtered by permissions. In addition,
+notification mechanisms improve operational visibility, and OnlyOffice
+integration enables authorized users to consult and edit documents online in a
+controlled workflow.
+\vspace{0.15cm}
 
-This work still has limitations. Some frontend/backend integrations require final polishing, and parts of the interface remain at prototype level, especially around full player profile API integration. Broader testing, deployment validation, and monitoring practices are also needed to improve production readiness.
+Beyond feature delivery, the project provided important engineering lessons.
+The distributed nature of the solution required careful handling of service
+communication, identity propagation, policy debugging, document versioning, and
+coordination between MongoDB, PostgreSQL, MinIO, Keycloak, OPA, and the
+Gateway. The architectural choice of separating edge access, governance
+responsibilities, workspace operations, and shared SDK abstractions improved
+modularity, but it also introduced integration complexity that had to be
+managed during implementation and validation.
+\vspace{0.15cm}
 
-Future work should focus on completing the remaining integrations, improving user experience, and strengthening automated testing at unit, integration, and end-to-end levels. It should also include stronger monitoring and deployment workflows, richer notification and search capabilities, and more advanced football-specific operational processes to consolidate Football OS as a mature production-ready platform.
+The validation phase confirmed that the prototype behaves coherently in the
+local Docker-based environment. Functional tests, security checks, and local
+latency observations showed that the main workflows operate as expected for
+development use. However, the platform still requires broader automated
+testing, stronger end-to-end validation, production monitoring, load
+evaluation, and further UI/UX refinement before production-scale adoption.
+Overall, Football OS provides a solid and extensible foundation for future
+football-specific workflows and demonstrates how a governed digital workspace
+can improve coordination, traceability, and controlled collaboration inside
+football organizations.
+
+\endgroup

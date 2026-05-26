@@ -99,53 +99,7 @@ export class WorkspaceDataService {
     { id: 'folder-matchweek-7', name: 'Matchweek 7', parentId: 'folder-season-24' }
   ]);
 
-  private readonly documents = signal<WorkspaceDocument[]>([
-    {
-      id: 'doc-1',
-      name: 'Squad Registration',
-      fileType: 'PDF',
-      uploadedAt: '2026-04-18',
-      status: 'Active',
-      folderId: null,
-      icon: '[PDF]'
-    },
-    {
-      id: 'doc-2',
-      name: 'Transfer Budget Notes',
-      fileType: 'DOCX',
-      uploadedAt: '2026-04-15',
-      status: 'Draft',
-      folderId: 'folder-contracts',
-      icon: '[DOC]'
-    },
-    {
-      id: 'doc-3',
-      name: 'Pre-Season Plan',
-      fileType: 'XLSX',
-      uploadedAt: '2026-04-10',
-      status: 'Active',
-      folderId: 'folder-season-24',
-      icon: '[XLS]'
-    },
-    {
-      id: 'doc-4',
-      name: 'Player Recovery Protocol',
-      fileType: 'DOCX',
-      uploadedAt: '2026-04-08',
-      status: 'Archived',
-      folderId: 'folder-medical',
-      icon: '[FILE]'
-    },
-    {
-      id: 'doc-5',
-      name: 'Matchweek 7 Checklist',
-      fileType: 'PDF',
-      uploadedAt: '2026-04-21',
-      status: 'Active',
-      folderId: 'folder-matchweek-7',
-      icon: '[PDF]'
-    }
-  ]);
+  private readonly documents = signal<WorkspaceDocument[]>([]);
 
   private readonly players = signal<PlayerProfile[]>([
     {

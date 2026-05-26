@@ -1,10 +1,54 @@
 \chapter*{General Introduction}
 \addcontentsline{toc}{chapter}{General Introduction}
+\markboth{General Introduction}{General Introduction}
 
-Football clubs increasingly need digital tools to organize their internal operations in a clear and centralized way. In this context, the management of events, documents, player information, notifications, and user permissions becomes an important aspect of the club's daily workflow. When these elements are not grouped within a unified platform, information can become scattered, access control becomes harder to manage, and collaboration between different members of the organization may lose efficiency.
+\section*{Context}
+Football clubs increasingly depend on digital systems to manage operational
+activities such as documents, events, staff coordination, player information,
+and internal communication. In practice, these activities are often distributed
+across independent tools with different data models and permission mechanisms.
+This situation reduces operational coherence and complicates controlled
+collaboration between administrative, technical, and medical stakeholders.
 
-This final year project, entitled \textbf{Football OS}, aims to design and implement a centralized workspace dedicated to football club operations. The platform brings together several essential features, including event management, document management, player profiles, notifications, and workspace search. It also relies on a modular backend architecture that separates responsibilities between services, manages permissions, and supports a more organized and scalable structure for future development.
+\section*{Problem Statement}
+The central problem addressed in this project is the following: how to design a
+unified and modular platform that centralizes football club operations while
+ensuring traceability, consistent access control, and maintainable service
+separation. Existing tool fragmentation generally leads to scattered data,
+limited audit visibility, and heterogeneous authorization practices that are not
+aligned with club roles and responsibilities.
 
-The main problem addressed by this project can therefore be stated as follows: \textbf{how can we design a centralized, structured, and scalable digital platform that facilitates the internal management of a football club while respecting the roles, permissions, and operational needs of its different users?}
+\section*{Project Objectives}
+The project objective is to design and implement \textbf{Football OS} as a
+structured operational workspace based on a microservices-oriented
+architecture. The
+solution combines an Angular frontend with a Spring Boot backend organized
+around an API Gateway, a Governance Service, a Workspace Service, and a Shared
+SDK.
 
-To answer this problem, the report is organized into several chapters. The first chapter presents the general context of the project, its objectives, and the adopted work methodology. The second chapter focuses on the functional analysis of the solution by identifying the actors, requirements, and main use cases. The third chapter describes the technical architecture and the main design choices related to the backend, frontend, and supporting services. The fourth chapter presents the implementation of the project, including the developed features, their integration, and the obtained results. Finally, the general conclusion summarizes the completed work, the difficulties encountered, and the possible future improvements.
+The SMART-oriented objectives adopted for this work are summarized below:
+\begin{enumerate}
+    \item Centralize operational documents and events in a unified workspace model.
+    \item Secure access through authentication and role-based authorization rules.
+    \item Provide player profile consultation filtered by granted permissions.
+    \item Integrate online document viewing and editing workflows.
+    \item Structure backend responsibilities around Gateway, Governance, Workspace, and Shared SDK modules.
+\end{enumerate}
+
+\section*{Adopted Methodology}
+The work followed an iterative incremental approach organized around successive
+technical layers: backend foundation, governance mechanisms, workspace feature
+implementation, frontend integration, and validation. Each iteration delivered
+an integrated subset of capabilities and then consolidated routing,
+authorization, data handling, and user workflows before extending the scope.
+
+\section*{Report Organization}
+This report is organized into five main chapters. Chapter~1 presents the
+internship framework and the existing operational context. Chapter~2 details
+the requirement specification through actors, functional and non-functional
+requirements, and use cases. Chapter~3 presents the design choices, including
+architecture, modules, data design, and processing flows. Chapter~4 describes
+the implementation and realization of the solution, including interfaces and
+deployment configuration. Chapter~5 presents the testing and validation
+activities performed to assess the implemented platform. The report ends with
+a general conclusion.

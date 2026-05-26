@@ -19,6 +19,7 @@
 \usepackage{float}
 \usepackage[a4paper, margin=2.5cm]{geometry}
 \usepackage{graphicx}
+\usepackage{pdfpages}
 \usepackage{hyperref}
 \usepackage{indentfirst}
 \usepackage{iftex}
@@ -43,6 +44,11 @@
 \usepackage{titlesec}
 \usepackage{url}
 \usepackage{etoolbox}
+\usepackage{tabularx}
+
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\Centering\arraybackslash}p{#1}}
 
 \captionsetup[table]{position=above,justification=raggedright,singlelinecheck=false,font=bf,labelfont=bf}
 \captionsetup[figure]{position=below,justification=centering,singlelinecheck=false,font=bf,labelfont=bf}
@@ -52,7 +58,7 @@
 \setlist[itemize]{label=\textbullet,leftmargin=1.2cm,itemsep=2pt,topsep=3pt}
 \setlist[enumerate]{leftmargin=1.2cm,itemsep=2pt,topsep=3pt}
 
-\titleformat{\chapter}[hang]{\bfseries\Large}{Chapitre \thechapter :}{0.7em}{}
+\titleformat{\chapter}[hang]{\bfseries\Large}{Chapter \thechapter:}{0.7em}{}
 \titleformat{\section}{\bfseries\large}{\thesection}{0.7em}{}
 \titleformat{\subsection}{\bfseries\normalsize}{\thesubsection}{0.7em}{}
 \titleformat{\subsubsection}{\bfseries\normalsize}{\thesubsubsection}{0.7em}{}
@@ -79,22 +85,32 @@
 \newcommand{\euro}{\EUR\xspace}
 
 \begin{document}
-\input{PagePfa}
-% For Capstone projects only
-\input{Dedication}
+\hypersetup{pageanchor=false}
+\includepdf[pages=1,pagecommand={}]{pagedegarde.pdf}
+\clearpage
+\hypersetup{pageanchor=true}
+\pagenumbering{Roman}
+\setcounter{page}{2}
+\input{Acknowledgments}
+\clearpage
+\input{AbstractResumeKeywords}
+\clearpage
+\tableofcontents
 \clearpage
 \listoffigures
 \clearpage
 \listoftables
 \clearpage
-\tableofcontents
+\input{Abbreviations}
 \clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
 \input{GeneralIntroduction}
 \input{chapter1}
-%\input{chapter2}
 \input{chapter2}
 \input{chapter3}
 \input{chapter4}
+\input{chapter5}
 \input{GeneralConclusion}
 \input{BibliographyWebography}
 

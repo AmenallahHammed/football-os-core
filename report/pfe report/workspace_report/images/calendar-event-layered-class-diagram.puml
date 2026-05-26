@@ -1,0 +1,197 @@
+@startuml
+allowmixing
+
+title Calendar and Event Module - Layered Class Diagram
+
+top to bottom direction
+
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+
+skinparam class {
+  BackgroundColor White
+  BorderColor Black
+  ArrowColor Black
+}
+
+skinparam package {
+  BorderColor Black
+  BackgroundColor White
+}
+
+hide empty members
+
+package "API Layer" {
+
+  class EventController <<REST Controller>> {
+    +createEvent(request: CreateEventRequest): EventResponse
+    +getEvent(eventId: UUID): EventResponse
+    +listEventsByTeam(teamRefId: UUID, pageable: Pageable): Page<EventResponse>
+    +updateEvent(eventId: UUID, request: UpdateEventRequest): EventResponse
+    +deleteEvent(eventId: UUID): void
+  }
+
+  class CreateEventRequest <<DTO>> {
+    +title: String
+    +type: EventType
+    +startAt: Instant
+    +endAt: Instant
+    +teamRefId: UUID
+  }
+
+  class UpdateEventRequest <<DTO>> {
+    +title: String
+    +startAt: Instant
+    +endAt: Instant
+  }
+
+  class EventResponse <<DTO>> {
+    +eventId: UUID
+    +title: String
+    +type: EventType
+    +state: ResourceState
+    +startAt: Instant
+    +endAt: Instant
+    +createdByActorId: UUID
+    +teamRefId: UUID
+  }
+}
+
+package "Application Layer" {
+
+  class EventService <<Application Service>> {
+    +createEvent(request: CreateEventRequest): EventResponse
+    +getEvent(eventId: UUID): EventResponse
+    +listEventsByTeam(teamRefId: UUID, pageable: Pageable): Page<EventResponse>
+    +updateEvent(eventId: UUID, request: UpdateEventRequest): EventResponse
+    +deleteEvent(eventId: UUID): void
+  }
+
+  class EventReminderScheduler <<Scheduler>> {
+    +sendEventReminders(): void
+  }
+
+  interface ReminderStrategy <<Strategy>> {
+    +shouldRemind(event: WorkspaceEvent): boolean
+    +sendReminder(event: WorkspaceEvent): void
+  }
+
+  class DocumentMissingReminderStrategy <<Strategy>> {
+    +shouldRemind(event: WorkspaceEvent): boolean
+    +sendReminder(event: WorkspaceEvent): void
+  }
+}
+
+package "Domain Layer" {
+
+  class WorkspaceEvent <<Aggregate Root>> {
+    -title: String
+    -type: EventType
+    -startAt: Instant
+    -endAt: Instant
+    -createdByRef: CanonicalRef
+    -teamRef: CanonicalRef
+    -attendees: List<AttendeeRef>
+    -requiredDocuments: List<RequiredDocument>
+    -tasks: List<TaskAssignment>
+    -reminderSent: boolean
+    +create(...): WorkspaceEvent
+    +addAttendee(attendee: AttendeeRef): void
+    +addRequiredDocument(doc: RequiredDocument): void
+    +addTask(task: TaskAssignment): void
+    +markReminderSent(): void
+    +softDelete(): void
+  }
+
+  class AttendeeRef <<Value Object>> {
+    -canonicalRef: CanonicalRef
+    -mandatory: boolean
+    -confirmed: boolean
+    +confirm(): void
+  }
+
+  class TaskAssignment <<Value Object>> {
+    -taskId: UUID
+    -title: String
+    -assignedToActorId: UUID
+    -dueAt: Instant
+    -completed: boolean
+    +complete(): void
+  }
+
+  class RequiredDocument <<Value Object>> {
+    -requirementId: UUID
+    -description: String
+    -documentCategory: String
+    -assignedToActorId: UUID
+    -submittedDocumentId: UUID
+    -submitted: boolean
+    +markSubmitted(documentId: UUID): void
+  }
+
+  enum EventType {
+    TRAINING
+    MATCH
+    MEETING
+    MEDICAL_CHECK
+    ADMINISTRATIVE
+    OTHER
+  }
+}
+
+package "Infrastructure Layer" {
+
+  interface WorkspaceEventRepository <<Mongo Repository>> {
+    +save(event: WorkspaceEvent): WorkspaceEvent
+    +findByResourceIdAndCreatedByRefId(resourceId: UUID, createdByRefId: UUID): Optional<WorkspaceEvent>
+    +findByCreatedByRefIdAndTeamRefIdAndStateOrderByStartAtAsc(...): Page<WorkspaceEvent>
+    +findUpcomingEventsNeedingReminder(from: Instant, to: Instant): List<WorkspaceEvent>
+  }
+}
+
+package "External SDK / Services" {
+  class BaseDocument <<SDK>>
+  class CanonicalRef <<SDK>>
+  enum ResourceState <<SDK>>
+  class PolicyClient <<SDK>>
+  class FosKafkaProducer <<SDK>>
+  database "MongoDB\nworkspace_events" as MongoDB
+  cloud "Governance Service\nPolicy API" as GovernancePolicy
+  queue "Kafka\nworkspace signals" as Kafka
+}
+
+EventController --> EventService : calls
+EventController ..> CreateEventRequest : receives
+EventController ..> UpdateEventRequest : receives
+EventController ..> EventResponse : returns
+
+EventService --> WorkspaceEventRepository : uses
+EventService --> PolicyClient : authorize
+EventService --> FosKafkaProducer : publish signals
+EventService --> WorkspaceEvent : creates/updates
+EventResponse ..> WorkspaceEvent : maps from
+
+EventReminderScheduler --> WorkspaceEventRepository : loads upcoming
+EventReminderScheduler --> ReminderStrategy : delegates
+DocumentMissingReminderStrategy ..|> ReminderStrategy
+DocumentMissingReminderStrategy --> FosKafkaProducer : emits alerts
+
+WorkspaceEventRepository --> MongoDB
+PolicyClient --> GovernancePolicy
+FosKafkaProducer --> Kafka
+
+WorkspaceEvent --|> BaseDocument : extends
+BaseDocument --> ResourceState : has state
+WorkspaceEvent --> EventType : has type
+
+WorkspaceEvent *-- "0..*" AttendeeRef : contains attendees
+WorkspaceEvent *-- "0..*" TaskAssignment : contains tasks
+WorkspaceEvent *-- "0..*" RequiredDocument : contains requirements
+
+AttendeeRef --> "1" CanonicalRef : references attendee
+WorkspaceEvent --> "1" CanonicalRef : created by
+WorkspaceEvent --> "0..1" CanonicalRef : linked team
+
+@enduml

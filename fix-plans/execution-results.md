@@ -1,7 +1,9 @@
 # Summary
 On May 19, 2026, the 10-step Football OS fix process was executed in strict order from `football-os-10-step-fix-process/00-index.md`.
 Steps 01 through 08 were completed with code and documentation updates, and Step 09 final verification was executed.
-Step 09 build and compose-config checks passed. Runtime checks that require active Docker services and real local data are blocked by documented manual prerequisites.
+Step 09 build and compose-config checks passed. On May 20, 2026, `MANUAL-003` was resolved for the local full-auth stack by creating/verifying matching `coach@test.com` actor, team, and club UUID data in Postgres.
+On May 20, 2026, `MANUAL-008` was resolved for the local stack by creating/verifying a real MinIO DOCX object and matching workspace document metadata.
+Runtime checks that require a browser session or Keycloak user password remain covered by the remaining manual prerequisites.
 
 # Changed Files
 ## Agent-updated during this execution
@@ -72,7 +74,23 @@ Step 09 build and compose-config checks passed. Runtime checks that require acti
 | `curl.exe http://localhost:8082/actuator/health` | blocked | Service not reachable because local stack is not running (`MANUAL-001`). |
 | `curl.exe http://localhost:8180/realms/fos/.well-known/openid-configuration` | blocked | Keycloak not reachable in runtime stack (`MANUAL-001`, `MANUAL-002`). |
 | `curl.exe -I http://localhost:8084/web-apps/apps/api/documents/api.js` | blocked | OnlyOffice not reachable in runtime stack (`MANUAL-001`). |
-| Real document smoke through gateway + frontend + OnlyOffice save callback | not run | Requires real IDs/object data and active stack (`MANUAL-008`, `MANUAL-010`). |
+| Real document smoke through gateway + frontend + OnlyOffice save callback | not run | Requires an authenticated browser session; local object/document data is now seeded (`MANUAL-010`). |
+| `Invoke-RestMethod http://localhost:8080/actuator/health` | pass | Gateway reported `UP` on May 20, 2026. |
+| `Invoke-RestMethod http://localhost:8081/actuator/health` | pass | Governance service reported `UP` on May 20, 2026. |
+| `Invoke-RestMethod http://localhost:8082/actuator/health` | pass | Workspace service reported `UP` on May 20, 2026. |
+| `docker exec fos-postgres psql ... SELECT ... fos_identity.actor` | pass | Verified `coach@test.com` actor exists with `resource_id`/`keycloak_user_id` `f8cbadea-8eda-46b5-9117-d00ce9148aa2`, role `HEAD_COACH`, state `ACTIVE`, and club `00000000-0000-0000-0000-000000000001`. |
+| `docker exec fos-postgres psql ... SELECT ... fos_canonical.team` | pass | Verified canonical local smoke team `00000000-0000-0000-0000-000000000001` exists and all previously null team `club_id` values were backfilled to the same club UUID. |
+| `docker exec fos-postgres psql ... SELECT ... user_attribute` | pass | Verified Keycloak user `coach@test.com` has `fos_club_id=00000000-0000-0000-0000-000000000001`. |
+| `docker exec -i fos-opa /opa eval --data /policies --stdin-input --format raw 'data.fos.allow'` | pass | With the verified actor/team/club UUIDs and role `ROLE_CLUB_ADMIN`, OPA returned `true` for `workspace.event.read`. |
+| `docker exec -i fos-opa /opa eval --data /policies --stdin-input --format raw 'data.fos.allow'` | pass | With the same UUIDs and unprefixed role `HEAD_COACH`, OPA returned `false`, confirming role naming is a separate auth/policy alignment risk. |
+| `Invoke-RestMethod http://localhost:8081/api/v1/policy/evaluate` | blocked | Endpoint correctly requires authentication; no bearer token was available because the live Keycloak admin credentials have drifted from the current ignored `.env`. |
+| `docker compose ps` | pass | Full local stack was running; gateway, governance, workspace, MinIO, OnlyOffice, Keycloak, MongoDB, Postgres, Kafka, Redis, OPA, and OpenSearch containers were up. |
+| `Invoke-RestMethod http://localhost:8082/actuator/health` | pass | Workspace service reported `UP` on May 20, 2026. |
+| `curl.exe -I http://localhost:8084/web-apps/apps/api/documents/api.js` | pass | OnlyOffice browser API returned HTTP 200 on May 20, 2026. |
+| `docker exec fos-minio mc stat foslocal/fos-workspace/documents/8aab6734-b3a7-429d-a814-948c99a40fd9/v1_manual-008-onlyoffice-smoke.docx` | pass | Verified real DOCX object exists in MinIO with DOCX content type and nonzero size. |
+| `docker exec fos-minio mc cat ... | head -c 4` | pass | Verified object starts with ZIP/DOCX magic bytes `50 4b 03 04`. |
+| `docker exec fos-mongodb mongosh ... workspace_documents.findOne({_id:'8aab6734-b3a7-429d-a814-948c99a40fd9'})` | pass | Verified matching `ACTIVE` workspace metadata, version 1, bucket `fos-workspace`, and object key for the seeded DOCX. |
+| `Invoke-RestMethod http://localhost:8082/api/v1/onlyoffice/config` without bearer token | blocked | Endpoint correctly returned 401 in the secured stack; browser/API smoke still requires a valid Keycloak user session. |
 
 # Issues Fixed
 - Step 01: canonicalized env vars, added `.env.dev.example`, made gateway CORS env-driven, updated docs.
@@ -83,18 +101,29 @@ Step 09 build and compose-config checks passed. Runtime checks that require acti
 - Step 06: enforced signed OnlyOffice callbacks when JWT is enabled; aligned frontend file-type support with backend.
 - Step 07: removed runtime fake UUID literals from frontend runtime code, replacing with explicit dev fallback env values.
 - Step 08: ensured host-run scripts include `-am`, bounded backend fallback IDs as local no-auth development only, and re-verified architecture constraints.
+- MANUAL-003: created/verified local full-auth smoke-test UUID data:
+  - club UUID: `00000000-0000-0000-0000-000000000001`
+  - team UUID: `00000000-0000-0000-0000-000000000001`
+  - actor/user UUID: `f8cbadea-8eda-46b5-9117-d00ce9148aa2`
+  - actor email: `coach@test.com`
+  - actor role: `HEAD_COACH`
+- MANUAL-008: created/verified local OnlyOffice smoke document data:
+  - document UUID: `8aab6734-b3a7-429d-a814-948c99a40fd9`
+  - bucket: `fos-workspace`
+  - object key: `documents/8aab6734-b3a7-429d-a814-948c99a40fd9/v1_manual-008-onlyoffice-smoke.docx`
+  - metadata: `workspace_documents` record is `ACTIVE`, category `GENERAL`, visibility `CLUB_WIDE`, linked to the smoke team UUID.
 
 # Issues Blocked By Manual Action
 - `MANUAL-001` (Step 02/09): Docker Desktop/daemon access is required for `docker compose ps`, health endpoints, Keycloak/OnlyOffice runtime checks.
 - `MANUAL-002` (Step 03/09): Keycloak Admin UI/runtime verification may be needed if realm import/state needs manual confirmation.
-- `MANUAL-003` (Step 03/08/09): Real actor/team/club UUIDs are required for true end-to-end policy/auth scenarios.
 - `MANUAL-004` (Step 01/06): Local ignored `.env` still contains short OnlyOffice secret and host callback override; user must update local secrets/config.
 - `MANUAL-005` (Step 01/05): LAN/public endpoint values must be provided by user for cross-device testing.
-- `MANUAL-008` (Step 05/06/09): Real MinIO object/document content is required for OnlyOffice edit/save smoke.
-- `MANUAL-010` (Step 09): Real team/document/actor UUIDs are required for final smoke validation.
+- `MANUAL-010` (Step 09): Final authenticated browser smoke must be performed with a real user/session and the seeded document UUID.
 
 # Remaining Risks
-- Runtime integration is not proven yet because Docker stack and real data smoke were blocked.
+- Full browser editing/save integration is not proven yet because a valid Keycloak user session is still required.
+- The live Keycloak admin credentials no longer match the current ignored `.env`, so admin-token automation is blocked until the user confirms or resets the local Keycloak admin password.
+- Keycloak currently assigns `HEAD_COACH` to `coach@test.com`; OPA policies in `workspace_policy.rego` use `ROLE_*` names. If authenticated policy smoke still denies access after login, align Keycloak role assignment or policy role names before changing UUID data again.
 - Local ignored env overrides can silently differ from tracked templates and cause runtime behavior drift.
 - Angular build budget warnings persist (accepted but still technical debt).
 - `docker-compose.noauth.yml` uses obsolete `version` key (non-blocking warning).
@@ -102,7 +131,9 @@ Step 09 build and compose-config checks passed. Runtime checks that require acti
 # Handoff Notes
 - The fix process was executed in strict order through Step 10 with no destructive Docker/data commands.
 - All code-level and config-level checks that do not require live containers now pass.
-- Runtime verification ownership remains with Step 09 and depends on resolving manual blockers first.
+- Local actor/team/club UUID prerequisites for `coach@test.com` are now available for smoke tests.
+- Local MinIO/workspace document prerequisite for OnlyOffice smoke is now available as document `8aab6734-b3a7-429d-a814-948c99a40fd9`.
+- Runtime verification ownership remains with Step 09 and depends on resolving the remaining manual blockers first.
 - If runtime checks fail after Docker is available, route ownership by failing surface:
   - Gateway/workspace route/auth/policy flow: Step 04.
   - Storage/MinIO behavior: Step 05.
@@ -110,8 +141,8 @@ Step 09 build and compose-config checks passed. Runtime checks that require acti
   - Frontend runtime usage and API calls: Step 07.
 
 # Next Recommended Step
-1. Start Docker Desktop and ensure this session has Docker daemon access.
-2. Bring up the intended stack mode (full auth stack or no-auth stack) without destructive volume reset.
+1. Confirm or reset the local Keycloak admin password if admin-token automation is needed.
+2. Refresh the browser login for `coach@test.com` so the token includes `fos_club_id=00000000-0000-0000-0000-000000000001`.
 3. Re-run Step 09 runtime checks exactly: `docker compose ps`, health curls, Keycloak discovery, OnlyOffice `api.js`.
-4. Provide real team/document/actor UUIDs and a real test document object, then run the final gateway + frontend + OnlyOffice save smoke.
-5. If any runtime check fails, fix only in the owning step listed in Handoff Notes and re-run Step 09.
+4. Run the final gateway + frontend + OnlyOffice save smoke with document `8aab6734-b3a7-429d-a814-948c99a40fd9`.
+5. If authenticated policy calls deny access, check role naming first (`HEAD_COACH` vs `ROLE_HEAD_COACH`/`ROLE_CLUB_ADMIN`), not the UUID data.

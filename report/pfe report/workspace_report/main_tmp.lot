@@ -19,15 +19,15 @@
 \contentsline {table}{\numberline {3.5}{\ignorespaces API endpoint family summary}}{19}{table.caption.28}%
 \contentsline {table}{\numberline {3.7}{\ignorespaces Workspace collections stored in MongoDB}}{19}{table.caption.30}%
 \contentsline {table}{\numberline {3.8}{\ignorespaces Indexing and reference strategy}}{20}{table.caption.31}%
-\contentsline {table}{\numberline {3.9}{\ignorespaces Storage mapping for Football OS}}{24}{table.caption.35}%
+\contentsline {table}{\numberline {3.9}{\ignorespaces Storage mapping for Football OS}}{23}{table.caption.35}%
 \contentsline {table}{\numberline {3.10}{\ignorespaces Security implementation choices}}{28}{table.caption.40}%
-\contentsline {table}{\numberline {3.11}{\ignorespaces Access-control matrix for core platform actions}}{29}{table.caption.41}%
+\contentsline {table}{\numberline {3.11}{\ignorespaces Access-control matrix for core platform actions}}{28}{table.caption.41}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces Software environment used for implementation}}{31}{table.caption.43}%
-\contentsline {table}{\numberline {4.2}{\ignorespaces Implementation overview by feature}}{32}{table.caption.44}%
-\contentsline {table}{\numberline {4.3}{\ignorespaces Technical challenges encountered during implementation}}{33}{table.caption.45}%
-\contentsline {table}{\numberline {4.4}{\ignorespaces Deployment and integration components}}{36}{table.caption.50}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces Software environment used for implementation}}{30}{table.caption.43}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces Implementation overview by feature}}{31}{table.caption.44}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces Technical challenges encountered during implementation}}{32}{table.caption.45}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces Deployment and integration components}}{35}{table.caption.50}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces Components involved in the test environment}}{37}{table.caption.52}%
-\contentsline {table}{\numberline {5.2}{\ignorespaces Representative test cases and current validation status}}{38}{table.caption.53}%
-\contentsline {table}{\numberline {5.3}{\ignorespaces Local performance observations}}{38}{table.caption.54}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces Components involved in the test environment}}{36}{table.caption.52}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Representative test cases and current validation status}}{37}{table.caption.53}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Local performance observations}}{37}{table.caption.54}%

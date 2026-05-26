@@ -3,194 +3,166 @@
 \section*{Introduction}
 \addcontentsline{toc}{section}{Introduction}
 
-This chapter defines the requirements of Football OS by focusing on what the platform must deliver to its users. It presents the expected services, quality constraints, actors, and main UML use cases.
-
-The objective is to describe the required behavior of the application in a clear and implementation-independent way. Detailed technical choices are intentionally left for the design and implementation chapters.
+This chapter formalizes the needs of Football OS through measurable
+requirements, actor definitions, and use-case models. The focus is on expected
+system behavior and access rules, independently from implementation details.
 
 % =====================================================
 \section{Functional Requirements}
 
-Functional requirements describe the business services that Football OS must provide.
+Functional requirements are summarized in
+Table~\ref{tab:functional-requirements}, with identifiers, actors, priorities,
+and delivery status in the current project scope.
 
-\subsection{User Access and Authentication}
-The system must:
-\begin{itemize}
-    \item Authenticate users through an external identity provider,
-    \item Allow only authenticated users to access protected features,
-    \item Associate each authenticated user with a club role,
-    \item Block unauthenticated access to protected resources.
-\end{itemize}
+\begin{table}[ht]
+\centering
+\caption{Functional requirements of Football OS}
+\label{tab:functional-requirements}
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\textwidth}{|C{1.3cm}|Y|L{2.6cm}|C{1.4cm}|C{2.3cm}|}
+\hline
+\textbf{ID} & \textbf{Requirement} & \textbf{Main Actor} & \textbf{Priority} & \textbf{Status} \\
+\hline
+FR-01 & Authenticate through an external identity provider and enforce protected access. & All platform users & High & Implemented \\
+\hline
+FR-02 & Manage users and roles for administrative governance. & Club Administrator & High & Partial \\
+\hline
+FR-03 & Manage canonical club data (players and teams) with controlled updates. & Club Administrator & High & Partial \\
+\hline
+FR-04 & Upload, consult, and archive documents under authorization rules. & Authorized staff & High & Implemented \\
+\hline
+FR-05 & Support document versioning and online viewing or editing. & Authorized staff & High & Implemented \\
+\hline
+FR-06 & Manage calendar events, attendees, and task coordination. & Head Coach / Club Administrator & High & Implemented \\
+\hline
+FR-07 & Consult player profiles with role-based filtering. & Authorized staff & High & Partial \\
+\hline
+FR-08 & Generate and consult notifications for operational updates. & Authorized staff & Medium & Implemented \\
+\hline
+FR-09 & Search workspace resources with permission filtering. & Authorized staff & Medium & Implemented \\
+\hline
+FR-10 & Enforce access control and activity tracking for accountability. & Backend services & High & Implemented \\
+\hline
+\end{tabularx}
+\endgroup
+\end{table}
 
-\subsection{User and Role Management}
-The system must:
-\begin{itemize}
-    \item Allow the club administrator to manage users,
-    \item Allow role assignment and role updates,
-    \item Support role-based permissions for platform actions,
-    \item Keep role information consistent with identity data.
-\end{itemize}
-
-\subsection{Club Reference Data Management}
-The system must:
-\begin{itemize}
-    \item Manage reference data for players and teams,
-    \item Provide consistent player and team references across modules,
-    \item Restrict modification of reference data to authorized roles.
-\end{itemize}
-
-\subsection{Document Management}
-The system must:
-\begin{itemize}
-    \item Allow authorized users to upload, consult, and archive documents,
-    \item Support versioning and online viewing or editing when applicable,
-    \item Protect sensitive documents, including medical documents,
-    \item Enforce authorization rules for every document action.
-\end{itemize}
-
-\subsection{Calendar and Event Management}
-The system must:
-\begin{itemize}
-    \item Allow authorized users to create, update, and archive events,
-    \item Manage event details, attendees, tasks, and required documents,
-    \item Allow staff to consult event schedules and details,
-    \item Trigger reminders and event-related notifications.
-\end{itemize}
-
-\subsection{Player Profile Consultation}
-The system must:
-\begin{itemize}
-    \item Allow authorized users to search and consult player profiles,
-    \item Combine official player identity data with workspace data,
-    \item Show profile sections according to role permissions,
-    \item Restrict medical content to authorized medical roles.
-\end{itemize}
-
-\subsection{Notifications and Search}
-The system must:
-\begin{itemize}
-    \item Notify users about relevant operational events and updates,
-    \item Allow users to consult and manage notification status,
-    \item Provide search across key resources such as documents and events,
-    \item Filter results according to authorization rules.
-\end{itemize}
-
-\subsection{Access Control and Activity Tracking}
-The system must:
-\begin{itemize}
-    \item Enforce role-based access control on sensitive actions,
-    \item Record important actions for accountability,
-    \item Preserve traceability of requests and operations.
-\end{itemize}
-
-Core platform support requirements are limited here to functional expectations. Their architectural realization is detailed in Chapter 3.
+Table~\ref{tab:functional-requirements} reflects the current project baseline
+without overclaiming full maturity of every feature.
 
 % =====================================================
 \section{Non-Functional Requirements}
 
-Non-functional requirements define the expected quality of the platform.
+Non-functional requirements are formalized in
+Table~\ref{tab:non-functional-requirements} to clarify quality expectations and
+their validation approach.
 
-\subsection{Security}
-The platform must:
-\begin{itemize}
-    \item Protect access through authentication and authorization,
-    \item Prevent unauthorized access to sensitive resources,
-    \item Protect data exchanges between platform components.
-\end{itemize}
-
-\subsection{Usability}
-The platform must:
-\begin{itemize}
-    \item Provide clear interfaces for daily staff workflows,
-    \item Keep navigation simple across core modules,
-    \item Give understandable feedback for user actions.
-\end{itemize}
-
-\subsection{Performance}
-The platform must:
-\begin{itemize}
-    \item Respond efficiently to common operations,
-    \item Support efficient search and consultation,
-    \item Handle background operations without blocking key user flows.
-\end{itemize}
-
-\subsection{Maintainability and Extensibility}
-The platform must:
-\begin{itemize}
-    \item Keep modules separated by responsibility,
-    \item Use reusable contracts and shared mechanisms,
-    \item Support future features and integrations without major redesign.
-\end{itemize}
-
-\subsection{Reliability and Traceability}
-The platform must:
-\begin{itemize}
-    \item Preserve consistent behavior during daily usage,
-    \item Handle failures without losing important data,
-    \item Keep actions and decisions traceable for audit purposes.
-\end{itemize}
+\begin{table}[ht]
+\centering
+\caption{Non-functional requirements of Football OS}
+\label{tab:non-functional-requirements}
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\textwidth}{|C{1.4cm}|L{2.4cm}|Y|Y|}
+\hline
+\textbf{ID} & \textbf{Quality Attribute} & \textbf{Requirement} & \textbf{Validation Method} \\
+\hline
+NFR-01 & Security & Enforce authenticated access, role-based authorization, and protected sensitive exchanges. & Security tests, policy checks, and access-control cases. \\
+\hline
+NFR-02 & Usability & Provide clear daily workflows with understandable user feedback. & UI scenario reviews and user acceptance checks. \\
+\hline
+NFR-03 & Performance & Keep response times acceptable for common operations such as documents, events, and search. & Workflow-oriented performance checks. \\
+\hline
+NFR-04 & Maintainability & Preserve modular separation of concerns and reusable cross-service contracts. & Architecture review and module inspections. \\
+\hline
+NFR-05 & Reliability & Maintain consistent behavior and controlled failure handling in normal operations. & Integration and error-handling validation. \\
+\hline
+NFR-06 & Traceability & Record significant operations for audit and accountability. & Audit-log verification and end-to-end trace checks. \\
+\hline
+\end{tabularx}
+\endgroup
+\end{table}
 
 % =====================================================
-\section{Use Case Diagrams}
+\section{Use Case Modeling}
 
-This section presents the main UML use case diagrams that describe how users interact with Football OS.
+The use-case and actor models in this chapter follow UML notation conventions
+for behavioral modeling and diagram semantics \cite{uml-spec}.
 
-\subsection{Presentation of Actors}
+\subsection{Actor Model}
 
-\textbf{Primary actors:}
-\begin{itemize}
-    \item \textbf{Club Administrator}: manages users, roles, and governance data,
-    \item \textbf{Head Coach}: manages events and operational coordination,
-    \item \textbf{Coaching Staff}: consults events, documents, and player information,
-    \item \textbf{Medical Staff}: accesses medical information according to permissions.
-\end{itemize}
+Actors are consolidated in Table~\ref{tab:actor-model}.
 
-\textbf{Supporting actors and systems:}
-\begin{itemize}
-    \item \textbf{Identity Provider}: performs user authentication,
-    \item \textbf{Document Editor}: enables online document viewing and editing,
-    \item \textbf{Object Storage Provider}: stores document files,
-    \item \textbf{Canonical Player Data Provider}: provides official player identity data,
-    \item \textbf{Governance Policy Service}: evaluates authorization rules.
-\end{itemize}
+\begin{table}[H]
+\centering
+\caption{Actor model of Football OS}
+\label{tab:actor-model}
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\begin{tabularx}{\textwidth}{|L{3.0cm}|C{1.9cm}|Y|}
+\hline
+\textbf{Actor} & \textbf{Type} & \textbf{Role in the system} \\
+\hline
+Club Administrator & Human & Manages users, roles, governance data, and high-level operational permissions. \\
+\hline
+Head Coach & Human & Manages events and operational coordination for football activities. \\
+\hline
+Coaching Staff & Human & Consults events, documents, and player-related operational information. \\
+\hline
+Medical Staff & Human & Accesses authorized medical and player-related information. \\
+\hline
+Identity Provider & Technical & Authenticates users and provides identity/session context. \\
+\hline
+Document Editor & Technical & Supports online document viewing and editing workflows. \\
+\hline
+Object Storage Provider & Technical & Stores document binary content and file versions. \\
+\hline
+Governance Policy Service & Technical & Evaluates authorization decisions for protected actions. \\
+\hline
+Canonical Player Data Provider & Technical & Provides canonical player identity references used by workspace features. \\
+\hline
+\end{tabularx}
+\normalsize
+\end{table}
 
-\clearpage
-\begin{samepage}
-\subsection{Global Platform Use Case}
-Before presenting the general use case diagram, it is important to explain the
-level of detail used in this model. The diagram shows what Football OS offers
-to its users, without showing the internal technical implementation. For this
-reason, authentication is shown only once through the \textit{Access Platform}
-use case, which includes the \textit{Authenticate User} use case. Once a user is
-authenticated, the different human actors are represented as types of an
-\textit{Authenticated User}.
+\subsection{Global Platform Use Case Diagram}
 
-Access rights are also not shown as separate use cases in order to keep the
-diagram simple and readable. Instead, they are considered as rules applied to
-the concerned features. For example, the head coach and club administrator can
-manage events according to authorization rules, while medical staff has specific
-access to medical documents and medical player-related information.
-
-\vspace{0.1cm}
+The global platform use-case diagram provides a high-level view of the
+interactions between Football OS and its actors. Figure~\ref{fig:global-usecase}
+presents the global use-case view of Football OS. Human actors are represented
+as primary users of the platform, while technical actors represent external
+systems involved in authentication, policy evaluation, document editing, object
+storage, and canonical player data retrieval. The diagram summarizes the main
+services offered by the platform without exposing internal implementation
+details, since detailed processing flows are presented later in the design
+chapter.
 
 \begin{figure}[H]
     \centering
     \captionsetup{skip=4pt}
-    \includegraphics[width=0.80\textwidth]{images/footballosgeneralusecase.drawio.png}
+    \makebox[\textwidth][c]{%
+        \includegraphics[width=0.90\textwidth]{images/footballosgeneralusecase.drawio (1).png}%
+    }
     \caption{General use case diagram of the Football OS platform}
     \label{fig:global-usecase}
 \end{figure}
-\end{samepage}
 
-The following compact descriptions summarize the main use cases. They include
-the objective, main scenario, and the principal access constraints, while
-detailed secondary cases can be placed in the appendix.
+The following use-case descriptions summarize the principal operational flows
+used in the current specification scope.
 
-\subsubsection*{Access Football OS Platform Use Case}
+%\subsubsection*{Access Football OS Platform}
 \small
 \begin{table}[H]
 \centering
-\caption{Compact description of the access platform use case}
-\begin{tabular}{|p{3.8cm}|p{10.2cm}|}
+\caption{Use-case description: Access Football OS Platform}
+\label{tab:uc-access-platform}
+\begin{tabular}{|p{4.0cm}|p{10.0cm}|}
 \hline
 \textbf{Use Case} & Access Football OS Platform \\
 \hline
@@ -198,82 +170,104 @@ detailed secondary cases can be placed in the appendix.
 \hline
 \textbf{Secondary Actor} & Identity Provider \\
 \hline
-\textbf{Objective} & Allow authorized users to authenticate and access platform features according to their role. \\
+\textbf{Objective} & Authenticate the user and grant access to authorized platform features. \\
 \hline
-\textbf{Preconditions} & The user has a valid platform account and the identity provider is available. \\
-\hline
-\textbf{Constraints / Access Rules} & Unauthenticated users cannot access protected features. The available features depend on the authenticated user's role. \\
+\textbf{Preconditions} & User account exists and identity provider is reachable. \\
 \hline
 \textbf{Main Scenario} &
 \begin{enumerate}
     \item The user opens the platform.
-    \item The system requests authentication.
-    \item The user authenticates through the identity provider.
-    \item The system verifies identity and role, then grants authorized access.
+    \item The system redirects authentication to the identity provider.
+    \item The user authenticates successfully.
+    \item The system resolves role context and grants authorized access.
 \end{enumerate}
 \\
 \hline
-\textbf{Postconditions} & The user is authenticated and can access the authorized platform features. \\
+\textbf{Alternative / Exception Scenario} & Authentication failure or invalid token; access is denied and the user remains outside protected features. \\
+\hline
+\textbf{Business Rules / Access Rules} & Protected features require authenticated identity. Visible modules depend on role permissions. \\
+\hline
+\textbf{Postconditions} & Authenticated session is established with role-scoped access rights. \\
 \hline
 \end{tabular}
 \end{table}
+Table~\ref{tab:uc-access-platform} specifies the authentication-oriented
+platform-access use case.
 \normalsize
 
 \subsection{Calendar and Event Management}
 
-\begin{minipage}{\textwidth}
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.92\textwidth, height=0.35\textheight, keepaspectratio]{images/Calendar and Event Management.png}
-\captionof{figure}{Calendar and event management use case diagram}
+\includegraphics[width=0.92\textwidth, height=0.30\textheight, keepaspectratio]{images/Calendar and Event Management.png}
+\caption{Calendar and event management use case diagram}
 \label{fig:calendar-usecase}
+\end{figure}
 
-\vspace{0.25cm}
-\centering
+Figure~\ref{fig:calendar-usecase} illustrates the actor interactions for event
+planning, consultation, and archive operations.
+
 \small
 \renewcommand{\arraystretch}{1.05}
-\captionof{table}{Compact description of calendar and event management}
-\begin{tabular}{|p{3.6cm}|p{10.1cm}|}
+\begin{table}[H]
+\centering
+\caption{Use-case description: Calendar and Event Management}
+\label{tab:uc-calendar-events}
+\begin{tabular}{|p{4.0cm}|p{9.8cm}|}
 \hline
 \textbf{Use Case} & Calendar and Event Management \\
 \hline
-\textbf{Primary Actor} & Head Coach / Club Administrator (management), All authorized staff (consultation) \\
+\textbf{Primary Actor} & Head Coach / Club Administrator (management), authorized staff (consultation) \\
 \hline
-\textbf{Objective} & Plan and follow club events, assignments, and required documents. \\
+\textbf{Objective} & Plan, update, consult, and archive operational events and related assignments. \\
 \hline
-\textbf{Preconditions} & The user is authenticated and has access to the calendar module. \\
-\hline
-\textbf{Constraints / Access Rules} & Event management actions are limited to authorized roles. In the current scope, the head coach  can manage events, while other authorized staff mainly consult event information. Delete operations are treated as archive actions, not permanent deletion. \\
+\textbf{Preconditions} & User is authenticated and has calendar access rights. \\
 \hline
 \textbf{Main Scenario} &
 \begin{enumerate}
     \item The user opens the calendar module.
     \item The user creates, updates, consults, or archives an event.
-    \item The system checks authorization and saves the requested action.
-    \item The system updates related assignments, reminders, and notifications when relevant.
+    \item The system validates permissions and persists the operation.
+    \item The system updates related attendees, tasks, and notifications when applicable.
 \end{enumerate}
 \\
 \hline
-\textbf{Postconditions} & The event is created, updated, consulted, or archived. Concerned users may receive notifications when relevant. \\
+\textbf{Alternative / Exception Scenario} & Unauthorized update request, invalid event data, or unavailable service causes rejection with error feedback. \\
+\hline
+\textbf{Business Rules / Access Rules} & Event management actions are restricted to authorized roles. Delete behavior is treated as archive action, not hard deletion. \\
+\hline
+\textbf{Postconditions} & Event state is updated according to the accepted operation and authorized users are notified when required. \\
 \hline
 \end{tabular}
+\end{table}
+Table~\ref{tab:uc-calendar-events} formalizes the calendar and event use-case
+contract.
 \normalsize
 \renewcommand{\arraystretch}{1}
-\end{minipage}
 
 \subsection{Document Management}
 
-\begin{minipage}{\textwidth}
-\centering
-\includegraphics[width=0.92\textwidth, height=0.35\textheight, keepaspectratio]{images/documentManagment.drawio.png}
-\captionof{figure}{Document management use case diagram}
-\label{fig:document-usecase}
+This subsection defines document-management behavior and integration points
+through its use-case contract.
 
-\vspace{0.25cm}
+\begin{figure}[H]
 \centering
+\includegraphics[width=0.92\textwidth, height=0.30\textheight, keepaspectratio]{images/documentManagment.drawio (1).png}
+\caption{Document management use case diagram}
+\label{fig:document-management-usecase}
+\end{figure}
+
+\noindent Figure~\ref{fig:document-management-usecase} illustrates the main
+actor interactions for document upload, consultation, editing, versioning, and
+archiving operations.
+
 \small
 \renewcommand{\arraystretch}{1.05}
-\captionof{table}{Compact description of document management}
-\begin{tabular}{|p{3.6cm}|p{10.1cm}|}
+\begin{table}[H]
+\centering
+\caption{Use-case description: Document Management}
+\label{tab:uc-document-management}
+\begin{tabular}{|p{4.0cm}|p{9.8cm}|}
 \hline
 \textbf{Use Case} & Document Management \\
 \hline
@@ -281,42 +275,44 @@ detailed secondary cases can be placed in the appendix.
 \hline
 \textbf{Secondary Actors} & Object Storage Provider / Document Editor \\
 \hline
-\textbf{Objective} & Manage document upload, consultation, online edition, and archiving under access rules. \\
+\textbf{Objective} & Manage document upload, consultation, versioning, editing, and archiving under controlled access. \\
 \hline
-\textbf{Preconditions} & The user is authenticated and has permission to access the selected document action. \\
-\hline
-\textbf{Constraints / Access Rules} & Access depends on the user's role and the document category. Medical documents are restricted to medical staff and explicitly authorized roles. The object storage provider stores file content, while the platform manages metadata and versions. \\
+\textbf{Preconditions} & User is authenticated and authorized for the requested document action. \\
 \hline
 \textbf{Main Scenario} &
 \begin{enumerate}
     \item The user opens the document module and selects an action.
-    \item The system verifies permissions and executes the action.
-    \item The system stores or retrieves document data and versions.
-    \item The system keeps sensitive content visible only to authorized roles.
+    \item The system validates permissions and applies business rules.
+    \item The system stores or retrieves document metadata and versions.
+    \item The system invokes online editor integration when editing is requested.
 \end{enumerate}
 \\
 \hline
-\textbf{Postconditions} & The document is uploaded, consulted, edited, or archived according to the selected action and authorization rules. \\
+\textbf{Alternative / Exception Scenario} & Upload failure, editor unavailability, or unauthorized access attempt triggers a controlled error response. \\
+\hline
+\textbf{Business Rules / Access Rules} & Document visibility depends on role and category. Medical documents are restricted to medical staff and explicitly authorized roles. \\
+\hline
+\textbf{Postconditions} & Document state and version history are updated according to authorized operations. \\
 \hline
 \end{tabular}
+\end{table}
+Table~\ref{tab:uc-document-management} defines the detailed scenarios and
+access constraints of document management.
 \normalsize
 \renewcommand{\arraystretch}{1}
-\end{minipage}
 
 \subsection{Player Profile Consultation}
 
-\begin{minipage}{\textwidth}
-\centering
-\includegraphics[width=0.92\textwidth, height=0.35\textheight, keepaspectratio]{images/Player Profile Consultation.drawio.png}
-\captionof{figure}{Player profile consultation use case diagram}
-\label{fig:profile-usecase}
+Player profile consultation requires policy-driven visibility because sensitive
+medical and administrative information must remain restricted by role.
 
-\vspace{0.25cm}
-\centering
 \small
 \renewcommand{\arraystretch}{1.05}
-\captionof{table}{Compact description of player profile consultation}
-\begin{tabular}{|p{3.6cm}|p{10.1cm}|}
+\begin{table}[H]
+\centering
+\caption{Use-case description: Consult Player Profile}
+\label{tab:uc-player-profile}
+\begin{tabular}{|p{4.0cm}|p{9.8cm}|}
 \hline
 \textbf{Use Case} & Consult Player Profile \\
 \hline
@@ -324,31 +320,36 @@ detailed secondary cases can be placed in the appendix.
 \hline
 \textbf{Secondary Actors} & Canonical Player Data Provider / Governance Policy Service \\
 \hline
-\textbf{Objective} & Display player profile information according to role-based permissions. \\
+\textbf{Objective} & Display player profile sections according to user permissions and available data. \\
 \hline
-\textbf{Preconditions} & The user is authenticated and the selected player exists in the platform reference data. \\
-\hline
-\textbf{Constraints / Access Rules} & Profile sections are filtered according to role permissions. Medical and sensitive information must only be visible to authorized users. \\
+\textbf{Preconditions} & User is authenticated and the selected player exists in reference data. \\
 \hline
 \textbf{Main Scenario} &
 \begin{enumerate}
-    \item The user searches for or selects a player.
-    \item The system retrieves official identity and linked workspace data.
-    \item The system evaluates access rights for each profile section.
-    \item The system displays only authorized profile content.
+    \item The user selects a player profile.
+    \item The system retrieves canonical and workspace-linked information.
+    \item The system evaluates section-level permissions.
+    \item The system displays only authorized profile sections.
 \end{enumerate}
 \\
 \hline
-\textbf{Postconditions} & The system displays only the player profile sections and linked data that the user is allowed to access. \\
+\textbf{Alternative / Exception Scenario} & Unknown player, unavailable linked data, or insufficient permission leads to partial display or access rejection. \\
+\hline
+\textbf{Business Rules / Access Rules} & Sensitive profile content, especially medical information, is visible only to authorized roles. \\
+\hline
+\textbf{Postconditions} & User receives a role-filtered profile view consistent with policy decisions. \\
 \hline
 \end{tabular}
+\end{table}
+Table~\ref{tab:uc-player-profile} specifies the profile-consultation behavior
+under role-based restrictions.
 \normalsize
 \renewcommand{\arraystretch}{1}
-\end{minipage}
 
 \section*{Conclusion}
 \addcontentsline{toc}{section}{Conclusion}
 
-This chapter specified the needs of Football OS by defining the required services, quality attributes, actors, and main use cases. The focus remained on expected platform behavior rather than implementation details.
-
-These requirements provide the reference baseline for the design choices presented in the next chapter.
+This chapter defined functional and non-functional requirements, actor
+responsibilities, and principal use-case behaviors of Football OS. These
+specifications form the baseline for the architectural and design decisions in
+the next chapter.

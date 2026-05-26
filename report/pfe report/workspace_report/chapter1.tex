@@ -1,6 +1,9 @@
 \chapter{Internship Framework Presentation}
 
-This chapter presents the framework of the internship and the context in which the project was carried out. It introduces the host company, studies the existing situation related to football club operations, highlights its main limitations, and presents the proposed solution.
+This chapter defines the internship framework and the operational context of
+the project. It presents the host company, analyzes the existing environment,
+describes the adopted development methodology, and introduces the proposed
+solution.
 
 % -------------------------------------------------------
 \section{Company Presentation}
@@ -12,118 +15,124 @@ This chapter presents the framework of the internship and the context in which t
     \label{fig:company_logo}
 \end{figure}
 
-\textbf{Perf Analysis Consulting} is a technology startup that develops digital solutions for professional football clubs. Its activities focus on software tools related to performance analysis, coaching management, player profiling, scouting, and internal collaboration.
-
-The internship was carried out within the software development side of the company. The work focused on the development of \textbf{Football OS}, especially its backend foundation, governance mechanisms, and Workspace module.
+Perf Analysis Consulting develops digital tools for professional football
+organizations. The internship was conducted within the software engineering
+activity of the company and focused on \textbf{Football OS}, with emphasis on
+backend foundation services, governance mechanisms, and the Workspace module.
 
 % -------------------------------------------------------
-\section{Study of the Existing System}
+\section{Existing Operational Environment Analysis}
 
-\subsection{Description of the Existing System}
+\subsection{Current Environment}
 
-In the context targeted by the company, football club operations are commonly supported by several general-purpose tools. These tools are useful for specific tasks, but they are not designed to work together as a unified system dedicated to club management.
+In the current operational environment, football club activities are generally
+supported by separate general-purpose tools. Communication, file sharing,
+calendar management, and player-related data handling are performed across
+different platforms that are not designed as a unified club workspace.
 
-\begin{table}[H]
-    \caption{Existing tools used in football club operations and their limitations}
-    \label{tab:existing_tools}
-    \centering
-    \begin{tabular}{|p{2.5cm}|p{4cm}|p{3.5cm}|p{4cm}|}
-        \hline
-        \textbf{Task} & \textbf{General Tool} & \textbf{Key Use} & \textbf{Limitation} \\
-        \hline
+The company also had a previous internal solution centered mainly on file
+storage. Although useful for basic document handling, it did not provide a
+complete operational model including event workflows, structured notifications,
+governance-driven permissions, and unified auditability.
 
-        Communication &
-        \begin{center}
-            \includegraphics[width=0.08\textwidth]{images/WhatsApp.png}\\
-            WhatsApp
-        \end{center} &
-        Messaging and file sharing between staff &
-        Unstructured communication and limited traceability \\
-        \hline
+\subsection{Comparative View of Existing Solutions}
 
-        File Storage &
-        \begin{center}
-            \includegraphics[width=0.10\textwidth]{images/dropboxanddrive.png}\\
-            Google Drive / Dropbox
-        \end{center} &
-        Storing and sharing files &
-        Scattered data and weak integration with club workflows \\
-        \hline
+Table~\ref{tab:existing-solution-comparison} summarizes the principal tools
+observed in practice, their contributions, and their limits with respect to a
+unified operational platform.
 
-        Scheduling &
-        \begin{center}
-            \includegraphics[width=0.10\textwidth]{images/googlecalnder.png}\\
-            Google Calendar
-        \end{center} &
-        Planning events and meetings &
-        No direct integration with documents, tasks, or player profiles \\
-        \hline
-
-        Medical Tracking &
-        \begin{center}
-            \includegraphics[width=0.08\textwidth]{images/excel.png}\\
-            Microsoft Excel
-        \end{center} &
-        Tracking player medical data &
-        Manual updates, possible data inconsistency, and limited access control \\
-        \hline
-    \end{tabular}
+\begin{table}[ht]
+\centering
+\caption{Comparison of existing solutions and identified gaps}
+\label{tab:existing-solution-comparison}
+\begingroup
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{|L{3.2cm}|Y|Y|}
+\hline
+\textbf{Existing solution} & \textbf{Main limitation} & \textbf{Football OS response} \\
+\hline
+WhatsApp (team messaging) & Communication is fast but weakly structured and hard to audit. & Connects communication with events, documents, and traceable actions. \\
+\hline
+Cloud drives (Dropbox/Drive) & File sharing is simple but weakly linked to governance and event workflows. & Adds role-based permissions and governed document lifecycle. \\
+\hline
+Google Calendar & Planning is convenient but not integrated with tasks, policy checks, and required documents. & Provides unified event workflow with attendees, tasks, documents, and notifications. \\
+\hline
+Excel sheets & Data entry is flexible but consolidation and access control are inconsistent. & Enables controlled player-data consultation with permission-filtered visibility. \\
+\hline
+Previous internal file-storage solution & Scope was mostly limited to storage, without unified governance, notifications, workflow orchestration, and auditability. & Delivers an end-to-end platform combining governance and workspace services. \\
+\hline
+\end{tabularx}
+\endgroup
 \end{table}
 
-\paragraph{Previous Internal Solution}
-
-In addition to these tools, the company had previously developed an internal system intended to centralize file storage. This system provided basic file management capabilities, such as file upload, organization, and editing through an integrated document viewer.
-
-However, it remained limited in scope. It mainly addressed file storage and did not include event management, task assignment, advanced search, structured notifications, or a complete role-based access control mechanism. As a result, it did not fully support structured collaboration or controlled operational follow-up.
+Table~\ref{tab:existing-solution-comparison} shows that the main issue is not
+the absence of tools, but the absence of a coherent operational architecture
+that unifies identity, authorization, canonical data, and workflow traceability.
 
 % -------------------------------------------------------
-\subsection{Critique of the Existing System}
+\section{Development Methodology}
 
-The existing environment presents several limitations that affect the efficiency and organization of football club operations.
+The project followed an iterative incremental approach. Each iteration produced
+an integrated deliverable, then refined technical consistency before extending
+scope. This cadence made it possible to build foundational services first and
+add operational features progressively. The Shared SDK was developed as a
+dedicated standalone foundation iteration before service feature iterations.
 
-\begin{itemize}
-    \item \textbf{Fragmentation:} Staff members often use disconnected platforms, which can lead to scattered files and duplicated information,
+\begin{table}[H]
+\centering
+\caption{Iterative delivery plan used during development}
+\label{tab:iteration-plan}
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\begin{tabularx}{\textwidth}{|L{2.1cm}|L{3.8cm}|Y|}
+\hline
+\textbf{Iteration} & \textbf{Objective} & \textbf{Main Deliverables} \\
+\hline
+\makecell[l]{Iteration\\0} & Shared SDK foundation & Standalone SDK module, shared contracts, security/context helpers, and reusable integration clients consumed by backend services. \\
+\hline
+Iteration 1 & Platform foundation & API Gateway routing baseline, service structure, and Docker-based environment. \\
+\hline
+Iteration 2 & Governance & Actors, roles, players, policy integration, and audit mechanisms. \\
+\hline
+Iteration 3 & Workspace documents & Document upload, metadata handling, storage integration, and OnlyOffice connection. \\
+\hline
+Iteration 4 & Calendar and events & Event management, attendees, tasks, and notification workflows. \\
+\hline
+Iteration 5 & Integration and validation & Frontend integration, functional validation, and corrective refinements. \\
+\hline
+\end{tabularx}
+\normalsize
+\end{table}
 
-    \item \textbf{Limited role-based access control:} Existing tools may provide basic sharing options, but they do not offer a unified permission model adapted to club roles,
-
-    \item \textbf{Limited collaboration features:} The previous internal solution focused mainly on file storage and did not support event planning, task assignment, notifications, or collaborative workflows,
-
-    \item \textbf{Limited search and organization:} Users may need to manually browse folders or separate tools to find relevant information,
-
-    \item \textbf{Lack of unified traceability:} The tools used do not provide a centralized audit trail adapted to the operational needs of the platform.
-\end{itemize}
-
-Beyond these operational issues, the existing environment also lacks a centralized governance layer for identity, permissions, and data consistency. Each tool manages its own information separately, which may lead to duplication and inconsistencies. These limitations show the need for a more unified and controlled solution.
+As shown in Table~\ref{tab:iteration-plan}, the sequence progressed from
+SDK-first foundation and architectural baseline to governance controls, then to
+business workflows and final integration.
 
 % -------------------------------------------------------
-\subsection{Proposed Solution}
+\section{Proposed Solution Positioning}
 
-To address these limitations, this project proposes the development of \textbf{Football OS}, a unified platform designed to centralize and structure football club operations.
+To address the identified gaps, the project proposes \textbf{Football OS} as a
+unified workspace for football club operations.
 
-The proposed solution combines a foundational layer responsible for identity management, access control, canonical data, and traceability with an operational layer focused on daily collaboration workflows. Within this platform, the \textbf{Workspace module} provides features for managing documents, organizing events, consulting player-related information, receiving notifications, and searching workspace content.
-
-\subsubsection*{Core Capabilities}
-
+The platform is structured around two complementary layers:
 \begin{itemize}
-    \item \textbf{Governance Foundation:} Management of identity, roles, permissions, canonical data, and audit mechanisms,
-
-    \item \textbf{Workspace Services:} Management of documents, events, notifications, player profiles, and search,
-
-    \item \textbf{Document Management:} Centralized access to files with structured organization,
-
-    \item \textbf{Event Management:} Planning and coordination of club activities through a calendar-based workflow,
-
-    \item \textbf{Controlled Access:} Role-based permissions applied to sensitive actions and resources,
-
-    \item \textbf{Traceability:} Tracking important actions performed in the system.
+    \item \textbf{Governance layer:} identity context, roles, permissions, canonical players and teams, and audit traceability.
+    \item \textbf{Workspace layer:} documents, events, notifications, search, and player profile consultation.
 \end{itemize}
 
-\subsubsection*{Implementation Approach}
-
-The system is designed as a modular platform that separates core management functions from user-facing features. This approach improves maintainability and supports future extensions while keeping the different parts of the platform integrated.
+This structure is supported by a modular architecture that separates concerns
+between Gateway, Governance, Workspace, and Shared SDK modules. The separation
+improves maintainability and enables controlled future extension without
+restructuring the entire platform.
 
 % -------------------------------------------------------
 \section*{Conclusion}
 \addcontentsline{toc}{section}{Conclusion}
 
-This chapter introduced the internship context, the host company, and the existing situation related to football club operations. It also highlighted the main limitations of the current tools and presented Football OS as the proposed solution.
+This chapter established the internship context, analyzed the existing
+operational environment, and positioned Football OS as a structured response to
+identified coordination and governance gaps. The next chapter translates this
+context into formal functional and non-functional requirements.

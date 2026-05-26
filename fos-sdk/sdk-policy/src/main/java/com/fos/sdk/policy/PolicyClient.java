@@ -11,6 +11,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Remote Proxy to the policy evaluation endpoint in fos-governance-service.
@@ -18,6 +20,7 @@ import java.util.Optional;
 @Component
 public class PolicyClient {
     private static final Logger log = LoggerFactory.getLogger(PolicyClient.class);
+    private static final Pattern POLICY_REASON_PATTERN = Pattern.compile("\"reason\"\\s*:\\s*\"([^\"]+)\"");
 
     private final RestClient restClient;
 
@@ -39,7 +42,24 @@ public class PolicyClient {
         } catch (HttpClientErrorException.Unauthorized ex) {
             log.warn("Governance policy endpoint '/api/v1/policy/evaluate' returned 401 Unauthorized");
             throw ex;
+        } catch (HttpClientErrorException.Forbidden ex) {
+            log.debug("Governance policy endpoint denied action: {}", ex.getResponseBodyAsString());
+            return PolicyResult.deny(resolveDeniedReason(ex));
         }
+    }
+
+    private String resolveDeniedReason(HttpClientErrorException.Forbidden ex) {
+        String body = ex.getResponseBodyAsString();
+        if (body == null || body.isBlank()) {
+            return "Policy denied";
+        }
+
+        Matcher matcher = POLICY_REASON_PATTERN.matcher(body);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+
+        return "Policy denied";
     }
 
     private Optional<String> resolveAuthorizationHeader() {

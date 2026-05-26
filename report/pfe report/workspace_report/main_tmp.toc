@@ -42,42 +42,42 @@
 \contentsline {subsection}{\numberline {3.3.2}Governance Relational Entities (PostgreSQL)}{18}{subsection.3.3.2}%
 \contentsline {subsection}{\numberline {3.3.3}Workspace Collections (MongoDB)}{19}{subsection.3.3.3}%
 \contentsline {subsection}{\numberline {3.3.4}Indexing and Consistency Strategy}{19}{subsection.3.3.4}%
-\contentsline {subsection}{\numberline {3.3.5}Governance Class Diagram}{20}{subsection.3.3.5}%
-\contentsline {subsection}{\numberline {3.3.6}Document Management Class Diagram}{21}{subsection.3.3.6}%
+\contentsline {subsection}{\numberline {3.3.5}Governance Class Diagram}{21}{subsection.3.3.5}%
+\contentsline {subsection}{\numberline {3.3.6}Document Management Class Diagram}{22}{subsection.3.3.6}%
 \contentsline {subsection}{\numberline {3.3.7}Calendar and Event Class Diagram}{22}{subsection.3.3.7}%
-\contentsline {subsection}{\numberline {3.3.8}Storage Mapping}{24}{subsection.3.3.8}%
+\contentsline {subsection}{\numberline {3.3.8}Storage Mapping}{23}{subsection.3.3.8}%
 \contentsline {section}{\numberline {3.4}Processing Design}{24}{section.3.4}%
 \contentsline {subsection}{\numberline {3.4.1}Authentication Process Flow}{24}{subsection.3.4.1}%
 \contentsline {subsection}{\numberline {3.4.2}Document Management Flow}{25}{subsection.3.4.2}%
 \contentsline {subsection}{\numberline {3.4.3}Calendar and Event Management Flow}{26}{subsection.3.4.3}%
 \contentsline {subsection}{\numberline {3.4.4}Player Profile Consultation Flow}{27}{subsection.3.4.4}%
-\contentsline {section}{\numberline {3.5}Security and Authorization Design}{28}{section.3.5}%
+\contentsline {section}{\numberline {3.5}Security and Authorization Design}{27}{section.3.5}%
 \contentsline {subsection}{\numberline {3.5.1}Security Implementation Details}{28}{subsection.3.5.1}%
-\contentsline {section}{Conclusion}{29}{table.caption.41}%
-\contentsline {chapter}{\numberline {4}Implementation and Realization}{30}{chapter.4}%
-\contentsline {section}{Introduction}{30}{section*.42}%
-\contentsline {section}{\numberline {4.1}Development Environment}{30}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Software Environment}{30}{subsection.4.1.1}%
-\contentsline {section}{\numberline {4.2}Implementation Overview}{30}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Gateway and Secured Routing}{30}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Document Storage and Versioning}{32}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}OnlyOffice Integration}{32}{subsection.4.2.3}%
-\contentsline {subsection}{\numberline {4.2.4}Event Workflow Example}{33}{subsection.4.2.4}%
-\contentsline {subsection}{\numberline {4.2.5}Technical Challenges Encountered}{33}{subsection.4.2.5}%
-\contentsline {section}{\numberline {4.3}Main Graphical Interfaces}{34}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Authentication Interface}{34}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Document Management Interface}{34}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {4.3.3}Online Document Viewer and Editor}{35}{subsection.4.3.3}%
-\contentsline {subsection}{\numberline {4.3.4}Calendar Interface}{35}{subsection.4.3.4}%
-\contentsline {subsection}{\numberline {4.3.5}Player Profile and Notifications}{35}{subsection.4.3.5}%
-\contentsline {section}{\numberline {4.4}Deployment and Integration}{36}{section.4.4}%
-\contentsline {section}{Conclusion}{36}{table.caption.50}%
-\contentsline {chapter}{\numberline {5}Testing and Validation}{37}{chapter.5}%
-\contentsline {section}{Introduction}{37}{section*.51}%
-\contentsline {section}{\numberline {5.1}Testing Strategy}{37}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Test Environment}{37}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Test Cases}{37}{section.5.3}%
-\contentsline {section}{\numberline {5.4}Performance Evaluation}{38}{section.5.4}%
-\contentsline {section}{\numberline {5.5}Validation Summary}{38}{section.5.5}%
-\contentsline {chapter}{General Conclusion}{39}{chapter*.55}%
-\contentsline {chapter}{Bibliography}{40}{chapter*.56}%
+\contentsline {section}{Conclusion}{28}{table.caption.41}%
+\contentsline {chapter}{\numberline {4}Implementation and Realization}{29}{chapter.4}%
+\contentsline {section}{Introduction}{29}{section*.42}%
+\contentsline {section}{\numberline {4.1}Development Environment}{29}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Software Environment}{29}{subsection.4.1.1}%
+\contentsline {section}{\numberline {4.2}Implementation Overview}{29}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Gateway and Secured Routing}{29}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Document Storage and Versioning}{31}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}OnlyOffice Integration}{31}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}Event Workflow Example}{32}{subsection.4.2.4}%
+\contentsline {subsection}{\numberline {4.2.5}Technical Challenges Encountered}{32}{subsection.4.2.5}%
+\contentsline {section}{\numberline {4.3}Main Graphical Interfaces}{33}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Authentication Interface}{33}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Document Management Interface}{33}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Online Document Viewer and Editor}{34}{subsection.4.3.3}%
+\contentsline {subsection}{\numberline {4.3.4}Calendar Interface}{34}{subsection.4.3.4}%
+\contentsline {subsection}{\numberline {4.3.5}Player Profile and Notifications}{34}{subsection.4.3.5}%
+\contentsline {section}{\numberline {4.4}Deployment and Integration}{35}{section.4.4}%
+\contentsline {section}{Conclusion}{35}{table.caption.50}%
+\contentsline {chapter}{\numberline {5}Testing and Validation}{36}{chapter.5}%
+\contentsline {section}{Introduction}{36}{section*.51}%
+\contentsline {section}{\numberline {5.1}Testing Strategy}{36}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Test Environment}{36}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Test Cases}{36}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Performance Evaluation}{37}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Validation Summary}{37}{section.5.5}%
+\contentsline {chapter}{General Conclusion}{38}{chapter*.55}%
+\contentsline {chapter}{Bibliography}{39}{chapter*.56}%

@@ -1,0 +1,39 @@
+MANUAL-003: RESOLVED
+
+Keycloak/app user:
+- email: coach@test.com
+- role: HEAD_COACH
+
+Real UUIDs:
+- club UUID: 00000000-0000-0000-0000-000000000001
+- team UUID: 00000000-0000-0000-0000-000000000001
+- actor/user UUID: f8cbadea-8eda-46b5-9117-d00ce9148aa2
+
+Database state:
+- actor role: HEAD_COACH
+- actor state: ACTIVE
+- actor club_id: 00000000-0000-0000-0000-000000000001
+- team club_id: 00000000-0000-0000-0000-000000000001
+- Keycloak user attribute fos_club_id: 00000000-0000-0000-0000-000000000001
+MANUAL-008: RESOLVED
+
+Resolution:
+A real DOCX object and matching workspace metadata now exist for OnlyOffice smoke testing.
+
+Document:
+- document UUID: 8aab6734-b3a7-429d-a814-948c99a40fd9
+- bucket: fos-workspace
+- object key: documents/8aab6734-b3a7-429d-a814-948c99a40fd9/v1_manual-008-onlyoffice-smoke.docx
+- Mongo collection: workspace_documents
+- state: ACTIVE
+- category: GENERAL
+- visibility/scope: CLUB_WIDE
+- team/club UUID: 00000000-0000-0000-0000-000000000001
+- actor UUID: f8cbadea-8eda-46b5-9117-d00ce9148aa2
+
+Verified:
+- Docker stack is up.
+- Workspace health is UP.
+- OnlyOffice api.js returns HTTP 200.
+- MinIO object exists with valid DOCX/ZIP bytes.
+- Mongo metadata points to the same bucket/key.

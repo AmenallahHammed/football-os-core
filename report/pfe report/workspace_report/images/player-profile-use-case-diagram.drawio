@@ -1,0 +1,117 @@
+﻿<mxfile host="app.diagrams.net" modified="2026-05-26T00:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="player-profile-consultation" name="Player Profile Consultation Use Case Diagram">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="Player Profile Consultation Use Case Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="460" y="10" width="700" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="actor_club_admin" value="Club Administrator" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="120" width="40" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor_head_coach" value="Head Coach" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="280" width="40" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor_coaching_staff" value="Coaching Staff" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="440" width="40" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor_medical_staff" value="Medical Staff" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="600" width="40" height="90" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="actor_policy" value="Governance Policy Service" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1460" y="230" width="40" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor_canonical" value="Canonical Player Data Provider" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1460" y="390" width="40" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="actor_storage" value="Object Storage Provider" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="1460" y="560" width="40" height="90" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="system_boundary" value="Football OS &#8212; Player Profile Module" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6;fillColor=#ffffff;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="180" y="70" width="1240" height="740" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc_select_player" value="Select Player" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="250" y="130" width="180" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_consult_profile" value="Consult Player Profile" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="250" width="240" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc_check_permissions" value="Check Profile Permissions" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="900" y="140" width="240" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_retrieve_canonical" value="Retrieve Canonical Player Data" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="900" y="240" width="270" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_retrieve_workspace_docs" value="Retrieve Workspace Documents" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="900" y="340" width="270" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_filter_sections" value="Filter Profile Sections" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="900" y="440" width="230" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc_view_general" value="View General Player Information" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="280" y="370" width="280" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_view_admin" value="View Administrative Information" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="280" y="480" width="290" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_view_medical" value="View Medical Information" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="280" y="590" width="250" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_view_docs" value="View Linked Documents" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="620" y="560" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uc_download_doc" value="Download Authorized Document" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="930" y="580" width="270" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="note_medical" value="{Medical information is visible only to authorized medical roles.}" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="540" y="645" width="360" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="note_filter" value="{Unauthorized sections are omitted before the response reaches the frontend.}" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="440" width="280" height="95" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e_admin_select" style="endArrow=none;html=1;" edge="1" parent="1" source="actor_club_admin" target="uc_select_player"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_head_select" style="endArrow=none;html=1;" edge="1" parent="1" source="actor_head_coach" target="uc_select_player"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_staff_select" style="endArrow=none;html=1;" edge="1" parent="1" source="actor_coaching_staff" target="uc_select_player"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_med_select" style="endArrow=none;html=1;" edge="1" parent="1" source="actor_medical_staff" target="uc_select_player"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e_admin_consult" style="endArrow=none;html=1;" edge="1" parent="1" source="actor_club_admin" target="uc_consult_profile"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_head_consult" style="endArrow=none;html=1;" edge="1" parent="1" source="actor_head_coach" target="uc_consult_profile"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_staff_consult" style="endArrow=none;html=1;" edge="1" parent="1" source="actor_coaching_staff" target="uc_consult_profile"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_med_consult" style="endArrow=none;html=1;" edge="1" parent="1" source="actor_medical_staff" target="uc_consult_profile"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e_consult_permissions" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="dashed=1;endArrow=open;endFill=0;html=1;" edge="1" parent="1" source="uc_consult_profile" target="uc_check_permissions"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_consult_canonical" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="dashed=1;endArrow=open;endFill=0;html=1;" edge="1" parent="1" source="uc_consult_profile" target="uc_retrieve_canonical"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_consult_workspace" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="dashed=1;endArrow=open;endFill=0;html=1;" edge="1" parent="1" source="uc_consult_profile" target="uc_retrieve_workspace_docs"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_consult_filter" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="dashed=1;endArrow=open;endFill=0;html=1;" edge="1" parent="1" source="uc_consult_profile" target="uc_filter_sections"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_consult_general" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="dashed=1;endArrow=open;endFill=0;html=1;" edge="1" parent="1" source="uc_consult_profile" target="uc_view_general"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e_docs_download" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="dashed=1;endArrow=open;endFill=0;html=1;" edge="1" parent="1" source="uc_view_docs" target="uc_download_doc"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e_policy_service" style="endArrow=none;html=1;" edge="1" parent="1" source="uc_check_permissions" target="actor_policy"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_canonical_provider" style="endArrow=none;html=1;" edge="1" parent="1" source="uc_retrieve_canonical" target="actor_canonical"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_storage_provider" style="endArrow=none;html=1;" edge="1" parent="1" source="uc_download_doc" target="actor_storage"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e_general_admin" style="endArrow=none;html=1;" edge="1" parent="1" source="actor_club_admin" target="uc_view_general"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_general_head" style="endArrow=none;html=1;" edge="1" parent="1" source="actor_head_coach" target="uc_view_general"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_general_staff" style="endArrow=none;html=1;" edge="1" parent="1" source="actor_coaching_staff" target="uc_view_general"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_general_med" style="endArrow=none;html=1;" edge="1" parent="1" source="actor_medical_staff" target="uc_view_general"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e_admin_admininfo" style="endArrow=none;html=1;" edge="1" parent="1" source="actor_club_admin" target="uc_view_admin"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_med_medical" style="endArrow=none;html=1;" edge="1" parent="1" source="actor_medical_staff" target="uc_view_medical"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e_medical_ext" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="dashed=1;endArrow=open;endFill=0;html=1;" edge="1" parent="1" source="uc_view_medical" target="uc_consult_profile"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_docs_ext" value="&amp;lt;&amp;lt;extend&amp;gt;&amp;gt;" style="dashed=1;endArrow=open;endFill=0;html=1;" edge="1" parent="1" source="uc_view_docs" target="uc_consult_profile"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

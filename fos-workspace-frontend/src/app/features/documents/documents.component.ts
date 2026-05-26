@@ -3,7 +3,9 @@ import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription, firstValueFrom, forkJoin, tap } from 'rxjs';
+import { Subscription, catchError, firstValueFrom, forkJoin, of, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { AuthService } from '../../core/auth/auth.service';
 import { WorkspaceDataService } from '../../core/data/workspace-data.service';
 import { BreadcrumbComponent, BreadcrumbSegment } from '../../shared/breadcrumb/breadcrumb.component';
 import { ContextMenuAction, ContextMenuComponent } from '../../shared/context-menu/context-menu.component';
@@ -26,20 +28,10 @@ import {
 
 const SUPPORTED_ONLYOFFICE_EXTENSIONS = new Set(['docx', 'xlsx', 'pptx', 'pdf']);
 const SUPPORTED_UPLOAD_EXTENSIONS = new Set([
-  'doc',
   'docx',
-  'xls',
   'xlsx',
-  'ppt',
   'pptx',
-  'pdf',
-  'txt',
-  'odt',
-  'ods',
-  'odp',
-  'png',
-  'jpg',
-  'jpeg'
+  'pdf'
 ]);
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const MAX_UPLOAD_SIZE_BYTES = 25 * 1024 * 1024;
@@ -62,6 +54,12 @@ const FALLBACK_STORAGE_BUCKET = 'fos-workspace';
 })
 export class DocumentsComponent implements OnInit, OnDestroy {
   private static readonly BACKEND_CATEGORIES: BackendDocumentCategory[] = ['GENERAL', 'MEDICAL', 'ADMIN', 'REPORT', 'CONTRACT'];
+  private static readonly COACHING_READ_CATEGORIES: BackendDocumentCategory[] = ['GENERAL', 'REPORT'];
+  private static readonly MEDICAL_READ_CATEGORIES: BackendDocumentCategory[] = ['MEDICAL'];
+  private static readonly ADMIN_READ_CATEGORIES: BackendDocumentCategory[] = ['GENERAL', 'MEDICAL', 'ADMIN', 'REPORT', 'CONTRACT'];
+  private static readonly COACHING_UPLOAD_CATEGORIES: BackendDocumentCategory[] = ['GENERAL', 'REPORT'];
+  private static readonly MEDICAL_UPLOAD_CATEGORIES: BackendDocumentCategory[] = ['MEDICAL'];
+  private static readonly ADMIN_UPLOAD_CATEGORIES: BackendDocumentCategory[] = ['GENERAL', 'MEDICAL', 'ADMIN', 'REPORT', 'CONTRACT'];
 
   private readonly subscriptions = new Subscription();
   private backendDocuments: WorkspaceDocument[] = [];
@@ -102,6 +100,7 @@ export class DocumentsComponent implements OnInit, OnDestroy {
   constructor(
     private readonly workspaceData: WorkspaceDataService,
     private readonly router: Router,
+    private readonly authService: AuthService,
     private readonly documentsApi: DocumentsApiService
   ) {}
 
@@ -157,7 +156,7 @@ export class DocumentsComponent implements OnInit, OnDestroy {
   }
 
   protected get uploadCategoryOptions(): BackendDocumentCategory[] {
-    return DocumentsComponent.BACKEND_CATEGORIES;
+    return this.allowedBackendCategories('upload');
   }
 
   protected get uploadVisibilityOptions(): BackendDocumentVisibility[] {
@@ -314,7 +313,7 @@ export class DocumentsComponent implements OnInit, OnDestroy {
   }
 
   private get documentSource(): WorkspaceDocument[] {
-    return this.backendDocuments.length > 0 ? this.backendDocuments : this.workspaceData.getDocuments();
+    return this.backendDocuments;
   }
 
   private async uploadFilesThroughBackend(files: File[]): Promise<void> {
@@ -407,7 +406,14 @@ export class DocumentsComponent implements OnInit, OnDestroy {
   private loadBackendDocuments(): void {
     this.backendLoadError = '';
 
-    const requests = DocumentsComponent.BACKEND_CATEGORIES.map((category) => this.documentsApi.listDocumentsByCategory(category));
+    const requests = this.allowedBackendCategories('read').map((category) =>
+      this.documentsApi.listDocumentsByCategory(category).pipe(
+        catchError(() => {
+          this.backendLoadError = 'Some protected document categories could not be loaded.';
+          return of({ content: [] });
+        })
+      )
+    );
     this.subscriptions.add(
       forkJoin(requests).subscribe({
         next: (responses) => {
@@ -420,10 +426,42 @@ export class DocumentsComponent implements OnInit, OnDestroy {
         },
         error: () => {
           this.backendDocuments = [];
-          this.backendLoadError = 'Using local documents fallback because backend documents could not be loaded.';
+          this.backendLoadError = 'Backend documents could not be loaded.';
         }
       })
     );
+  }
+
+  private allowedBackendCategories(operation: 'read' | 'upload'): BackendDocumentCategory[] {
+    if (!environment.auth.enabled) {
+      return DocumentsComponent.BACKEND_CATEGORIES;
+    }
+
+    const roles = this.authService.roles();
+
+    if (roles.includes('CLUB_ADMIN')) {
+      return operation === 'read'
+        ? DocumentsComponent.ADMIN_READ_CATEGORIES
+        : DocumentsComponent.ADMIN_UPLOAD_CATEGORIES;
+    }
+
+    if (roles.includes('MEDICAL_STAFF')) {
+      return operation === 'read'
+        ? DocumentsComponent.MEDICAL_READ_CATEGORIES
+        : DocumentsComponent.MEDICAL_UPLOAD_CATEGORIES;
+    }
+
+    if (
+      roles.some((role) =>
+        ['HEAD_COACH', 'ASSISTANT_COACH', 'GOALKEEPER_COACH', 'PHYSICAL_TRAINER', 'ANALYST'].includes(role)
+      )
+    ) {
+      return operation === 'read'
+        ? DocumentsComponent.COACHING_READ_CATEGORIES
+        : DocumentsComponent.COACHING_UPLOAD_CATEGORIES;
+    }
+
+    return ['GENERAL'];
   }
 
   private isSupportedUploadFile(file: File): boolean {

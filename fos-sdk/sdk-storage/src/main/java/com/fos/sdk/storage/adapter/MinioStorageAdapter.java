@@ -81,7 +81,13 @@ public class MinioStorageAdapter implements StoragePort {
     }
 
     @Override
-    public void confirmUpload(String bucket, String objectKey) { /* no-op */ }
+    public void confirmUpload(String bucket, String objectKey) {
+        try {
+            minioClient.statObject(StatObjectArgs.builder().bucket(bucket).object(objectKey).build());
+        } catch (Exception e) {
+            throw new IllegalStateException("MinIO object does not exist for confirmed upload: " + objectKey, e);
+        }
+    }
 
     @Override
     public void deleteObject(String bucket, String objectKey) {

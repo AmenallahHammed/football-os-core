@@ -1,0 +1,161 @@
+@startuml
+allowmixing
+
+title Workspace Document Module - Layered Class Diagram
+
+top to bottom direction
+
+skinparam packageStyle rectangle
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+
+skinparam class {
+  BackgroundColor White
+  BorderColor Black
+  ArrowColor Black
+}
+
+skinparam package {
+  BorderColor Black
+  BackgroundColor White
+}
+
+hide empty members
+
+package "API Layer" {
+
+  class DocumentController <<REST Controller>> {
+    +initiateUpload(request: InitiateUploadRequest): ResponseEntity<UploadInitiationResult>
+    +confirmUpload(request: ConfirmUploadWithMetadata): DocumentResponse
+    +getDocument(documentId: UUID): DocumentResponse
+    +listDocuments(category: DocumentCategory, pageable: Pageable): Page<DocumentResponse>
+    +softDeleteDocument(documentId: UUID): void
+  }
+
+  class InitiateUploadRequest <<DTO>>
+  class ConfirmUploadRequest <<DTO>>
+  class ConfirmUploadWithMetadata <<DTO>>
+  class DocumentResponse <<DTO>>
+}
+
+package "Application Layer" {
+
+  class DocumentService <<Application Service>> {
+    +initiateUpload(request: InitiateUploadRequest): UploadInitiationResult
+    +confirmUpload(request: ConfirmUploadRequest, originalRequest: InitiateUploadRequest): DocumentResponse
+    +getDocument(documentId: UUID): DocumentResponse
+    +listDocuments(category: DocumentCategory, pageable: Pageable): Page<DocumentResponse>
+    +softDeleteDocument(documentId: UUID): void
+  }
+
+  class UploadInitiationResult <<DTO>>
+}
+
+package "Domain Layer" {
+
+  class WorkspaceDocument <<Aggregate Root>> {
+    -name: String
+    -description: String
+    -category: DocumentCategory
+    -visibility: DocumentVisibility
+    -ownerRef: CanonicalRef
+    -linkedPlayerRef: CanonicalRef
+    -linkedTeamRef: CanonicalRef
+    -versions: List<DocumentVersion>
+    -tags: List<String>
+    +create(...): WorkspaceDocument
+    +addVersion(version: DocumentVersion): void
+    +currentVersion(): DocumentVersion
+    +nextVersionNumber(): int
+    +softDelete(): void
+  }
+
+  class DocumentVersion <<Value Object>> {
+    -versionId: UUID
+    -storageObjectKey: String
+    -storageBucket: String
+    -contentType: String
+    -versionNumber: int
+  }
+
+  enum DocumentCategory {
+    GENERAL
+    MEDICAL
+    ADMIN
+    REPORT
+    CONTRACT
+  }
+
+  enum DocumentVisibility {
+    CLUB_WIDE
+    TEAM_ONLY
+    PRIVATE
+  }
+}
+
+package "Infrastructure Layer" {
+
+  interface WorkspaceDocumentRepository <<Mongo Repository>> {
+    +save(doc: WorkspaceDocument): WorkspaceDocument
+    +findByResourceIdAndOwnerRefId(resourceId: UUID, ownerRefId: UUID): Optional<WorkspaceDocument>
+    +findByOwnerRefIdAndCategoryAndState(...): Page<WorkspaceDocument>
+    +searchByOwnerRefIdAndName(...): Page<WorkspaceDocument>
+  }
+}
+
+package "External SDK / Services" {
+  class BaseDocument <<SDK>>
+  class CanonicalRef <<SDK>>
+  enum ResourceState <<SDK>>
+  interface "MongoRepository<WorkspaceDocument, String>" as MongoRepository <<Spring Data>>
+  interface StoragePort <<SDK>>
+  class PolicyClient <<SDK>>
+  class FosKafkaProducer <<SDK>>
+  class FosSecurityContext <<SDK>>
+  class ObjectMapper <<Jackson>>
+  database "MongoDB\nworkspace_documents" as MongoDB
+  cloud "Object Storage\n(Minio/S3)" as ObjectStorage
+  cloud "Governance Service\nPolicy API" as GovernancePolicy
+  queue "Kafka\nworkspace signals" as Kafka
+}
+
+DocumentController --> DocumentService : has service
+DocumentController ..> InitiateUploadRequest : receives
+DocumentController ..> ConfirmUploadWithMetadata : receives
+DocumentController ..> ConfirmUploadRequest : builds
+DocumentController ..> DocumentResponse : returns
+
+DocumentService --> WorkspaceDocumentRepository : uses
+DocumentService --> StoragePort : upload/download URLs
+DocumentService --> PolicyClient : authorize
+DocumentService --> FosKafkaProducer : publish signals
+DocumentService --> FosSecurityContext : caller context
+DocumentService --> ObjectMapper : payload mapping
+DocumentService ..> WorkspaceDocument : creates/updates
+DocumentService ..> DocumentVersion : creates
+DocumentService ..> InitiateUploadRequest : input
+DocumentService ..> ConfirmUploadRequest : input
+DocumentService ..> DocumentResponse : returns
+DocumentService ..> UploadInitiationResult : returns
+
+DocumentResponse ..> WorkspaceDocument : maps from
+
+WorkspaceDocumentRepository --|> MongoRepository
+WorkspaceDocumentRepository ..> MongoDB : persists
+StoragePort ..> ObjectStorage : stores objects
+PolicyClient ..> GovernancePolicy : policy calls
+FosKafkaProducer ..> Kafka : publishes
+
+WorkspaceDocument --|> BaseDocument : extends
+BaseDocument ..> ResourceState : state enum
+WorkspaceDocument --> DocumentCategory : category
+WorkspaceDocument --> DocumentVisibility : visibility
+
+WorkspaceDocument *-- "0..*" DocumentVersion : contains versions
+
+WorkspaceDocument o-- "1" CanonicalRef : ownerRef
+WorkspaceDocument o-- "0..1" CanonicalRef : linkedPlayerRef
+WorkspaceDocument o-- "0..1" CanonicalRef : linkedTeamRef
+
+@enduml

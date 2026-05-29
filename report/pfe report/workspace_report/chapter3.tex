@@ -1,3 +1,4 @@
+% !TeX root = main.tex
 \chapter{Design}
 
 \section*{Introduction}
@@ -446,15 +447,13 @@ rather than listing every technical file.
 \clearpage
 \begin{figure}[H]
 \centering
-\makebox[\textwidth][c]{%
-\IfFileExists{images/classdig/identity-class-diagram.png}{%
-\includegraphics[width=1.20\textwidth,height=0.88\textheight,keepaspectratio]{images/classdig/identity-class-diagram.png}%
+\IfFileExists{images/classdig/identity.drawio.png}{%
+\includegraphics[width=\textwidth,height=0.86\textheight,keepaspectratio]{images/classdig/identity.drawio.png}%
 }{%
 \fbox{\begin{minipage}[c][0.22\textheight][c]{0.82\textwidth}\centering
 Identity class diagram image missing:\\
-\texttt{images/classdig/identity-class-diagram.png}
+\texttt{images/classdig/identity.drawio.png}
 \end{minipage}}%
-}%
 }
 \caption{Identity package class diagram}
 \label{fig:identity-class-diagram}
@@ -478,15 +477,13 @@ classification and lifecycle control.
 \clearpage
 \begin{figure}[H]
 \centering
-\makebox[\textwidth][c]{%
-\IfFileExists{images/classdig/document-class-dig.png}{%
-\includegraphics[width=1.24\textwidth,height=0.92\textheight,keepaspectratio]{images/classdig/document-class-dig.png}%
+\IfFileExists{images/classdig/document.drawio.png}{%
+\includegraphics[width=\textwidth,height=0.86\textheight,keepaspectratio]{images/classdig/document.drawio.png}%
 }{%
 \fbox{\begin{minipage}[c][0.24\textheight][c]{0.84\textwidth}\centering
 Document class diagram image missing:\\
-\texttt{images/classdig/document-class-dig.png}
+\texttt{images/classdig/document.drawio.png}
 \end{minipage}}%
-}%
 }
 \caption{Document management class diagram}
 \label{fig:document-class-diagram}
@@ -504,17 +501,15 @@ operational follow-up. EventType and EventState define classification and
 lifecycle, and delete actions are handled as archive operations.
 
 \clearpage
-\begin{figure}[p]
+\begin{figure}[H]
 \centering
-\makebox[\textwidth][c]{%
-  \IfFileExists{images/classdig/calander-event-class-dig.png}{%
-  \includegraphics[width=0.96\textheight,height=1.36\textwidth,keepaspectratio,angle=-90]{images/classdig/calander-event-class-dig.png}%
-  }{%
-  \fbox{\begin{minipage}[c][0.24\textheight][c]{0.84\textwidth}\centering
-  Calendar/event class diagram image missing:\\
-  \texttt{images/classdig/calander-event-class-dig.png}
-  \end{minipage}}%
-  }%
+\IfFileExists{images/classdig/event.drawio.png}{%
+\includegraphics[width=\textwidth,height=0.86\textheight,keepaspectratio]{images/classdig/event.drawio.png}%
+}{%
+\fbox{\begin{minipage}[c][0.24\textheight][c]{0.84\textwidth}\centering
+Calendar/event class diagram image missing:\\
+\texttt{images/classdig/event.drawio.png}
+\end{minipage}}%
 }
 \caption{Calendar and event class diagram}
 \label{fig:event-class-diagram}

@@ -1,6 +1,6 @@
-﻿<mxfile host="65bd71144e">
+<mxfile host="65bd71144e">
     <diagram id="player-profile-consultation" name="Player Profile Consultation Use Case Diagram">
-        <mxGraphModel dx="3743" dy="1168" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+        <mxGraphModel dx="2775" dy="1168" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -167,6 +167,216 @@
                 </mxCell>
                 <mxCell id="title" value="Player Profile Consultation Use Case Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=20;" parent="1" vertex="1">
                     <mxGeometry x="440" y="75" width="700" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="governance-service-class" name="Governance Service Class Diagram">
+        <mxGraphModel dx="4849" dy="1334" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1400" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="g_title" value="Governance Service Class Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=24;" parent="1" vertex="1">
+                    <mxGeometry x="720" y="20" width="920" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="g_boundary" value="Governance Service" style="swimlane;html=1;startSize=34;fontStyle=1;fontSize=16;rounded=0;fillColor=#ffffff;strokeColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="70" width="2260" height="1260" as="geometry"/>
+                </mxCell>
+                <mxCell id="g_identity_area" value="Identity Governance" style="swimlane;html=1;startSize=28;fontStyle=1;rounded=0;fillColor=#f5faff;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="150" width="1060" height="550" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor" value="&lt;&lt;Entity&gt;&gt;&#xa;Actor&#xa;--------------------------------&#xa;+ id: UUID&#xa;+ identityRef: String&#xa;+ fullName: String&#xa;+ email: String&#xa;+ status: ActorStatus&#xa;+ clubId: UUID&#xa;+ createdAt: Instant&#xa;+ updatedAt: Instant&#xa;--------------------------------&#xa;+ activate(): void&#xa;+ deactivate(): void&#xa;+ assignRole(role: Role): void&#xa;+ removeRole(role: Role): void" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="g_identity_area" vertex="1">
+                    <mxGeometry x="40" y="50" width="320" height="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_actor_role_tgt" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;" parent="g_identity_area" vertex="1">
+                    <mxGeometry x="400" y="200" width="40" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_status" value="&lt;&lt;Enum&gt;&gt;&#xa;ActorStatus&#xa;--------------------&#xa;ACTIVE&#xa;INACTIVE&#xa;SUSPENDED" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#fff2cc;strokeColor=#d6b656;" parent="g_identity_area" vertex="1">
+                    <mxGeometry x="40" y="400" width="320" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="g_canonical_area" value="Canonical Club Data" style="swimlane;html=1;startSize=28;fontStyle=1;rounded=0;fillColor=#f7fff5;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="1220" y="150" width="1040" height="520" as="geometry"/>
+                </mxCell>
+                <mxCell id="g_policy_area" value="Policy and Authorization" style="swimlane;html=1;startSize=28;fontStyle=1;rounded=0;fillColor=#f6fbff;strokeColor=#4f81bd;" parent="1" vertex="1">
+                    <mxGeometry x="120" y="700" width="1060" height="560" as="geometry"/>
+                </mxCell>
+                <mxCell id="g_audit_area" value="Audit and Traceability" style="swimlane;html=1;startSize=28;fontStyle=1;rounded=0;fillColor=#fffaf2;strokeColor=#d79b00;" parent="1" vertex="1">
+                    <mxGeometry x="1220" y="700" width="1040" height="560" as="geometry">
+                        <mxRectangle x="1220" y="700" width="160" height="30" as="alternateBounds"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="role" value="&lt;&lt;Entity&gt;&gt;&#xa;Role&#xa;--------------------------------&#xa;+ id: UUID&#xa;+ code: String&#xa;+ label: String&#xa;+ description: String&#xa;+ permissions: Set&lt;Permission&gt;&#xa;--------------------------------&#xa;+ addPermission(permission: Permission): void&#xa;+ removePermission(permission: Permission): void&#xa;+ hasPermission(permission: Permission): boolean" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="210" width="320" height="290" as="geometry"/>
+                </mxCell>
+                <mxCell id="permission" value="&lt;&lt;Entity&gt;&gt;&#xa;Permission&#xa;--------------------------------&#xa;+ id: UUID&#xa;+ resource: String&#xa;+ action: String&#xa;+ scope: String&#xa;--------------------------------&#xa;+ matches(resource: String, action: String): boolean" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="540" y="520" width="320" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="team" value="&lt;&lt;Entity&gt;&gt;&#xa;Team&#xa;--------------------------------&#xa;+ id: UUID&#xa;+ canonicalRef: String&#xa;+ name: String&#xa;+ category: String&#xa;+ season: String&#xa;+ createdAt: Instant&#xa;+ updatedAt: Instant&#xa;--------------------------------&#xa;+ addPlayer(player: Player): void&#xa;+ removePlayer(player: Player): void" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="1270" y="210" width="320" height="250" as="geometry"/>
+                </mxCell>
+                <mxCell id="player" value="&lt;&lt;Entity&gt;&gt;&#xa;Player&#xa;--------------------------------&#xa;+ id: UUID&#xa;+ canonicalRef: String&#xa;+ firstName: String&#xa;+ lastName: String&#xa;+ birthDate: LocalDate&#xa;+ position: String&#xa;+ status: PlayerStatus&#xa;+ teamRef: UUID&#xa;+ createdAt: Instant&#xa;+ updatedAt: Instant&#xa;--------------------------------&#xa;+ updateProfile(...): void&#xa;+ assignToTeam(team: Team): void&#xa;+ deactivate(): void" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="1640" y="210" width="320" height="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="player_status" value="&lt;&lt;Enum&gt;&gt;&#xa;PlayerStatus&#xa;--------------------&#xa;ACTIVE&#xa;INJURED&#xa;SUSPENDED&#xa;ARCHIVED" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="1640" y="550" width="320" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="policy_service" value="&lt;&lt;Service&gt;&gt;&#xa;PolicyService&#xa;--------------------------------&#xa;+ opaClient: OpaClient&#xa;--------------------------------&#xa;+ evaluate(request: PolicyRequest): PolicyDecision&#xa;+ buildContext(actor: Actor, resourceType: String, action: String): PolicyRequest" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="170" y="760" width="360" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="policy_request" value="&lt;&lt;Value Object&gt;&gt;&#xa;PolicyRequest&#xa;--------------------------------&#xa;+ actorId: UUID&#xa;+ actorRoles: Set&lt;String&gt;&#xa;+ resourceType: String&#xa;+ resourceId: UUID&#xa;+ action: String&#xa;+ context: Map&lt;String, Object&gt;&#xa;--------------------------------&#xa;+ toOpaInput(): Map&lt;String, Object&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="560" y="760" width="300" height="210" as="geometry"/>
+                </mxCell>
+                <mxCell id="policy_decision" value="&lt;&lt;Value Object&gt;&gt;&#xa;PolicyDecision&#xa;--------------------------------&#xa;+ allowed: boolean&#xa;+ reason: String&#xa;+ constraints: Map&lt;String, Object&gt;&#xa;--------------------------------&#xa;+ isAllowed(): boolean" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="560" y="990" width="300" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="opa_client" value="&lt;&lt;Adapter&gt;&gt;&#xa;OpaClient&#xa;--------------------------------&#xa;+ baseUrl: String&#xa;+ policyPath: String&#xa;--------------------------------&#xa;+ evaluate(input: Map&lt;String, Object&gt;): PolicyDecision" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+                    <mxGeometry x="890" y="760" width="260" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="actor_service" value="&lt;&lt;Service&gt;&gt;&#xa;ActorService&#xa;--------------------------------&#xa;+ createActor(...): Actor&#xa;+ updateActor(...): Actor&#xa;+ assignRole(actorId: UUID, roleCode: String): void&#xa;+ deactivateActor(actorId: UUID): void" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="170" y="990" width="360" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="player_service" value="&lt;&lt;Service&gt;&gt;&#xa;PlayerService&#xa;--------------------------------&#xa;+ createPlayer(...): Player&#xa;+ updatePlayer(...): Player&#xa;+ findPlayerById(id: UUID): Player&#xa;+ assignToTeam(playerId: UUID, teamId: UUID): void" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="890" y="940" width="260" height="170" as="geometry"/>
+                </mxCell>
+                <mxCell id="team_service" value="&lt;&lt;Service&gt;&gt;&#xa;TeamService&#xa;--------------------------------&#xa;+ createTeam(...): Team&#xa;+ updateTeam(...): Team&#xa;+ findTeamById(id: UUID): Team" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="890" y="1130" width="260" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="audit_entry" value="&lt;&lt;Entity&gt;&gt;&#xa;AuditLogEntry&#xa;--------------------------------&#xa;+ id: UUID&#xa;+ actorRef: UUID&#xa;+ action: String&#xa;+ targetType: String&#xa;+ targetId: UUID&#xa;+ timestamp: Instant&#xa;+ result: AuditResult&#xa;+ correlationId: String&#xa;+ details: Map&lt;String, Object&gt;&#xa;--------------------------------&#xa;+ markSuccess(): void&#xa;+ markFailure(reason: String): void" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="1270" y="760" width="360" height="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="audit_result" value="&lt;&lt;Enum&gt;&gt;&#xa;AuditResult&#xa;--------------------&#xa;SUCCESS&#xa;DENIED&#xa;FAILED" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="1270" y="1100" width="360" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="audit_service" value="&lt;&lt;Service&gt;&gt;&#xa;AuditService&#xa;--------------------------------&#xa;+ auditRepository: AuditRepository&#xa;--------------------------------&#xa;+ record(entry: AuditLogEntry): void&#xa;+ recordPolicyDecision(actor: Actor, decision: PolicyDecision): void&#xa;+ findByActor(actorId: UUID): List&lt;AuditLogEntry&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=6;fontSize=12;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="1660" y="760" width="360" height="230" as="geometry"/>
+                </mxCell>
+                <mxCell id="note_scope" value="Controllers, repositories, DTOs, and configuration classes are omitted to keep the diagram focused on governance domain concepts." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" parent="1" vertex="1">
+                    <mxGeometry x="1660" y="1020" width="560" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_actor_role" value="has" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;exitX=0.994;exitY=0.484;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="actor" target="role" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_role_permission" value="grants" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;" parent="1" source="role" target="permission" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_role_permission_src" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="510" width="30" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_role_permission_tgt" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="-370" y="130" width="40" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_team_player" value="contains" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=none;" parent="1" source="team" target="player" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_team_player_src" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="1600" y="300" width="30" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_team_player_tgt" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="1610" y="260" width="40" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_policy_actor" value="reads context" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;" parent="1" source="policy_service" target="actor" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_policy_request" value="creates" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;" parent="1" source="policy_service" target="policy_request" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_policy_decision" value="returns" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;" parent="1" source="policy_service" target="policy_decision" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_policy_opa" value="delegates decision" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;" parent="1" source="policy_service" target="opa_client" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_actor_audit" value="performs / actorRef" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;" parent="1" source="audit_entry" target="actor" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1110" y="920"/>
+                            <mxPoint x="1110" y="370"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="m_actor_audit_src" value="0..*" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="1230" y="900" width="40" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_actor_audit_tgt" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="360" width="30" height="20" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_audit_records" value="records" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;" parent="1" source="audit_service" target="audit_entry" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_audit_policy_decision" value="records policy decision" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;" parent="1" source="audit_service" target="policy_decision" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1010" y="1030"/>
+                            <mxPoint x="1660" y="1030"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_audit_actor" value="references actor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;endArrow=open;endFill=0;" parent="1" source="audit_service" target="actor" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="2050" y="640"/>
+                            <mxPoint x="330" y="640"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e_actor_service_actor" value="manages" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;entryX=0.415;entryY=0.995;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="actor_service" target="actor" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_actor_service_role" value="assigns" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;" parent="1" source="actor_service" target="role" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_player_service_player" value="manages" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;" parent="1" source="player_service" target="player" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_player_service_team" value="assigns" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;" parent="1" source="player_service" target="team" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e_team_service_team" value="manages" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;" parent="1" source="team_service" target="team" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="BfkJmDRp48fyGcupsFcC-5" value="Actor" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+                    <mxGeometry x="-250" y="90" width="180" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="BfkJmDRp48fyGcupsFcC-6" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ id: UUID&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ identityRef: String&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ fullName: String&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ email: String&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ status: ActorStatus&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ clubId: UUID&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ createdAt: Instant&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ updatedAt: Instant&lt;/span&gt;" style="text;strokeColor=#6c8ebf;fillColor=#dae8fc;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="BfkJmDRp48fyGcupsFcC-5">
+                    <mxGeometry y="26" width="180" height="134" as="geometry"/>
+                </mxCell>
+                <mxCell id="BfkJmDRp48fyGcupsFcC-7" value="" style="line;strokeWidth=1;fillColor=#dae8fc;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#6c8ebf;" vertex="1" parent="BfkJmDRp48fyGcupsFcC-5">
+                    <mxGeometry y="160" width="180" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="BfkJmDRp48fyGcupsFcC-8" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ activate(): void&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ deactivate(): void&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ assignRole(role: Role): void&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ removeRole(role: Role): void&lt;/span&gt;" style="text;strokeColor=#6c8ebf;fillColor=#dae8fc;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="BfkJmDRp48fyGcupsFcC-5">
+                    <mxGeometry y="168" width="180" height="112" as="geometry"/>
+                </mxCell>
+                <mxCell id="BfkJmDRp48fyGcupsFcC-10" value="&amp;lt;&amp;lt;enumaration&amp;gt;&amp;gt;&lt;div&gt;ActorStatus&lt;/div&gt;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+                    <mxGeometry x="-250" y="400" width="180" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="BfkJmDRp48fyGcupsFcC-13" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;ACTIVE&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;INACTIVE&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;SUSPENDED&lt;/span&gt;" style="text;strokeColor=#d6b656;fillColor=#fff2cc;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="BfkJmDRp48fyGcupsFcC-10">
+                    <mxGeometry y="40" width="180" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="BfkJmDRp48fyGcupsFcC-17" value="Role" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+                    <mxGeometry x="-660" y="90" width="300" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="BfkJmDRp48fyGcupsFcC-18" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ id: UUID&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ code: String&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ label: String&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ description: String&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ permissions: Set&lt;/span&gt;" style="text;strokeColor=#6c8ebf;fillColor=#dae8fc;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="BfkJmDRp48fyGcupsFcC-17">
+                    <mxGeometry y="26" width="300" height="94" as="geometry"/>
+                </mxCell>
+                <mxCell id="BfkJmDRp48fyGcupsFcC-19" value="" style="line;strokeWidth=1;fillColor=#dae8fc;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=#6c8ebf;" vertex="1" parent="BfkJmDRp48fyGcupsFcC-17">
+                    <mxGeometry y="120" width="300" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="BfkJmDRp48fyGcupsFcC-20" value="&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ addPermission(permission: Permission): void&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ removePermission(permission: Permission): void&lt;/span&gt;&lt;br style=&quot;color: rgb(63, 63, 63); scrollbar-color: rgb(226, 226, 226) rgb(251, 251, 251);&quot;&gt;&lt;span style=&quot;color: rgb(0, 0, 0);&quot;&gt;+ hasPermission(permission: Permission): boolean&lt;/span&gt;" style="text;strokeColor=#6c8ebf;fillColor=#dae8fc;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="BfkJmDRp48fyGcupsFcC-17">
+                    <mxGeometry y="128" width="300" height="62" as="geometry"/>
+                </mxCell>
+                <mxCell id="BfkJmDRp48fyGcupsFcC-25" value="" style="endArrow=none;html=1;entryX=-0.003;entryY=0.248;entryDx=0;entryDy=0;entryPerimeter=0;exitX=1.002;exitY=0.353;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="BfkJmDRp48fyGcupsFcC-18" target="BfkJmDRp48fyGcupsFcC-6">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="-359" y="150" as="sourcePoint"/>
+                        <mxPoint x="-420" y="230" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="BfkJmDRp48fyGcupsFcC-26" value="has a" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="BfkJmDRp48fyGcupsFcC-25">
+                    <mxGeometry x="0.0499" y="2" relative="1" as="geometry">
+                        <mxPoint x="-8" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="m_actor_role_src" value="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=11;" parent="1" vertex="1">
+                    <mxGeometry x="-270" y="130" width="30" height="20" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

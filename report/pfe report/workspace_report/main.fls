@@ -1,6 +1,6 @@
-PWD D:\fos-sdk\report\pfe report\workspace_report
+PWD d:\fos-sdk\report\pfe report\workspace_report
 INPUT C:\Users\DELL\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT main.tex
+INPUT d:\fos-sdk\report\pfe report\workspace_report\main.tex
 OUTPUT main.log
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\base\report.cls
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\base\report.cls
@@ -369,14 +369,8 @@ INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\pdflscape\pdflscape-
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\pdflscape\pdflscape-nometadata.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\graphics\lscape.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\graphics\lscape.sty
-INPUT .\main.out
-INPUT .\main.out
-INPUT main.out
-INPUT main.out
-OUTPUT main.pdf
-INPUT .\main.out
-INPUT .\main.out
 OUTPUT main.out
+OUTPUT main.pdf
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-ptm.cfg
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-ptm.cfg
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-ptm.cfg
@@ -411,77 +405,8 @@ INPUT .\AbstractResumeKeywords.tex
 INPUT .\AbstractResumeKeywords.tex
 INPUT .\AbstractResumeKeywords.tex
 INPUT AbstractResumeKeywords.tex
-INPUT .\main.toc
-INPUT .\main.toc
-INPUT main.toc
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ot1minntx.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ot1minntx.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ot1minntx.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi7.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy7.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\amsfonts\umsa.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\amsfonts\umsa.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\amsfonts\umsa.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam10.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-msa.cfg
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-msa.cfg
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-msa.cfg
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam10.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam7.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\amsfonts\umsb.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\amsfonts\umsb.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\amsfonts\umsb.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-msb.cfg
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-msb.cfg
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-msb.cfg
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm7.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxmia.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxmia.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxmia.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxsym.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxsym.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxsym.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxsyc.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxsyc.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxsyc.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\jknappen\ursfs.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\jknappen\ursfs.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\jknappen\ursfs.fd
-INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
-INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
-INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs7.tfm
 OUTPUT main.toc
-INPUT .\main.lof
-INPUT .\main.lof
-INPUT main.lof
 OUTPUT main.lof
-INPUT .\main.lot
-INPUT .\main.lot
-INPUT main.lot
 OUTPUT main.lot
 INPUT .\Abbreviations.tex
 INPUT .\Abbreviations.tex
@@ -499,14 +424,17 @@ INPUT .\chapter1.tex
 INPUT .\chapter1.tex
 INPUT .\chapter1.tex
 INPUT chapter1.tex
-INPUT .\images\logoPerfAnalysis.png
-INPUT .\images\logoPerfAnalysis.png
-INPUT .\images\logoPerfAnalysis.png
-INPUT .\images\logoPerfAnalysis.png
-INPUT .\images\logoPerfAnalysis.png
-INPUT .\images\logoPerfAnalysis.png
-INPUT .\images\logoPerfAnalysis.png
+INPUT .\images\icons\logoPerfAnalysis.png
+INPUT .\images\icons\logoPerfAnalysis.png
+INPUT .\images\icons\logoPerfAnalysis.png
+INPUT .\images\icons\logoPerfAnalysis.png
+INPUT .\images\icons\logoPerfAnalysis.png
+INPUT .\images\icons\logoPerfAnalysis.png
+INPUT .\images\icons\logoPerfAnalysis.png
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-t1.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ot1minntx.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ot1minntx.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ot1minntx.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
@@ -516,6 +444,81 @@ INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi5.
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy7.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy5.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\amsfonts\umsa.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\amsfonts\umsa.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\amsfonts\umsa.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam10.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-msa.cfg
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-msa.cfg
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-msa.cfg
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam10.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam7.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\amsfonts\umsb.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\amsfonts\umsb.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\amsfonts\umsb.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-msb.cfg
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-msb.cfg
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-msb.cfg
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm7.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxmia.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxmia.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxmia.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxsym.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxsym.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxsym.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxsyc.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxsyc.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\untxsyc.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\jknappen\ursfs.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\jknappen\ursfs.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\jknappen\ursfs.fd
+INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
+INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
+INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs5.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ts1ntxtlf.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ts1ntxtlf.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ts1ntxtlf.fd
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\tex-gyre\ts1-qtmr.tfm
+INPUT .\chapter2.tex
+INPUT .\chapter2.tex
+INPUT .\chapter2.tex
+INPUT .\chapter2.tex
+INPUT chapter2.tex
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\enc\dvips\tex-gyre\q-ts1.enc
+INPUT .\images\usecase\footballosgeneralusecase.drawio (1).png
+INPUT .\images\usecase\footballosgeneralusecase.drawio (1).png
+INPUT .\images\usecase\footballosgeneralusecase.drawio (1).png
+INPUT .\images\usecase\footballosgeneralusecase.drawio (1).png
+INPUT .\images\usecase\footballosgeneralusecase.drawio (1).png
+INPUT .\images\usecase\footballosgeneralusecase.drawio (1).png
+INPUT .\images\usecase\footballosgeneralusecase.drawio (1).png
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi7.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy7.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
@@ -539,39 +542,28 @@ INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
 INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
 INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
-INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs5.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ts1ntxtlf.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ts1ntxtlf.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ts1ntxtlf.fd
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\tex-gyre\ts1-qtmr.tfm
-INPUT .\chapter2.tex
-INPUT .\chapter2.tex
-INPUT .\chapter2.tex
-INPUT .\chapter2.tex
-INPUT chapter2.tex
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\enc\dvips\tex-gyre\q-ts1.enc
-INPUT .\images\footballosgeneralusecase.drawio (1).png
-INPUT .\images\footballosgeneralusecase.drawio (1).png
-INPUT .\images\footballosgeneralusecase.drawio (1).png
-INPUT .\images\footballosgeneralusecase.drawio (1).png
-INPUT .\images\footballosgeneralusecase.drawio (1).png
-INPUT .\images\footballosgeneralusecase.drawio (1).png
-INPUT .\images\footballosgeneralusecase.drawio (1).png
-INPUT .\images\Calendar and Event Management.png
-INPUT .\images\Calendar and Event Management.png
-INPUT .\images\Calendar and Event Management.png
-INPUT .\images\Calendar and Event Management.png
-INPUT .\images\Calendar and Event Management.png
-INPUT .\images\Calendar and Event Management.png
-INPUT .\images\Calendar and Event Management.png
-INPUT .\images\documentManagment.drawio (1).png
-INPUT .\images\documentManagment.drawio (1).png
-INPUT .\images\documentManagment.drawio (1).png
-INPUT .\images\documentManagment.drawio (1).png
-INPUT .\images\documentManagment.drawio (1).png
-INPUT .\images\documentManagment.drawio (1).png
-INPUT .\images\documentManagment.drawio (1).png
+INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs7.tfm
+INPUT .\images\usecase\Calendar and Event Management.png
+INPUT .\images\usecase\Calendar and Event Management.png
+INPUT .\images\usecase\Calendar and Event Management.png
+INPUT .\images\usecase\Calendar and Event Management.png
+INPUT .\images\usecase\Calendar and Event Management.png
+INPUT .\images\usecase\Calendar and Event Management.png
+INPUT .\images\usecase\Calendar and Event Management.png
+INPUT .\images\usecase\documentManagment.drawio (1).png
+INPUT .\images\usecase\documentManagment.drawio (1).png
+INPUT .\images\usecase\documentManagment.drawio (1).png
+INPUT .\images\usecase\documentManagment.drawio (1).png
+INPUT .\images\usecase\documentManagment.drawio (1).png
+INPUT .\images\usecase\documentManagment.drawio (1).png
+INPUT .\images\usecase\documentManagment.drawio (1).png
+INPUT .\images\usecase\player-profile-consultation-use-case.png
+INPUT .\images\usecase\player-profile-consultation-use-case.png
+INPUT .\images\usecase\player-profile-consultation-use-case.png
+INPUT .\images\usecase\player-profile-consultation-use-case.png
+INPUT .\images\usecase\player-profile-consultation-use-case.png
+INPUT .\images\usecase\player-profile-consultation-use-case.png
+INPUT .\images\usecase\player-profile-consultation-use-case.png
 INPUT .\chapter3.tex
 INPUT .\chapter3.tex
 INPUT .\chapter3.tex
@@ -588,76 +580,87 @@ INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\t1ntxtt.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\t1ntxtt.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\t1ntxtt.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\txfonts\t1xtt.tfm
-INPUT .\images\class-dig-governance.png
-INPUT .\images\class-dig-governance.png
-INPUT .\images\class-dig-governance.png
-INPUT .\images\class-dig-governance.png
-INPUT .\images\class-dig-governance.png
-INPUT .\images\class-dig-governance.png
-INPUT .\images\class-dig-governance.png
-INPUT .\images\document-class-dig.png
-INPUT .\images\document-class-dig.png
-INPUT .\images\document-class-dig.png
-INPUT .\images\document-class-dig.png
-INPUT .\images\document-class-dig.png
-INPUT .\images\document-class-dig.png
-INPUT .\images\document-class-dig.png
-INPUT .\images\calander-event-class-dig.png
-INPUT .\images\calander-event-class-dig.png
-INPUT .\images\calander-event-class-dig.png
-INPUT .\images\calander-event-class-dig.png
-INPUT .\images\calander-event-class-dig.png
-INPUT .\images\calander-event-class-dig.png
-INPUT .\images\calander-event-class-dig.png
-INPUT .\images\auth-seq.png
-INPUT .\images\auth-seq.png
-INPUT .\images\auth-seq.png
-INPUT .\images\auth-seq.png
-INPUT .\images\auth-seq.png
-INPUT .\images\auth-seq.png
-INPUT .\images\auth-seq.png
-INPUT .\images\doc-mangment-seq.png
-INPUT .\images\doc-mangment-seq.png
-INPUT .\images\doc-mangment-seq.png
-INPUT .\images\doc-mangment-seq.png
-INPUT .\images\doc-mangment-seq.png
-INPUT .\images\doc-mangment-seq.png
-INPUT .\images\doc-mangment-seq.png
-INPUT .\images\calnder-seq.png
-INPUT .\images\calnder-seq.png
-INPUT .\images\calnder-seq.png
-INPUT .\images\calnder-seq.png
-INPUT .\images\calnder-seq.png
-INPUT .\images\calnder-seq.png
-INPUT .\images\calnder-seq.png
-INPUT .\images\player profile seq.png
-INPUT .\images\player profile seq.png
-INPUT .\images\player profile seq.png
-INPUT .\images\player profile seq.png
-INPUT .\images\player profile seq.png
-INPUT .\images\player profile seq.png
-INPUT .\images\player profile seq.png
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\txfonts\t1xtt.tfm
+INPUT .\images\classdig\gov-dig.png
+INPUT .\images\classdig\gov-dig.png
+INPUT .\images\classdig\gov-dig.png
+INPUT .\images\classdig\gov-dig.png
+INPUT .\images\classdig\gov-dig.png
+INPUT .\images\classdig\gov-dig.png
+INPUT .\images\classdig\gov-dig.png
+INPUT .\images\classdig\policy.drawio.png
+INPUT .\images\classdig\policy.drawio.png
+INPUT .\images\classdig\policy.drawio.png
+INPUT .\images\classdig\policy.drawio.png
+INPUT .\images\classdig\policy.drawio.png
+INPUT .\images\classdig\policy.drawio.png
+INPUT .\images\classdig\policy.drawio.png
+INPUT .\images\classdig\signal.drawio.png
+INPUT .\images\classdig\signal.drawio.png
+INPUT .\images\classdig\signal.drawio.png
+INPUT .\images\classdig\signal.drawio.png
+INPUT .\images\classdig\signal.drawio.png
+INPUT .\images\classdig\signal.drawio.png
+INPUT .\images\sequencedig\auth-seq.png
+INPUT .\images\sequencedig\auth-seq.png
+INPUT .\images\sequencedig\auth-seq.png
+INPUT .\images\sequencedig\auth-seq.png
+INPUT .\images\sequencedig\auth-seq.png
+INPUT .\images\sequencedig\auth-seq.png
+INPUT .\images\sequencedig\auth-seq.png
+INPUT .\images\sequencedig\doc-mangment-seq.png
+INPUT .\images\sequencedig\doc-mangment-seq.png
+INPUT .\images\sequencedig\doc-mangment-seq.png
+INPUT .\images\sequencedig\doc-mangment-seq.png
+INPUT .\images\sequencedig\doc-mangment-seq.png
+INPUT .\images\sequencedig\doc-mangment-seq.png
+INPUT .\images\sequencedig\doc-mangment-seq.png
+INPUT .\images\sequencedig\calnder-seq.png
+INPUT .\images\sequencedig\calnder-seq.png
+INPUT .\images\sequencedig\calnder-seq.png
+INPUT .\images\sequencedig\calnder-seq.png
+INPUT .\images\sequencedig\calnder-seq.png
+INPUT .\images\sequencedig\calnder-seq.png
+INPUT .\images\sequencedig\calnder-seq.png
+INPUT .\images\sequencedig\player profile seq.png
+INPUT .\images\sequencedig\player profile seq.png
+INPUT .\images\sequencedig\player profile seq.png
+INPUT .\images\sequencedig\player profile seq.png
+INPUT .\images\sequencedig\player profile seq.png
+INPUT .\images\sequencedig\player profile seq.png
+INPUT .\images\sequencedig\player profile seq.png
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-t1.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi7.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi5.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi5.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy5.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy7.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy5.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam10.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam7.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam5.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm7.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm5.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
+INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
 INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs5.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
 INPUT .\chapter4.tex
@@ -665,34 +668,34 @@ INPUT .\chapter4.tex
 INPUT .\chapter4.tex
 INPUT .\chapter4.tex
 INPUT chapter4.tex
-INPUT .\images\authentification.png
-INPUT .\images\authentification.png
-INPUT .\images\authentification.png
-INPUT .\images\authentification.png
-INPUT .\images\authentification.png
-INPUT .\images\authentification.png
-INPUT .\images\authentification.png
-INPUT .\images\document.png
-INPUT .\images\document.png
-INPUT .\images\document.png
-INPUT .\images\document.png
-INPUT .\images\document.png
-INPUT .\images\document.png
-INPUT .\images\document.png
-INPUT .\images\onlyoffice-editor.png
-INPUT .\images\onlyoffice-editor.png
-INPUT .\images\onlyoffice-editor.png
-INPUT .\images\onlyoffice-editor.png
-INPUT .\images\onlyoffice-editor.png
-INPUT .\images\onlyoffice-editor.png
-INPUT .\images\onlyoffice-editor.png
-INPUT .\images\calander.png
-INPUT .\images\calander.png
-INPUT .\images\calander.png
-INPUT .\images\calander.png
-INPUT .\images\calander.png
-INPUT .\images\calander.png
-INPUT .\images\calander.png
+INPUT .\images\frontend\authentification.png
+INPUT .\images\frontend\authentification.png
+INPUT .\images\frontend\authentification.png
+INPUT .\images\frontend\authentification.png
+INPUT .\images\frontend\authentification.png
+INPUT .\images\frontend\authentification.png
+INPUT .\images\frontend\authentification.png
+INPUT .\images\frontend\document.png
+INPUT .\images\frontend\document.png
+INPUT .\images\frontend\document.png
+INPUT .\images\frontend\document.png
+INPUT .\images\frontend\document.png
+INPUT .\images\frontend\document.png
+INPUT .\images\frontend\document.png
+INPUT .\images\frontend\onlyoffice-editor.png
+INPUT .\images\frontend\onlyoffice-editor.png
+INPUT .\images\frontend\onlyoffice-editor.png
+INPUT .\images\frontend\onlyoffice-editor.png
+INPUT .\images\frontend\onlyoffice-editor.png
+INPUT .\images\frontend\onlyoffice-editor.png
+INPUT .\images\frontend\onlyoffice-editor.png
+INPUT .\images\frontend\calander.png
+INPUT .\images\frontend\calander.png
+INPUT .\images\frontend\calander.png
+INPUT .\images\frontend\calander.png
+INPUT .\images\frontend\calander.png
+INPUT .\images\frontend\calander.png
+INPUT .\images\frontend\calander.png
 INPUT .\chapter5.tex
 INPUT .\chapter5.tex
 INPUT .\chapter5.tex
@@ -700,26 +703,15 @@ INPUT .\chapter5.tex
 INPUT chapter5.tex
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-t1.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-ot1.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi7.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy7.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmi5.tfm
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsy5.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexx.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam10.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msam7.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm10.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\symbols\msbm7.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxmia.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsym.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxsyc.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntxexa.tfm
-INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
 INPUT .\GeneralConclusion.tex
 INPUT .\GeneralConclusion.tex
@@ -734,15 +726,3 @@ INPUT BibliographyWebography.tex
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\txfonts\t1xtt.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Italic-tlf-t1.tfm
 INPUT main.aux
-INPUT .\main.out
-INPUT .\main.out
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\type1\public\tex-gyre\qtmr.pfb
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\type1\public\tex-gyre\qtmr.pfb
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\type1\public\txfonts\t1xtt.pfb
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\type1\public\txfonts\t1xtt.pfb
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\type1\public\newtx\ztmb.pfb
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\type1\public\newtx\ztmb.pfb
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\type1\public\newtx\ztmr.pfb
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\type1\public\newtx\ztmr.pfb
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\type1\public\newtx\ztmri.pfb
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\type1\public\newtx\ztmri.pfb

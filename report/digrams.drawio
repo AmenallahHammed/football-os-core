@@ -1,0 +1,125 @@
+﻿<mxfile host="app.diagrams.net" modified="2026-05-26T10:00:00.000Z" agent="Codex" version="26.0.0">
+  <diagram id="governance-uml" name="Governance Service UML">
+    <mxGraphModel dx="2200" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2600" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="title" value="fos-governance-service - UML Class Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=22;" parent="1" vertex="1">
+          <mxGeometry x="900" y="20" width="800" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="pkg_identity" value="identity" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;" parent="1" vertex="1">
+          <mxGeometry x="40" y="90" width="620" height="700" as="geometry"/>
+        </mxCell>
+        <mxCell id="pkg_canonical" value="canonical" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;" parent="1" vertex="1">
+          <mxGeometry x="700" y="90" width="620" height="700" as="geometry"/>
+        </mxCell>
+        <mxCell id="pkg_policy" value="policy" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;" parent="1" vertex="1">
+          <mxGeometry x="1360" y="90" width="580" height="700" as="geometry"/>
+        </mxCell>
+        <mxCell id="pkg_signal" value="signal" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;" parent="1" vertex="1">
+          <mxGeometry x="1980" y="90" width="580" height="700" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ActorController" value="ActorController" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="70" y="140" width="170" height="60" as="geometry"/></mxCell>
+        <mxCell id="ActorService" value="ActorService" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="270" y="140" width="170" height="60" as="geometry"/></mxCell>
+        <mxCell id="ActorRepository" value="&lt;&lt;interface&gt;&gt;&#xa;ActorRepository" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="470" y="140" width="170" height="75" as="geometry"/></mxCell>
+
+        <mxCell id="Actor" value="Actor" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="270" y="240" width="170" height="60" as="geometry"/></mxCell>
+        <mxCell id="ActorFactoryRegistry" value="ActorFactoryRegistry" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="70" y="240" width="170" height="60" as="geometry"/></mxCell>
+        <mxCell id="ActorFactory" value="&lt;&lt;abstract&gt;&gt;&#xa;ActorFactory" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="70" y="340" width="170" height="75" as="geometry"/></mxCell>
+        <mxCell id="PlayerActorFactory" value="PlayerActorFactory" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="30" y="460" width="170" height="60" as="geometry"/></mxCell>
+        <mxCell id="CoachActorFactory" value="CoachActorFactory" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="220" y="460" width="170" height="60" as="geometry"/></mxCell>
+        <mxCell id="DefaultActorFactory" value="DefaultActorFactory" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="410" y="460" width="170" height="60" as="geometry"/></mxCell>
+        <mxCell id="KeycloakWebhookController" value="KeycloakWebhookController" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="70" y="560" width="220" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="TeamController" value="TeamController" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="730" y="140" width="170" height="60" as="geometry"/></mxCell>
+        <mxCell id="TeamService" value="TeamService" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="930" y="140" width="170" height="60" as="geometry"/></mxCell>
+        <mxCell id="TeamRepository" value="&lt;&lt;interface&gt;&gt;&#xa;TeamRepository" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="1130" y="140" width="170" height="75" as="geometry"/></mxCell>
+        <mxCell id="Team" value="Team" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="930" y="240" width="170" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="PlayerController" value="PlayerController" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="730" y="360" width="170" height="60" as="geometry"/></mxCell>
+        <mxCell id="PlayerService" value="PlayerService" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="930" y="360" width="170" height="60" as="geometry"/></mxCell>
+        <mxCell id="PlayerRepository" value="&lt;&lt;interface&gt;&gt;&#xa;PlayerRepository" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="1130" y="360" width="170" height="75" as="geometry"/></mxCell>
+        <mxCell id="Player" value="Player" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="930" y="460" width="170" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="PolicyEvaluationController" value="PolicyEvaluationController" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="1390" y="140" width="220" height="60" as="geometry"/></mxCell>
+        <mxCell id="PolicyEvaluationService" value="PolicyEvaluationService" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="1640" y="140" width="220" height="60" as="geometry"/></mxCell>
+        <mxCell id="OpaEvaluator" value="OpaEvaluator" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="1640" y="240" width="220" height="60" as="geometry"/></mxCell>
+        <mxCell id="OpaClient" value="OpaClient" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="1640" y="340" width="220" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="PolicyContextBuilder" value="&lt;&lt;abstract&gt;&gt;&#xa;PolicyContextBuilder" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="1390" y="460" width="220" height="75" as="geometry"/></mxCell>
+        <mxCell id="RoleContextBuilder" value="RoleContextBuilder" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="1360" y="580" width="170" height="60" as="geometry"/></mxCell>
+        <mxCell id="ResourceStateContextBuilder" value="ResourceStateContextBuilder" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="1550" y="580" width="210" height="60" as="geometry"/></mxCell>
+        <mxCell id="RequestContextBuilder" value="RequestContextBuilder" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="1780" y="580" width="170" height="60" as="geometry"/></mxCell>
+        <mxCell id="PolicyConfig" value="PolicyConfig" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="1390" y="340" width="220" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="SignalIntakeController" value="SignalIntakeController" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="2010" y="140" width="230" height="60" as="geometry"/></mxCell>
+        <mxCell id="SignalProcessingService" value="SignalProcessingService" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="2260" y="140" width="230" height="60" as="geometry"/></mxCell>
+        <mxCell id="SignalHandler" value="&lt;&lt;abstract&gt;&gt;&#xa;SignalHandler" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="2260" y="240" width="230" height="75" as="geometry"/></mxCell>
+
+        <mxCell id="SchemaValidationHandler" value="SchemaValidationHandler" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="1980" y="360" width="180" height="60" as="geometry"/></mxCell>
+        <mxCell id="ActorEnrichmentHandler" value="ActorEnrichmentHandler" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="2170" y="360" width="180" height="60" as="geometry"/></mxCell>
+        <mxCell id="TypeClassificationHandler" value="TypeClassificationHandler" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="2360" y="360" width="180" height="60" as="geometry"/></mxCell>
+        <mxCell id="KafkaRoutingHandler" value="KafkaRoutingHandler" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="2070" y="460" width="180" height="60" as="geometry"/></mxCell>
+        <mxCell id="NotificationFanOutHandler" value="NotificationFanOutHandler" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="2270" y="460" width="210" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="NotificationPort" value="&lt;&lt;interface&gt;&gt;&#xa;NotificationPort" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="2010" y="560" width="210" height="75" as="geometry"/></mxCell>
+        <mxCell id="NoopNotificationAdapter" value="NoopNotificationAdapter" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="2250" y="560" width="230" height="60" as="geometry"/></mxCell>
+        <mxCell id="SignalPipelineConfig" value="SignalPipelineConfig" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="2010" y="660" width="210" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="AuditLogConsumer" value="AuditLogConsumer" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="2060" y="810" width="220" height="60" as="geometry"/></mxCell>
+        <mxCell id="AuditLogRepository" value="&lt;&lt;interface&gt;&gt;&#xa;AuditLogRepository" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="2310" y="810" width="220" height="75" as="geometry"/></mxCell>
+        <mxCell id="AuditLogEntry" value="AuditLogEntry" style="shape=umlClass;html=1;" parent="1" vertex="1"><mxGeometry x="2310" y="910" width="220" height="60" as="geometry"/></mxCell>
+
+        <mxCell id="e1" style="endArrow=classic;html=1;" parent="1" source="ActorController" target="ActorService" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="endArrow=classic;html=1;" parent="1" source="ActorService" target="ActorRepository" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="endArrow=classic;html=1;" parent="1" source="ActorService" target="ActorFactoryRegistry" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="endArrow=classic;html=1;" parent="1" source="ActorRepository" target="Actor" edge="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="560" y="270"/></Array></mxGeometry></mxCell>
+        <mxCell id="e5" style="endArrow=diamondThin;endFill=1;html=1;" parent="1" source="ActorFactoryRegistry" target="ActorFactory" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" style="endArrow=block;endFill=0;html=1;" parent="1" source="PlayerActorFactory" target="ActorFactory" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e7" style="endArrow=block;endFill=0;html=1;" parent="1" source="CoachActorFactory" target="ActorFactory" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" style="endArrow=block;endFill=0;html=1;" parent="1" source="DefaultActorFactory" target="ActorFactory" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e9" style="endArrow=classic;html=1;" parent="1" source="KeycloakWebhookController" target="ActorService" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e10" style="endArrow=classic;html=1;" parent="1" source="TeamController" target="TeamService" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e11" style="endArrow=classic;html=1;" parent="1" source="TeamService" target="TeamRepository" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e12" style="endArrow=classic;html=1;" parent="1" source="TeamRepository" target="Team" edge="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1220" y="270"/></Array></mxGeometry></mxCell>
+        <mxCell id="e13" style="endArrow=classic;html=1;" parent="1" source="PlayerController" target="PlayerService" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e14" style="endArrow=classic;html=1;" parent="1" source="PlayerService" target="PlayerRepository" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e15" style="endArrow=classic;html=1;" parent="1" source="PlayerRepository" target="Player" edge="1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1220" y="490"/></Array></mxGeometry></mxCell>
+
+        <mxCell id="e16" style="endArrow=classic;html=1;" parent="1" source="PolicyEvaluationController" target="PolicyEvaluationService" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e17" style="endArrow=classic;html=1;" parent="1" source="PolicyEvaluationService" target="OpaEvaluator" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e18" style="endArrow=classic;html=1;" parent="1" source="OpaEvaluator" target="OpaClient" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e19" style="endArrow=classic;html=1;" parent="1" source="OpaEvaluator" target="PolicyContextBuilder" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e20" style="endArrow=block;endFill=0;html=1;" parent="1" source="RoleContextBuilder" target="PolicyContextBuilder" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e21" style="endArrow=block;endFill=0;html=1;" parent="1" source="ResourceStateContextBuilder" target="PolicyContextBuilder" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e22" style="endArrow=block;endFill=0;html=1;" parent="1" source="RequestContextBuilder" target="PolicyContextBuilder" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e23" style="dashed=1;endArrow=open;endFill=0;html=1;" parent="1" source="PolicyConfig" target="RoleContextBuilder" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e24" style="dashed=1;endArrow=open;endFill=0;html=1;" parent="1" source="PolicyConfig" target="ResourceStateContextBuilder" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e25" style="dashed=1;endArrow=open;endFill=0;html=1;" parent="1" source="PolicyConfig" target="RequestContextBuilder" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e26" style="endArrow=classic;html=1;" parent="1" source="SignalIntakeController" target="SignalProcessingService" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e27" style="endArrow=classic;html=1;" parent="1" source="SignalProcessingService" target="SignalHandler" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e28" style="endArrow=block;endFill=0;html=1;" parent="1" source="SchemaValidationHandler" target="SignalHandler" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e29" style="endArrow=block;endFill=0;html=1;" parent="1" source="ActorEnrichmentHandler" target="SignalHandler" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e30" style="endArrow=block;endFill=0;html=1;" parent="1" source="TypeClassificationHandler" target="SignalHandler" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e31" style="endArrow=block;endFill=0;html=1;" parent="1" source="KafkaRoutingHandler" target="SignalHandler" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e32" style="endArrow=block;endFill=0;html=1;" parent="1" source="NotificationFanOutHandler" target="SignalHandler" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e33" style="endArrow=classic;html=1;" parent="1" source="NotificationFanOutHandler" target="NotificationPort" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e34" style="endArrow=block;endFill=0;html=1;" parent="1" source="NoopNotificationAdapter" target="NotificationPort" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e35" style="dashed=1;endArrow=open;endFill=0;html=1;" parent="1" source="SignalPipelineConfig" target="SchemaValidationHandler" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e36" style="dashed=1;endArrow=open;endFill=0;html=1;" parent="1" source="SignalPipelineConfig" target="ActorEnrichmentHandler" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e37" style="dashed=1;endArrow=open;endFill=0;html=1;" parent="1" source="SignalPipelineConfig" target="TypeClassificationHandler" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e38" style="dashed=1;endArrow=open;endFill=0;html=1;" parent="1" source="SignalPipelineConfig" target="KafkaRoutingHandler" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e39" style="dashed=1;endArrow=open;endFill=0;html=1;" parent="1" source="SignalPipelineConfig" target="NotificationFanOutHandler" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e40" style="endArrow=classic;html=1;" parent="1" source="AuditLogConsumer" target="AuditLogRepository" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e41" style="endArrow=classic;html=1;" parent="1" source="AuditLogRepository" target="AuditLogEntry" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

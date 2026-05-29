@@ -358,32 +358,111 @@ through Governance and SDK integration instead of duplicating governance state.
 This approach reduces coupling between databases, but it also requires careful
 handling of unavailable references and eventual consistency between services.
 
-\subsection{Governance Class Diagram}
+\subsection{Governance Service Design}
 
-\noindent The governance class diagram represents the administrative and canonical part
-of the platform. It focuses on the main domain entities used to manage identity,
-club reference data, and traceability. Technical classes such as controllers,
-services, repositories, and policy handlers are not shown in order to keep the
-diagram simple and readable.
+\noindent The Governance Service acts as the control plane of Football OS. It
+centralizes identity management, canonical football entities, authorization
+decisions, signal processing, and audit traceability. The first governance
+diagram in this section is intentionally a package-level dependency view, not a
+class-level model. It provides a global structural perspective before zooming
+into selected internal packages.
 
-Figure~\ref{fig:governance-class-diagram} shows the main governance entities.
-Actors represent platform
-users, roles define their permissions, players and teams form the canonical
-football data, and audit entries keep track of important actions.
-The main classes represented in this diagram are Actor, Role, Player, Team,
-and AuditLogEntry. This model clarifies how identity, authorization
-references, canonical entities, and audit traceability are structured in the
-governance domain.
+\subsubsection{Governance Service Package Dependency Diagram}
+
+\noindent The governance codebase is organized into feature packages:
+\texttt{canonical}, \texttt{identity}, \texttt{policy}, \texttt{signal}, and
+\texttt{config}. Inside \texttt{canonical}, \texttt{identity},
+\texttt{policy}, and \texttt{signal}, the structure follows layered packages:
+\texttt{api}, \texttt{application}, \texttt{domain} (where applicable), and
+\texttt{infrastructure}. The dependency direction remains explicit:
+\texttt{api} depends on \texttt{application}; \texttt{application} coordinates
+domain rules and infrastructure adapters; and \texttt{infrastructure}
+integrates persistence and external systems. The \texttt{config} package wires
+cross-cutting concerns such as security, exception handling, policy
+configuration, and signal pipeline configuration. Dashed arrows represent UML
+dependency relationships between packages.
 
 \clearpage
 \begin{figure}[H]
 \centering
 \makebox[\textwidth][c]{%
-\includegraphics[width=1.24\textwidth,height=0.92\textheight,keepaspectratio]{images/class-dig-governance.png}%
+\includegraphics[width=1.20\textwidth,height=0.88\textheight,keepaspectratio]{images/classdig/gov-dig.png}%
 }
-\caption{Governance class diagram}
-\label{fig:governance-class-diagram}
+\caption{Governance service package dependency diagram}
+\label{fig:governance-package-diagram}
 \end{figure}
+
+\subsubsection{Policy Package Class Diagram}
+
+\noindent The policy package is detailed because it represents the
+authorization decision flow implemented in the backend. The API layer receives
+policy evaluation requests, the application layer builds and evaluates policy
+context, and the infrastructure layer communicates with OPA for decision
+execution. Shared SDK contracts standardize request and response models across
+services. This diagram emphasizes that authorization is delegated to the
+governance policy mechanism rather than enforced only in frontend logic.
+
+\clearpage
+\begin{figure}[H]
+\centering
+\makebox[\textwidth][c]{%
+\includegraphics[width=1.20\textwidth,height=0.88\textheight,keepaspectratio]{images/classdig/policy.drawio.png}%
+}
+\caption{Policy package class diagram}
+\label{fig:policy-class-diagram}
+\end{figure}
+
+\subsubsection{Signal Package Class Diagram}
+
+\noindent The signal package is detailed because it captures event intake,
+processing, routing, notification fan-out, and audit/event propagation. Its
+internal organization follows a processing pipeline (chain) structure and
+integrates with Kafka messaging and audit persistence. This view complements
+the package dependency diagram by exposing the internal signal-processing
+collaboration.
+
+\clearpage
+\begin{figure}[H]
+\centering
+\makebox[\textwidth][c]{%
+\IfFileExists{images/classdig/signal.drawio.png}{%
+\includegraphics[width=1.20\textwidth,height=0.88\textheight,keepaspectratio]{images/classdig/signal.drawio.png}%
+}{%
+\includegraphics[width=1.20\textwidth,height=0.88\textheight,keepaspectratio]{images/classdig/signal-class-diagram.png}%
+}%
+}
+\caption{Signal package class diagram}
+\label{fig:signal-class-diagram}
+\end{figure}
+
+\subsubsection{Identity Package Class Diagram}
+
+\noindent The identity package is detailed because it manages platform actors,
+actor roles, lifecycle operations, and identity synchronization. It links
+authentication identity context with governance-level actor representation.
+The diagram focuses on the most relevant identity classes and relationships
+rather than listing every technical file.
+
+\clearpage
+\begin{figure}[H]
+\centering
+\makebox[\textwidth][c]{%
+\IfFileExists{images/classdig/identity-class-diagram.png}{%
+\includegraphics[width=1.20\textwidth,height=0.88\textheight,keepaspectratio]{images/classdig/identity-class-diagram.png}%
+}{%
+\fbox{\begin{minipage}[c][0.22\textheight][c]{0.82\textwidth}\centering
+Identity class diagram image missing:\\
+\texttt{images/classdig/identity-class-diagram.png}
+\end{minipage}}%
+}%
+}
+\caption{Identity package class diagram}
+\label{fig:identity-class-diagram}
+\end{figure}
+
+\noindent The following diagrams shift from governance control-plane internals
+to workspace-side data structures, specifically document management and
+calendar/event management.
 
 \subsection{Document Management Class Diagram}
 
@@ -399,7 +478,16 @@ classification and lifecycle control.
 \clearpage
 \begin{figure}[H]
 \centering
-\makebox[\textwidth][c]{\includegraphics[width=1.24\textwidth,height=0.92\textheight,keepaspectratio]{images/document-class-dig.png}}
+\makebox[\textwidth][c]{%
+\IfFileExists{images/classdig/document-class-dig.png}{%
+\includegraphics[width=1.24\textwidth,height=0.92\textheight,keepaspectratio]{images/classdig/document-class-dig.png}%
+}{%
+\fbox{\begin{minipage}[c][0.24\textheight][c]{0.84\textwidth}\centering
+Document class diagram image missing:\\
+\texttt{images/classdig/document-class-dig.png}
+\end{minipage}}%
+}%
+}
 \caption{Document management class diagram}
 \label{fig:document-class-diagram}
 \end{figure}
@@ -419,7 +507,14 @@ lifecycle, and delete actions are handled as archive operations.
 \begin{figure}[p]
 \centering
 \makebox[\textwidth][c]{%
-  \includegraphics[width=0.96\textheight,height=1.36\textwidth,keepaspectratio,angle=-90]{images/calander-event-class-dig.png}
+  \IfFileExists{images/classdig/calander-event-class-dig.png}{%
+  \includegraphics[width=0.96\textheight,height=1.36\textwidth,keepaspectratio,angle=-90]{images/classdig/calander-event-class-dig.png}%
+  }{%
+  \fbox{\begin{minipage}[c][0.24\textheight][c]{0.84\textwidth}\centering
+  Calendar/event class diagram image missing:\\
+  \texttt{images/classdig/calander-event-class-dig.png}
+  \end{minipage}}%
+  }%
 }
 \caption{Calendar and event class diagram}
 \label{fig:event-class-diagram}
@@ -473,7 +568,7 @@ frontend, Gateway, identity provider, and backend services.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\textwidth,height=0.52\textheight,keepaspectratio]{images/auth-seq.png}
+    \includegraphics[width=\textwidth,height=0.52\textheight,keepaspectratio]{images/sequencedig/auth-seq.png}
     \caption{Authentication sequence diagram}
     \label{fig:authentication-sequence}
 \end{figure}
@@ -502,7 +597,7 @@ This flow covers document upload, access, and online editing.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.95\textwidth]{images/doc-mangment-seq.png}
+    \includegraphics[width=0.95\textwidth]{images/sequencedig/doc-mangment-seq.png}
     \caption{Document management sequence diagram}
     \label{fig:document-management-sequence}
 \end{figure}
@@ -531,7 +626,7 @@ This flow covers event creation, update, archival, and notification generation.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.95\textwidth]{images/calnder-seq.png}
+    \includegraphics[width=0.95\textwidth]{images/sequencedig/calnder-seq.png}
     \caption{Calendar and event management sequence diagram}
     \label{fig:calendar-event-sequence}
 \end{figure}
@@ -563,7 +658,7 @@ This flow covers how the platform builds a secured player profile.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.95\textwidth]{images/player profile seq.png}
+    \includegraphics[width=0.95\textwidth]{images/sequencedig/player profile seq.png}
     \caption{Player profile consultation sequence diagram}
     \label{fig:player-profile-sequence}
 \end{figure}
@@ -600,9 +695,9 @@ become the final enforcement point for protected resources
 \centering
 \caption{Security implementation choices}
 \label{tab:security-implementation-choices}
-\scriptsize
-\setlength{\tabcolsep}{3pt}
-\renewcommand{\arraystretch}{1.03}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.14}
 \begin{tabularx}{\textwidth}{|L{3.2cm}|Y|}
 \hline
 \textbf{Security concern} & \textbf{Implementation choice} \\
@@ -640,9 +735,9 @@ configurations are returned.
 \centering
 \caption{Access-control matrix for core platform actions}
 \label{tab:access-control-matrix}
-\scriptsize
+\footnotesize
 \setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.03}
+\renewcommand{\arraystretch}{1.14}
 \begin{tabularx}{\textwidth}{|Y|C{2.1cm}|C{2.1cm}|C{2.1cm}|C{2.1cm}|}
 \hline
 \textbf{Resource / Action} & \textbf{Club Administrator} & \textbf{Head Coach} & \textbf{Coaching Staff} & \textbf{Medical Staff} \\

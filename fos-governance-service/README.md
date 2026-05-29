@@ -43,6 +43,8 @@ fos-governance-service/
         canonical/
         policy/
         signal/
+          application/
+            pipeline/
       resources/
         application.yml
         db/migration/
@@ -86,6 +88,8 @@ Event interaction around models:
 - `canonical`: player/team domain model + CRUD/find APIs/services
 - `policy`: policy request API + OPA input building + OPA HTTP adapter
 - `signal`: signal intake API, processing handlers, notification port, audit consumer
+- `signal/application/pipeline`: Chain of Responsibility used by signal intake
+  (`SchemaValidation -> ActorEnrichment -> TypeClassification -> KafkaRouting -> NotificationFanOut`)
 - `resources/opa`: Rego policy files used by OPA decisions
 - `test`: unit/integration/e2e coverage of governance workflows
 

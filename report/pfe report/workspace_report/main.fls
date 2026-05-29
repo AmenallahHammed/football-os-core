@@ -406,11 +406,17 @@ INPUT .\Acknowledgments.tex
 INPUT Acknowledgments.tex
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
+INPUT .\Dedication.tex
+INPUT .\Dedication.tex
+INPUT .\Dedication.tex
+INPUT .\Dedication.tex
+INPUT Dedication.tex
 INPUT .\AbstractResumeKeywords.tex
 INPUT .\AbstractResumeKeywords.tex
 INPUT .\AbstractResumeKeywords.tex
 INPUT .\AbstractResumeKeywords.tex
 INPUT AbstractResumeKeywords.tex
+INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
 INPUT .\main.toc
 INPUT .\main.toc
 INPUT main.toc
@@ -493,7 +499,6 @@ INPUT .\GeneralIntroduction.tex
 INPUT .\GeneralIntroduction.tex
 INPUT .\GeneralIntroduction.tex
 INPUT GeneralIntroduction.tex
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
 INPUT .\chapter1.tex
 INPUT .\chapter1.tex
 INPUT .\chapter1.tex
@@ -756,7 +761,6 @@ INPUT .\BibliographyWebography.tex
 INPUT .\BibliographyWebography.tex
 INPUT .\BibliographyWebography.tex
 INPUT BibliographyWebography.tex
-INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\txfonts\t1xtt.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Italic-tlf-t1.tfm
 INPUT main.aux
 INPUT .\main.out

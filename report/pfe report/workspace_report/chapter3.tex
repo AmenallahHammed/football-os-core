@@ -73,9 +73,10 @@ duplicated integration code while preserving service-level separation.
 
 \subsection{General Architecture}
 
-The following diagram shows how the frontend communicates with the backend
-through the Gateway, and how backend services rely on governance, workspace,
-SDK, and supporting infrastructure.
+The architecture diagram below situates how frontend requests are funneled
+through the Gateway and then distributed across governance and workspace
+responsibilities, while shared SDK modules and infrastructure services provide
+cross-cutting technical support.
 
 \begin{figure}[ht]
     \centering
@@ -84,11 +85,17 @@ SDK, and supporting infrastructure.
     \label{fig:global-architecture}
 \end{figure}
 
-As shown in Figure~\ref{fig:global-architecture}, the frontend sends requests
-to the API Gateway, which routes calls to Governance or Workspace. The SDK
-provides shared abstractions, while infrastructure supports persistence,
-messaging, policy evaluation, storage, and document editing. The asynchronous
-communication design follows event-driven integration principles \cite{eda-fowler}.
+Figure~\ref{fig:global-architecture} highlights a deliberate boundary: client
+applications are decoupled from internal service topology. Routing and edge
+controls are centralized at the Gateway, while Governance and Workspace evolve
+behind stable API contracts. This decision reduced frontend-backend coupling at
+the price of adding an intermediate network hop and stronger dependency on
+Gateway availability.
+
+The infrastructure layer supports persistence, messaging, policy evaluation,
+storage, and document editing. Asynchronous exchanges were introduced where
+traceability and propagation mattered more than immediate synchronous response
+time, in line with event-driven integration principles \cite{eda-fowler}.
 
 \begin{table}[ht]
 \centering
@@ -147,7 +154,7 @@ MongoDB & Stores workspace aggregates and document metadata/version references, 
 \hline
 MinIO & Stores the actual document file content and file versions. & MinIO Object Storage \\
 \hline
-Redis & Supports gateway-level rate limiting and request throttling. & Redis \\
+Redis & Supports Gateway-level rate limiting and request throttling. & Redis \\
 \hline
 OnlyOffice & Enables online document viewing and editing workflows. & OnlyOffice Docs \\
 \hline
@@ -155,8 +162,10 @@ OnlyOffice & Enables online document viewing and editing workflows. & OnlyOffice
 \normalsize
 \end{table}
 
-Table~\ref{tab:main-components} summarizes the main technical responsibilities
-and technologies used by each architecture component.
+The component matrix makes explicit that each subsystem is mapped to a dominant
+responsibility domain, which improves maintainability and ownership clarity.
+The same decomposition also introduces integration overhead, especially where
+authorization, identity context, and cross-store references intersect.
 
 \section{Backend Module Design}
 
@@ -166,10 +175,20 @@ The API Gateway is the backend entry point. It validates token context, applies
 edge controls, and routes requests to Governance and Workspace without exposing
 internal service addresses.
 
+Compared with direct client-to-service exposure, this Gateway-mediated model
+improves policy consistency and request normalization. The trade-off is that
+the Gateway becomes a critical dependency that must be monitored and configured
+carefully to avoid becoming a bottleneck.
+
 \subsection{Governance Service}
 
 The Governance Service owns actor/role management, canonical players/teams,
 policy decision support through OPA, and audit traceability data.
+
+This separation was chosen to keep authorization and identity logic outside
+feature modules. It simplifies compliance reasoning and avoids scattered access
+rules, but it also increases inter-service calls whenever Workspace operations
+require policy checks or canonical references.
 
 \subsection{Workspace Service}
 
@@ -177,12 +196,54 @@ The Workspace Service owns operational modules (documents, events,
 notifications, search, and profile aggregation), persists workspace aggregates
 in MongoDB, and integrates with Governance, MinIO, Kafka, and OnlyOffice.
 
+The module boundary favors business-flow cohesion: operational features evolve
+in one service while governance remains externalized. The main limitation is
+coordination complexity for workflows that span metadata, policy, storage, and
+messaging components.
+
 \subsection{Shared SDK}
 
 The Shared SDK is not a user-facing module. It is reused by backend services to
 avoid duplicated technical plumbing. It provides shared security context,
 policy client, canonical resolver, storage port abstraction, event contracts,
 audit hooks, and test utilities.
+
+In implementation terms, the SDK is structured as real backend submodules
+rather than a generic helper package. Table~\ref{tab:sdk-submodules} outlines
+the modules used by Governance and Workspace services.
+
+\begin{table}[H]
+\centering
+\caption{Shared SDK submodules and engineering roles}
+\label{tab:sdk-submodules}
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\begin{tabularx}{\textwidth}{|L{2.7cm}|Y|}
+\hline
+\textbf{Submodule} & \textbf{Role in the platform} \\
+\hline
+\texttt{sdk-core} & Shared primitives, base entities/documents, lifecycle states, and common response models. \\
+\hline
+\texttt{sdk-events} & Signal envelope, Kafka topics, producer/consumer patterns, and correlation context contracts. \\
+\hline
+\texttt{sdk-security} & Authenticated actor context, role extraction, JWT-related helpers, and audit hooks. \\
+\hline
+\texttt{sdk-storage} & Storage abstraction layer that decouples services from MinIO-specific details and supports future provider evolution. \\
+\hline
+\texttt{sdk-canonical} & Canonical player/team references and resolver/client mechanisms used by workspace workflows. \\
+\hline
+\texttt{sdk-policy} & Policy request/result contracts, policy client integration, and method-level guard support. \\
+\hline
+\texttt{sdk-test} & Reusable integration-test utilities and shared test support components. \\
+\hline
+\end{tabularx}
+\normalsize
+\end{table}
+
+Using a shared SDK reduced repeated integration code and aligned conventions
+across services. The associated risk is version coupling: service teams must
+coordinate SDK evolution to avoid incompatible upgrades.
 
 \subsection{Service Boundary Summary}
 
@@ -216,7 +277,7 @@ responsibilities across backend modules.
 Table~\ref{tab:api-summary} provides a compact overview of representative
 endpoint families used by the platform.
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
 \caption{API endpoint family summary}
 \label{tab:api-summary}
@@ -251,6 +312,24 @@ Governance & \makecell[l]{\texttt{/api/v1/}\\\texttt{policy}} & Authorization de
 \normalsize
 \setlength{\tabcolsep}{6pt}
 \end{table}
+
+Rather than exposing database structures, these interfaces are organized around
+business actions (document lifecycle, event coordination, profile consultation,
+policy evaluation). This orientation improves API stability and limits
+frontend dependence on persistence internals.
+
+\subsection{Design Reflection on Service Decomposition}
+
+The decomposition solved a practical project constraint: maintaining clear
+ownership while delivering heterogeneous workflows in a limited internship
+timeline. Compared with a monolith, this approach improved modularity and
+change isolation. Compared with fully independent repositories, it reduced
+coordination overhead through a shared codebase and SDK.
+
+The remaining constraint is operational complexity. Service boundaries are
+useful only if integration contracts, failure handling, and deployment
+discipline remain explicit; these points represent the principal engineering
+workload for future iterations.
 
 \section{Data Design}
 
@@ -288,8 +367,8 @@ AuditLogEntry & PostgreSQL & id, actorRef, action, target, timestamp & Records t
 \normalsize
 \setlength{\tabcolsep}{6pt}
 \end{table}
-Table~\ref{tab:governance-postgresql} summarizes the governance entities and
-their persistence responsibilities.
+The governance matrix clarifies how each relational entity contributes to
+identity management, policy context, and audit reconstruction.
 
 \subsection{Workspace Collections (MongoDB)}
 
@@ -313,8 +392,22 @@ their persistence responsibilities.
 \end{tabularx}
 \normalsize
 \end{table}
-Table~\ref{tab:workspace-mongodb} summarizes the workspace collections used by
-operational modules.
+The workspace collection mapping highlights how operational aggregates are
+organized to support document lifecycle, event coordination, and notification
+follow-up.
+
+\subsection{Comparative Rationale for Data Persistence Choices}
+
+PostgreSQL was selected for governance data because identity and policy-related
+entities benefit from relational integrity, structured constraints, and
+predictable transactional semantics. MongoDB was selected for workspace
+aggregates because document, event, and notification payloads evolve with
+variable structures and nested operational fields.
+
+Using both stores improves fitness-to-purpose but introduces consistency
+management effort. Cross-domain links rely on identifiers and service calls
+rather than cross-database joins, so referential coherence is an application
+responsibility instead of a database-enforced guarantee.
 
 \subsection{Indexing and Consistency Strategy}
 \label{sec:indexing-consistency-strategy}
@@ -494,8 +587,9 @@ Document class diagram image missing:\\
 \noindent This diagram explains how workspace events are modeled, including
 attendees, required documents, and staff tasks linked to each event.
 
-Figure~\ref{fig:event-class-diagram} shows that WorkspaceEvent stores core
-event information (title, type, schedule, location, and description), while
+The model in Figure~\ref{fig:event-class-diagram} shows that WorkspaceEvent
+stores core event information (title, type, schedule, location, and
+description), while
 AttendeeRef, RequiredDocument, and TaskAssignment capture participation and
 operational follow-up. EventType and EventState define classification and
 lifecycle, and delete actions are handled as archive operations.
@@ -543,9 +637,9 @@ Redis & Gateway rate limiting and request-throttling state \\
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:storage-mapping} summarizes storage responsibilities in Football
-OS, while Subsection~\ref{sec:indexing-consistency-strategy} explains
-cross-service references and consistency handling across these stores.
+The storage map confirms that persistence responsibilities are intentionally
+split by data nature; Subsection~\ref{sec:indexing-consistency-strategy}
+details how references and consistency are managed across these stores.
 
 The player profile is not represented as a separate class diagram in the main
 chapter because it is built by aggregating canonical player data, workspace
@@ -575,7 +669,8 @@ validation and actor-context propagation are centralized. This flow reduces
 duplicated authentication logic in downstream services while keeping protected
 backend APIs behind a single controlled entry point.
 
-\noindent The authentication flow is executed through the following steps:
+\noindent This authentication scenario can be interpreted as a sequence of
+coordinated trust transitions:
 \begin{enumerate}
     \item The user requests access from the frontend.
     \item The frontend redirects the user to the identity provider.
@@ -604,7 +699,8 @@ editor configurations. The separation between MongoDB metadata and MinIO binary
 storage also preserves version history without storing large files directly
 inside the database.
 
-The flow executes through the following steps:
+The process can be analyzed as a controlled lifecycle where authorization
+precedes storage and editor access:
 \begin{enumerate}
     \item The user uploads or opens a document through the frontend and Gateway.
     \item Workspace verifies authorization through Governance/Policy.
@@ -633,7 +729,8 @@ traceability. This flow is important because event changes may affect several
 staff members and must therefore remain consistent, visible to concerned users,
 and auditable.
 
-The flow executes through the following steps:
+From an operational perspective, this process combines planning, access
+control, persistence, and propagation in one coordinated sequence:
 \begin{enumerate}
     \item An authorized user creates, updates, or archives an event through the Gateway.
     \item Workspace validates data and verifies authorization.
@@ -658,14 +755,15 @@ This flow covers how the platform builds a secured player profile.
     \label{fig:player-profile-sequence}
 \end{figure}
 
-Figure~\ref{fig:player-profile-sequence} shows that player-profile consultation
-is a filtered aggregation process rather than a direct database read. The
+Figure~\ref{fig:player-profile-sequence} emphasizes that player-profile
+consultation is a filtered aggregation process rather than a direct database
+read. The
 Workspace Service combines canonical player identity, workspace-linked
 documents, storage references, and policy decisions before returning the
 response. This protects sensitive sections, especially medical information, by
 omitting unauthorized tabs and documents before the data reaches the frontend.
 
-The flow executes through the following steps:
+This consultation flow is best read as a policy-filtered aggregation sequence:
 \begin{enumerate}
     \item The user requests a player profile through the frontend and Gateway.
     \item Workspace reads authenticated context and resolves canonical player identity.
@@ -678,7 +776,7 @@ tabs are hidden and related data is omitted from the response.
 
 \section{Security and Authorization Design}
 
-Football OS combines identity-provider authentication, gateway-level token
+Football OS combines identity-provider authentication, Gateway-level token
 validation, policy-based authorization, and backend-side access checks. The
 security model is designed so that the frontend improves usability but does not
 become the final enforcement point for protected resources
@@ -726,6 +824,12 @@ role-based interface states improve the user experience, but protected actions
 are still checked by backend services before data, storage URLs, or editor
 configurations are returned.
 
+The choice of externalized policy evaluation through OPA was preferred over
+hardcoded authorization checks scattered across services. This improves policy
+traceability and change control, but introduces dependency on policy
+availability and policy-model synchronization between governance and consuming
+services.
+
 \begin{table}[ht]
 \centering
 \caption{Access-control matrix for core platform actions}
@@ -761,9 +865,14 @@ Receive notifications & Allowed & Allowed & Allowed & Allowed \\
 \normalsize
 \end{table}
 
-Table~\ref{tab:access-control-matrix} summarizes the nominal access posture by
-role. In operational execution, final authorization remains policy-based on the
-backend.
+The access-control matrix captures the nominal role posture used as a policy
+baseline. In operational execution, final authorization remains policy-based on
+the backend.
+
+Overall, the security design addresses the main project constraint of
+centralized, auditable authorization across heterogeneous workflows. Its
+principal limitation is operational: policy and Gateway layers require robust
+observability and fallback handling to remain reliable under failure conditions.
 
 \section*{Conclusion}
 \addcontentsline{toc}{section}{Conclusion}

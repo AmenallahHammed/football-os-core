@@ -50,8 +50,10 @@ FR-10 & Enforce access control and activity tracking for accountability. & Backe
 \endgroup
 \end{table}
 
-Table~\ref{tab:functional-requirements} reflects the current project baseline
-without overclaiming full maturity of every feature.
+The status distribution in Table~\ref{tab:functional-requirements} reflects an
+intentional prioritization: security-critical and workflow-critical functions
+were completed first, while some advanced governance and profile capabilities
+remain partially implemented.
 
 % =====================================================
 \section{Non-Functional Requirements}
@@ -87,6 +89,20 @@ NFR-06 & Traceability & Record significant operations for audit and accountabili
 \end{tabularx}
 \endgroup
 \end{table}
+
+\subsection{Prioritization Rationale and Trade-offs}
+
+The requirement baseline follows a sequencing logic aligned with project risk.
+Security, traceability, and maintainability were treated as structural
+qualities because they condition the reliability of all business features.
+Usability and performance were addressed progressively once secure routing and
+policy enforcement were stable.
+
+This prioritization introduced a predictable trade-off. Focusing early effort
+on architecture and governance reduced late integration risk, but it delayed
+the full maturity of some user-facing capabilities such as profile depth and
+advanced search behavior. The resulting scope remains coherent for a PFE
+prototype and provides a controlled base for incremental evolution.
 
 % =====================================================
 \section{Use Case Modeling}
@@ -153,8 +169,10 @@ chapter.
     \label{fig:global-usecase}
 \end{figure}
 
-The following use-case descriptions summarize the principal operational flows
-used in the current specification scope.
+The use-case descriptions below formalize the principal operational flows in
+the current scope. They are written as behavioral contracts so that design and
+implementation choices can later be validated against explicit preconditions,
+access rules, and postconditions.
 
 %\subsubsection*{Access Football OS Platform}
 \small
@@ -352,6 +370,19 @@ Table~\ref{tab:uc-player-profile} specifies the profile-consultation behavior
 under role-based restrictions.
 \normalsize
 \renewcommand{\arraystretch}{1}
+
+\section{Engineering Reading of the Specification}
+
+Taken together, the requirement tables and use-case contracts show that Football
+OS is governed less by isolated CRUD operations than by controlled interactions
+between identity, policy, and operational data. This is why the specification
+emphasizes access conditions and audit consequences alongside functional goals.
+
+Compared with a purely user-story-oriented specification, the selected approach
+is more explicit about authorization boundaries and exception paths, which
+improves downstream architectural traceability. Its limitation is higher
+documentation density; however, that cost is justified by the security and
+accountability constraints of the targeted domain.
 
 \section*{Conclusion}
 \addcontentsline{toc}{section}{Conclusion}

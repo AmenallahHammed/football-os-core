@@ -11,11 +11,11 @@ solution.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.35\textwidth]{images/icons/logoPerfAnalysis.png}
-    \caption{Perf Analysis Consulting logo}
+    \caption{Perf-Analysis Consulting logo}
     \label{fig:company_logo}
 \end{figure}
 
-Perf Analysis Consulting develops digital tools for professional football
+Perf-Analysis Consulting develops digital tools for professional football
 organizations. The internship was conducted within the software engineering
 activity of the company and focused on \textbf{Football OS}, with emphasis on
 backend foundation services, governance mechanisms, and the Workspace module.
@@ -37,9 +37,9 @@ governance-driven permissions, and unified auditability.
 
 \subsection{Comparative View of Existing Solutions}
 
-Table~\ref{tab:existing-solution-comparison} summarizes the principal tools
-observed in practice, their contributions, and their limits with respect to a
-unified operational platform.
+Table~\ref{tab:existing-solution-comparison} compares the most common tools
+observed in practice and highlights why their isolated use does not satisfy the
+governance and traceability requirements of a unified platform.
 
 \begin{table}[ht]
 \centering
@@ -67,9 +67,16 @@ Previous internal file-storage solution & Scope was mostly limited to storage, w
 \endgroup
 \end{table}
 
-Table~\ref{tab:existing-solution-comparison} shows that the main issue is not
-the absence of tools, but the absence of a coherent operational architecture
-that unifies identity, authorization, canonical data, and workflow traceability.
+The comparison indicates that the core difficulty is architectural rather than
+functional: clubs already use capable tools, but these tools do not share a
+common identity model, policy model, or audit model. Football OS was therefore
+positioned as an integration and governance response, not as a replacement of
+individual user-facing features.
+
+This positioning also implies a trade-off. A unified platform increases
+coordination quality and accountability, but it requires stronger discipline in
+access modeling, data ownership, and inter-service contracts than loosely
+coupled consumer tools.
 
 % -------------------------------------------------------
 \section{Development Methodology}
@@ -107,9 +114,15 @@ Iteration 5 & Integration and validation & Frontend integration, functional vali
 \normalsize
 \end{table}
 
-As shown in Table~\ref{tab:iteration-plan}, the sequence progressed from
-SDK-first foundation and architectural baseline to governance controls, then to
-business workflows and final integration.
+The iteration sequence reflects a risk-first strategy: shared contracts and
+security foundations were stabilized before feature expansion. This reduced
+late-stage rework on cross-cutting concerns such as authorization and
+traceability.
+
+The approach still involved a known limitation: front-loading architecture can
+delay visible functional outcomes in early milestones. In this project, that
+trade-off was accepted because governance consistency was a prerequisite for
+reliable document and event workflows.
 
 % -------------------------------------------------------
 \section{Proposed Solution Positioning}
@@ -127,6 +140,12 @@ This structure is supported by a modular architecture that separates concerns
 between Gateway, Governance, Workspace, and Shared SDK modules. The separation
 improves maintainability and enables controlled future extension without
 restructuring the entire platform.
+
+From an engineering perspective, this design solved the immediate need for
+clear ownership boundaries while preserving extensibility for future club
+workflows. Its main remaining constraint is integration overhead: each new
+feature must align with Gateway routing, Governance policy, and Workspace data
+contracts.
 
 % -------------------------------------------------------
 \section*{Conclusion}

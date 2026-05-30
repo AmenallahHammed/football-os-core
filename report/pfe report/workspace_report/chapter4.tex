@@ -8,6 +8,10 @@ internship period. It covers the software environment, the implemented
 solution, the main graphical interfaces, and the deployment and integration
 setup.
 
+Beyond listing delivered features, the chapter analyzes how implementation
+choices translated architectural intentions into executable workflows and what
+technical compromises were required during integration.
+
 \section{Development Environment}
 
 \subsection{Software Environment}
@@ -112,12 +116,21 @@ Storage integration & MongoDB metadata and MinIO object storage separation. & Up
 Implementation details and technology usage remain aligned with the official
 documentation references cited in this report.
 
+The implemented baseline favors coherence over maximal feature breadth:
+integration-critical capabilities (secure routing, policy checks, storage
+separation, and event propagation) were stabilized first, while some advanced
+functional refinements remain intentionally partial.
+
 \subsection{Gateway and Secured Routing}
 
 The frontend sends API requests to port 8080 (Gateway) instead of directly
 calling internal services. The Gateway centralizes entry control, propagates
 authenticated context, and routes workspace endpoints to Workspace Service and
 actor/canonical/policy endpoints to Governance Service.
+
+This routing strategy reduced duplication of security filters across services
+and simplified frontend integration contracts. Its trade-off is stronger
+dependency on Gateway configuration quality and runtime availability.
 
 \subsection{Document Storage and Versioning}
 
@@ -130,6 +143,10 @@ In a typical upload flow, Workspace verifies permissions through Gateway,
 stores binary content in MinIO, persists metadata and version references in
 MongoDB, and archives by state transition rather than hard deletion.
 
+Separating metadata from binaries improved lifecycle traceability and reduced
+database bloat, but it also required explicit reconciliation logic between
+document records and object-storage references.
+
 \subsection{OnlyOffice Integration}
 
 Workspace generates the OnlyOffice editor configuration in a controlled context.
@@ -139,6 +156,11 @@ enforced by backend policy decisions \cite{onlyoffice-doc}.
 
 When a user opens or saves a document, Workspace verifies authorization before
 issuing editor configuration and registers callback results as a new version.
+
+Compared with a file download-only approach, integrated editing improves
+operational continuity for staff users. The cost is additional integration
+complexity, particularly around callback reliability, token scope, and version
+conflict handling.
 
 \subsection{Event Workflow Example}
 
@@ -187,6 +209,11 @@ These challenges confirmed the need for clear service boundaries and reusable
 SDK abstractions, especially for security context, policy evaluation, storage
 access, and event propagation.
 
+From an engineering standpoint, the integration phase validated that the chosen
+architecture was feasible for the target scope, while also revealing that
+operational robustness depends on disciplined configuration management and
+cross-service observability.
+
 \clearpage
 \section{Main Graphical Interfaces}
 
@@ -199,11 +226,11 @@ access, and event propagation.
     \label{fig:authentication-interface}
 \end{figure}
 
-Figure~\ref{fig:authentication-interface} represents the secure entry point of Football OS. Users must
-authenticate before accessing protected workspace features. The authenticated
-session is then used for backend request authorization. After successful
-authentication, users are redirected to the calendar interface, which acts as
-the workspace landing page.
+The interface in Figure~\ref{fig:authentication-interface} represents the
+security boundary from the user perspective. Authentication gates access to
+protected modules, and the resulting session context is reused for backend
+authorization. The post-login redirection to the calendar supports immediate
+operational orientation.
 
 \subsection{Document Management Interface}
 
@@ -213,10 +240,10 @@ the workspace landing page.
     \caption{Document management interface}
     \label{fig:document-management-interface}
 \end{figure}
-Figure~\ref{fig:document-management-interface} shows document consultation and
-upload workflows. This interface allows authorized users to consult, upload, organize, and
-archive documents. Access to documents depends on the user role and document
-category.
+Figure~\ref{fig:document-management-interface} emphasizes the integration of
+consultation, upload, organization, and archive actions in one governed
+workspace. Access constraints are aligned with role and document category so
+that operational convenience does not bypass policy enforcement.
 
 \Needspace{18\baselineskip}
 \subsection{Online Document Viewer and Editor}
@@ -228,9 +255,10 @@ category.
     \label{fig:onlyoffice-editor-interface}
 \end{figure}
 
-Figure~\ref{fig:onlyoffice-editor-interface} shows the OnlyOffice integration used to view and edit documents
-online. The platform controls access, while document content is loaded through
-temporary storage links.
+Figure~\ref{fig:onlyoffice-editor-interface} illustrates how online editing is
+embedded without delegating security ownership to the editor itself. Access
+decisions remain backend-driven, and document loading relies on controlled
+temporary links.
 
 \subsection{Calendar Interface}
 
@@ -241,11 +269,11 @@ temporary storage links.
     \label{fig:calendar-interface}
 \end{figure}
 
-Figure~\ref{fig:calendar-interface} is the default landing page after authentication. It allows
-users to view club events and activities. Authorized
-users can create, edit, or archive events according to their role and policy
-rules. Event details include schedule, location, attendees, tasks, notes, and
-required documents.
+As presented in Figure~\ref{fig:calendar-interface}, the calendar view acts as
+an operational coordination hub. Authorized users can create, update, or
+archive events according to policy outcomes, while event details maintain the
+link between planning data and execution artifacts (attendees, tasks, notes,
+and required documents).
 
 \subsection{Player Profile and Notifications}
 
@@ -299,8 +327,10 @@ OnlyOffice & Docker Compose & Provides document viewing and editing. \\
 \normalsize
 \end{table}
 
-As summarized in Table~\ref{tab:deployment-integration}, frontend API calls are sent to port 8080
-and are not sent directly from the frontend to the Workspace Service.
+The deployment matrix confirms that frontend traffic remains Gateway-mediated.
+This preserves consistent edge controls, but also means local troubleshooting
+must consider Gateway routing and infrastructure dependencies before attributing
+failures to business services alone.
 
 \section*{Conclusion}
 \addcontentsline{toc}{section}{Conclusion}

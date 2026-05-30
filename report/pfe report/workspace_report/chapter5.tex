@@ -3,8 +3,9 @@
 \section*{Introduction}
 \addcontentsline{toc}{section}{Introduction}
 
-This chapter summarizes the testing and validation activities performed for
-Football OS.
+This chapter presents the validation activities performed for Football OS and
+interprets their results with respect to architectural risks, security
+assumptions, and remaining verification limits.
 
 \section{Testing Strategy}
 
@@ -13,6 +14,12 @@ health, functional and integration tests for core workflows across Gateway,
 Governance, Workspace, and infrastructure dependencies, and security checks for
 protected routes and role restrictions, completed by focused manual UI
 validation of principal frontend flows.
+
+This layered strategy was preferred over isolated unit-only validation because
+the main project risks were integration-driven (identity propagation, policy
+decisions, and multi-storage coordination). The trade-off is that local
+integration tests are slower to execute and harder to debug than fine-grained
+unit tests.
 
 \section{Test Environment}
 
@@ -61,8 +68,9 @@ Angular frontend/browser & Manual user workflow and interface checks. \\
 
 \section{Test Cases}
 
-Table~\ref{tab:test-cases} summarizes representative scenarios and their
-current validation status.
+Table~\ref{tab:test-cases} consolidates representative scenarios and their
+current validation status to distinguish stabilized flows from partially covered
+or manually verified behaviors.
 
 \begin{table}[!htbp]
 \centering
@@ -113,6 +121,10 @@ checks, authenticated frontend workflows, and backend responses through the API
 Gateway. The objective was integration and role-based-access validation in
 development conditions, not production benchmarking.
 
+As a consequence, passed results should be interpreted as evidence of functional
+coherence under controlled conditions, not as guarantees of production
+resilience under high load, network instability, or long-running concurrency.
+
 \section{Performance Evaluation}
 
 In addition to functional validation, a small set of latency observations was
@@ -159,6 +171,13 @@ require more time. Document upload is the most expensive operation due to file
 transfer and object-storage interaction; broader load testing remains necessary
 before production deployment.
 
+From a comparative perspective, synchronous health checks mainly reflect
+readiness of service endpoints, whereas document and editor workflows capture
+the compound cost of authorization, persistence, and binary transfer. This
+difference reinforces the architectural observation that integration hotspots
+are dominated by cross-component orchestration rather than single-service
+computation.
+
 \section{Validation Summary}
 
 Validation confirmed coherent integrated behavior across platform services, with
@@ -166,3 +185,8 @@ core workflows checked for authentication, document lifecycle, events,
 notifications, profile consultation, and policy-based protection. Priority
 improvements remain broader automated coverage, production monitoring readiness,
 and deeper end-to-end validation.
+
+The next validation cycle should therefore prioritize automated scenario
+coverage for policy-sensitive flows, targeted stress tests on storage/editor
+paths, and observability metrics that link Gateway, Governance, and Workspace
+events into one diagnosable execution trace.

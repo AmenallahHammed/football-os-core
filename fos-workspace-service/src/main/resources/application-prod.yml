@@ -36,7 +36,7 @@ fos:
   canonical:
     service-url: ${GOVERNANCE_URL}
   onlyoffice:
-    document-server-url: ${ONLYOFFICE_PUBLIC_URL:${ONLYOFFICE_URL}}
+    document-server-url: ${ONLYOFFICE_DOCUMENT_SERVER_URL:${ONLYOFFICE_PUBLIC_URL:${ONLYOFFICE_URL}}}
     internal-url: ${ONLYOFFICE_INTERNAL_URL}
     callback-base-url: ${ONLYOFFICE_CALLBACK_BASE_URL}
     jwt-secret: ${ONLYOFFICE_JWT_SECRET}

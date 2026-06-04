@@ -39,7 +39,8 @@ fos:
   canonical:
     service-url: http://localhost:8081
   onlyoffice:
-    document-server-url: ${ONLYOFFICE_PUBLIC_URL:${ONLYOFFICE_URL:http://localhost:8084}}
+    document-server-url: ${ONLYOFFICE_DOCUMENT_SERVER_URL:${ONLYOFFICE_PUBLIC_URL:${ONLYOFFICE_URL:http://localhost:8084}}}
+    backend-public-url: ${ONLYOFFICE_BACKEND_PUBLIC_URL:${ONLYOFFICE_CALLBACK_BASE_URL:http://host.docker.internal:8080}}
     internal-url: ${ONLYOFFICE_INTERNAL_URL:http://onlyoffice-documentserver}
     callback-base-url: ${ONLYOFFICE_CALLBACK_BASE_URL:http://host.docker.internal:8080}
     # Keep this aligned with the OnlyOffice Docker JWT secret to avoid

@@ -42,6 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         "fos.storage.provider=noop",
         "fos.security.enabled=false",
         "fos.onlyoffice.document-server-url=http://localhost:8084",
+        "fos.onlyoffice.backend-public-url=http://download-host:8080",
         "fos.onlyoffice.callback-base-url=http://callback-host:8080",
         "fos.onlyoffice.jwt-secret=test-secret-key-must-be-32-chars!!"
 })
@@ -163,7 +164,14 @@ class OnlyOfficeConfigTest extends FosTestContainersBase {
         assertThat(response.getBody().documentServerUrl()).isEqualTo("http://localhost:8084");
         assertThat(response.getBody().token()).isNotBlank();
         assertThat(response.getBody().config().document().fileType()).isEqualTo("docx");
-        assertThat(response.getBody().config().document().url()).isNotBlank();
+        assertThat(response.getBody().config().document().fileType()).isLowerCase();
+        assertThat(response.getBody().config().document().key())
+                .isEqualTo(confirmed.documentId() + "_v1")
+                .hasSizeLessThanOrEqualTo(128)
+                .matches("^[0-9A-Za-z._=\\-]+$");
+        assertThat(response.getBody().config().document().title()).isEqualTo("test.docx");
+        assertThat(response.getBody().config().document().url())
+                .startsWith("http://download-host:8080/api/v1/onlyoffice/download/" + confirmed.documentId() + "_v1?token=");
         assertThat(response.getBody().config().editorConfig().callbackUrl())
                 .isEqualTo("http://callback-host:8080/api/v1/onlyoffice/callback/" + confirmed.documentId());
     }

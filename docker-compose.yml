@@ -230,10 +230,16 @@ services:
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
       MINIO_BUCKET: ${MINIO_BUCKET:-fos-workspace}
+      ONLYOFFICE_DOCUMENT_SERVER_URL: ${ONLYOFFICE_DOCUMENT_SERVER_URL:?ONLYOFFICE_DOCUMENT_SERVER_URL is required}
       ONLYOFFICE_PUBLIC_URL: ${ONLYOFFICE_PUBLIC_URL:?ONLYOFFICE_PUBLIC_URL is required}
-      ONLYOFFICE_URL: ${ONLYOFFICE_PUBLIC_URL:?ONLYOFFICE_PUBLIC_URL is required}
+      # CRITICAL: OnlyOffice container downloads files using this URL.
+      # For Docker Desktop: use host.docker.internal (automatic, no env var needed)
+      # For local LAN testing: set ONLYOFFICE_BACKEND_PUBLIC_URL=http://192.168.0.126:8080
+      # For docker-in-docker or custom networks: use internal DNS name=http://fos-gateway:8080
+      ONLYOFFICE_BACKEND_PUBLIC_URL: ${ONLYOFFICE_BACKEND_PUBLIC_URL:-http://host.docker.internal:8080}
+      ONLYOFFICE_URL: ${ONLYOFFICE_URL:?ONLYOFFICE_URL is required}
       ONLYOFFICE_INTERNAL_URL: ${ONLYOFFICE_INTERNAL_URL:-http://onlyoffice-documentserver}
-      ONLYOFFICE_CALLBACK_BASE_URL: ${ONLYOFFICE_CALLBACK_BASE_URL:-http://fos-gateway:8080}
+      ONLYOFFICE_CALLBACK_BASE_URL: ${ONLYOFFICE_CALLBACK_BASE_URL:-http://host.docker.internal:8080}
       ONLYOFFICE_JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:?ONLYOFFICE_JWT_SECRET is required}
       ONLYOFFICE_JWT_ENABLED: ${ONLYOFFICE_JWT_ENABLED:-true}
       ONLYOFFICE_JWT_HEADER: Authorization

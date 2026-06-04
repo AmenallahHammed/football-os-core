@@ -34,6 +34,11 @@ public class NoopStorageAdapter implements StoragePort {
     }
 
     @Override
+    public byte[] getObject(String bucket, String objectKey) {
+        throw new IllegalStateException("[NOOP-STORAGE] getObject is unavailable because noop storage does not persist binary content");
+    }
+
+    @Override
     public void putObject(String bucket, String objectKey, InputStream content,
                           long contentLength, String contentType) {
         log.info("[NOOP-STORAGE] putObject: bucket={}, key={}, bytes={}, contentType={}",

@@ -94,11 +94,17 @@ public class DocumentService {
 
         WorkspaceDocument saved = documentRepository.save(document);
         String objectKey = objectKeyFor(saved.getResourceId(), saved.nextVersionNumber(), request.originalFilename());
-        PresignedUploadUrl uploadUrl = storagePort.generateUploadUrl(
-                workspaceBucket,
-                objectKey,
-                request.contentType(),
-                UPLOAD_URL_EXPIRY);
+        PresignedUploadUrl uploadUrl;
+        try {
+            uploadUrl = storagePort.generateUploadUrl(
+                    workspaceBucket,
+                    objectKey,
+                    request.contentType(),
+                    UPLOAD_URL_EXPIRY);
+        } catch (RuntimeException ex) {
+            cleanupFailedDraft(saved, actorId, request.category(), ex);
+            throw ex;
+        }
 
         kafkaProducer.emit(SignalEnvelope.builder()
                 .type(SignalType.AUDIT)
@@ -217,6 +223,20 @@ public class DocumentService {
     private WorkspaceDocument loadDocument(UUID documentId, UUID clubId) {
         return documentRepository.findByResourceIdAndOwnerRefId(documentId, clubId)
                 .orElseThrow(() -> new EntityNotFoundException("Document not found: " + documentId));
+    }
+
+    private void cleanupFailedDraft(WorkspaceDocument document,
+                                    UUID actorId,
+                                    DocumentCategory category,
+                                    RuntimeException cause) {
+        try {
+            documentRepository.deleteById(document.getId());
+            log.warn("Rolled back failed upload initiation: documentId={} category={} actor={} reason={}",
+                    document.getResourceId(), category, actorId, cause.getMessage());
+        } catch (RuntimeException cleanupEx) {
+            log.error("Failed to roll back draft after upload initiation error: documentId={} category={} actor={}",
+                    document.getResourceId(), category, actorId, cleanupEx);
+        }
     }
 
     private void authorize(String action,

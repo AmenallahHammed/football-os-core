@@ -5,7 +5,6 @@ import com.fos.sdk.policy.PolicyClient;
 import com.fos.sdk.policy.PolicyRequest;
 import com.fos.sdk.policy.PolicyResult;
 import com.fos.sdk.security.FosSecurityContext;
-import com.fos.sdk.storage.StoragePort;
 import com.fos.workspace.document.domain.DocumentCategory;
 import com.fos.workspace.document.domain.WorkspaceDocument;
 import com.fos.workspace.document.infrastructure.persistence.WorkspaceDocumentRepository;
@@ -14,13 +13,14 @@ import com.fos.workspace.onlyoffice.api.OnlyOfficeConfigResponse;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ import java.util.UUID;
 @Service
 public class OnlyOfficeConfigService {
 
-    private static final Duration FILE_URL_EXPIRY = Duration.ofMinutes(30);
+    private static final Logger log = LoggerFactory.getLogger(OnlyOfficeConfigService.class);
     // Local no-auth development fallback values only.
     private static final UUID LOCAL_NOAUTH_FALLBACK_ACTOR_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final UUID LOCAL_NOAUTH_FALLBACK_CLUB_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
@@ -39,33 +39,36 @@ public class OnlyOfficeConfigService {
     private static final Set<String> EDITABLE_FILE_TYPES = Set.of("docx", "xlsx", "pptx");
 
     private final WorkspaceDocumentRepository documentRepository;
-    private final StoragePort storagePort;
     private final PolicyClient policyClient;
     private final FosSecurityContext securityContext;
     private final boolean securityEnabled;
     private final String documentServerUrl;
+    private final String backendPublicUrl;
     private final String callbackBaseUrl;
     private final String jwtSecret;
     private final int tokenExpiryMinutes;
+    private final OnlyOfficeDownloadTokenService downloadTokenService;
 
     public OnlyOfficeConfigService(WorkspaceDocumentRepository documentRepository,
-                                   StoragePort storagePort,
                                    PolicyClient policyClient,
                                    FosSecurityContext securityContext,
-                                   @Value("${fos.security.enabled:true}") boolean securityEnabled,
-                                   @Value("${fos.onlyoffice.document-server-url}") String documentServerUrl,
+                                    @Value("${fos.security.enabled:true}") boolean securityEnabled,
+                                    @Value("${fos.onlyoffice.document-server-url}") String documentServerUrl,
+                                   @Value("${fos.onlyoffice.backend-public-url:${fos.onlyoffice.callback-base-url}}") String backendPublicUrl,
                                    @Value("${fos.onlyoffice.callback-base-url}") String callbackBaseUrl,
                                    @Value("${fos.onlyoffice.jwt-secret}") String jwtSecret,
-                                   @Value("${fos.onlyoffice.token-expiry-minutes:60}") int tokenExpiryMinutes) {
+                                   @Value("${fos.onlyoffice.token-expiry-minutes:60}") int tokenExpiryMinutes,
+                                   OnlyOfficeDownloadTokenService downloadTokenService) {
         this.documentRepository = documentRepository;
-        this.storagePort = storagePort;
         this.policyClient = policyClient;
         this.securityContext = securityContext;
         this.securityEnabled = securityEnabled;
         this.documentServerUrl = trimTrailingSlashes(documentServerUrl);
+        this.backendPublicUrl = trimTrailingSlashes(backendPublicUrl);
         this.callbackBaseUrl = trimTrailingSlashes(callbackBaseUrl);
         this.jwtSecret = jwtSecret;
         this.tokenExpiryMinutes = tokenExpiryMinutes;
+        this.downloadTokenService = downloadTokenService;
     }
 
     public OnlyOfficeConfigResponse generateConfig(OnlyOfficeConfigRequest request) {
@@ -99,19 +102,18 @@ public class OnlyOfficeConfigService {
             throw new AccessDeniedException("Document access denied: " + policy.reason());
         }
 
-        String fileUrl = storagePort.generateDownloadUrl(
-                document.currentVersion().getStorageBucket(),
-                document.currentVersion().getStorageObjectKey(),
-                FILE_URL_EXPIRY);
-
         String documentType = resolveDocumentType(fileType);
         String onlyOfficeKey = document.getResourceId() + "_v" + document.currentVersion().getVersionNumber();
+        String downloadToken = downloadTokenService.signDownloadToken(
+                document.getResourceId(),
+                document.currentVersion().getVersionNumber());
+        String fileUrl = backendPublicUrl + "/api/v1/onlyoffice/download/" + onlyOfficeKey + "?token=" + downloadToken;
         String callbackUrl = callbackBaseUrl + "/api/v1/onlyoffice/callback/" + document.getResourceId();
 
         var documentConfig = new OnlyOfficeConfigResponse.DocumentConfig(
                 fileType,
                 onlyOfficeKey,
-                document.getName(),
+                document.currentVersion().getOriginalFilename(),
                 fileUrl);
 
         var editorConfig = new OnlyOfficeConfigResponse.EditorConfig(
@@ -126,8 +128,42 @@ public class OnlyOfficeConfigService {
                 "editorConfig", editorConfig,
                 "documentType", documentType));
 
+        logConfig(document.getResourceId(), request.mode(), documentConfig, editorConfig);
+
         var config = new OnlyOfficeConfigResponse.OnlyOfficeConfig(documentConfig, editorConfig, documentType, token);
         return new OnlyOfficeConfigResponse(documentServerUrl, config, token);
+    }
+
+    private void logConfig(UUID documentId,
+                           String mode,
+                           OnlyOfficeConfigResponse.DocumentConfig documentConfig,
+                           OnlyOfficeConfigResponse.EditorConfig editorConfig) {
+        log.info(
+                "OnlyOffice config generated: documentId={} mode={} documentUrl={} callbackUrl={} documentKey={} fileType={}",
+                documentId,
+                mode,
+                sanitizeUrlForLogs(documentConfig.url()),
+                editorConfig.callbackUrl(),
+                documentConfig.key(),
+                documentConfig.fileType());
+        
+        // Enhanced diagnostic logging for troubleshooting
+        log.debug(
+                "OnlyOffice config debug: backendPublicUrl={} documentServerUrl={} callbackBaseUrl={} tokenExpiryMinutes={}",
+                backendPublicUrl,
+                documentServerUrl,
+                callbackBaseUrl,
+                tokenExpiryMinutes);
+        
+        // Full URL with token (only in debug to avoid accidentally logging secrets)
+        if (log.isDebugEnabled()) {
+            log.debug("OnlyOffice download URL with token: {} (full URL for testing)", documentConfig.url());
+        }
+    }
+
+    private String sanitizeUrlForLogs(String url) {
+        int queryIndex = url.indexOf('?');
+        return queryIndex >= 0 ? url.substring(0, queryIndex) : url;
     }
 
     private String signConfig(Map<String, Object> claims) {

@@ -108,4 +108,69 @@ class GatewayJwtTest {
                 .exchange()
                 .expectStatus().isOk();
     }
+
+    @Test
+    void should_allow_onlyoffice_download_without_keycloak_jwt() {
+        stubFor(get(urlPathMatching("/api/v1/onlyoffice/download/.*"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/pdf")
+                        .withBody("pdf")));
+
+        webTestClient.get()
+                .uri("/api/v1/onlyoffice/download/00000000-0000-0000-0000-000000000001_v1?token=test-token")
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void should_ignore_non_keycloak_bearer_token_for_onlyoffice_download() {
+        stubFor(get(urlPathMatching("/api/v1/onlyoffice/download/.*"))
+                .withHeader("Authorization", absent())
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/pdf")
+                        .withBody("pdf")));
+
+        webTestClient.get()
+                .uri("/api/v1/onlyoffice/download/00000000-0000-0000-0000-000000000001_v1?token=test-token")
+                .header("Authorization", "Bearer onlyoffice-outbox-token")
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void should_allow_onlyoffice_download_head_without_keycloak_jwt() {
+        stubFor(head(urlPathMatching("/api/v1/onlyoffice/download/.*"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/pdf")
+                        .withHeader("Content-Length", "3")));
+
+        webTestClient.head()
+                .uri("/api/v1/onlyoffice/download/00000000-0000-0000-0000-000000000001_v1?token=test-token")
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void should_allow_onlyoffice_download_options_without_keycloak_jwt() {
+        stubFor(options(urlPathMatching("/api/v1/onlyoffice/download/.*"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Allow", "GET,HEAD,OPTIONS")));
+
+        webTestClient.options()
+                .uri("/api/v1/onlyoffice/download/00000000-0000-0000-0000-000000000001_v1?token=test-token")
+                .exchange()
+                .expectStatus().isOk();
+    }
+
+    @Test
+    void should_reject_onlyoffice_download_post_without_keycloak_jwt() {
+        webTestClient.post()
+                .uri("/api/v1/onlyoffice/download/00000000-0000-0000-0000-000000000001_v1?token=test-token")
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.UNAUTHORIZED);
+    }
 }

@@ -120,7 +120,7 @@ npm ci
 - Add `keycloak` only when testing real auth.
 - `opensearch` is disabled in `docker-compose.infra.yml` to reduce local RAM usage.
 - OpenSearch default behavior in full compose is intentionally unchanged pending an explicit `MANUAL-009` decision.
-- OnlyOffice is exposed on `8084`; set `HOST_LAN_IP` and `ONLYOFFICE_PUBLIC_URL` in `.env` before testing documents from the frontend.
+- OnlyOffice is exposed on `8084`; set `HOST_LAN_IP`, `ONLYOFFICE_DOCUMENT_SERVER_URL`, `ONLYOFFICE_BACKEND_PUBLIC_URL`, and `ONLYOFFICE_CALLBACK_BASE_URL` in `.env` before testing documents from the frontend.
 - Do not run a native app service on the same port as a Docker container from the full stack.
 - Do not use `docker compose down -v` during this process.
 - Document upload signals now include `uploaderActorId`; notification consumers read it first and fall back to legacy `actorRef` for backward compatibility.
@@ -248,9 +248,11 @@ Notes:
 - Set `CORS_ALLOWED_ORIGINS` when your frontend origin differs from `http://localhost:4200`.
 - `HOST_LAN_IP` defaults to `localhost` for same-machine testing. For another device on LAN, set it to your machine real IP.
 - If the editor opens but cannot save, verify `ONLYOFFICE_CALLBACK_BASE_URL` is reachable from inside the `fos-onlyoffice` container.
-- If the editor opens but cannot load the file, inspect `document.url` in `/api/v1/onlyoffice/config` response and confirm MinIO URL reachability from both browser and ONLYOFFICE.
+- If the editor opens but cannot load the file, inspect `document.url` in `/api/v1/onlyoffice/config` response and confirm the backend download URL is reachable from both browser and ONLYOFFICE.
 - Committed OnlyOffice JWT placeholders are local examples only; keep real `.env` values user-owned and ensure `ONLYOFFICE_JWT_SECRET` is at least 32 characters.
-- Full Docker callback base URL should be `http://fos-gateway:8080`; hybrid host-backend mode should use `http://host.docker.internal:8080`.
+- For browser-openable local debugging, set `ONLYOFFICE_BACKEND_PUBLIC_URL` and `ONLYOFFICE_CALLBACK_BASE_URL` to your LAN gateway URL such as `http://192.168.0.126:8080`.
+- Keep `ONLYOFFICE_DOCUMENT_SERVER_URL` on the OnlyOffice server URL such as `http://192.168.0.126:8084`.
+- See `docs/onlyoffice-local-setup.md` for the local URL role split.
 - Only these OnlyOffice formats are supported for editor flows: `docx`, `xlsx`, `pptx`, `pdf`.
 - Security allow-list is intentionally narrow: `/api/v1/onlyoffice/callback/**` and `/api/v1/onlyoffice/health` may be public; `/api/v1/onlyoffice/config` remains protected when security is enabled.
 

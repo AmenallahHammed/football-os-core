@@ -1,9 +1,9 @@
 import { DatePipe } from '@angular/common';
-import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpEventType } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription, catchError, firstValueFrom, forkJoin, of, tap } from 'rxjs';
+import { Subscription, catchError, filter, firstValueFrom, forkJoin, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/auth/auth.service';
 import { WorkspaceDataService } from '../../core/data/workspace-data.service';
@@ -36,6 +36,15 @@ const SUPPORTED_UPLOAD_EXTENSIONS = new Set([
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const MAX_UPLOAD_SIZE_BYTES = 25 * 1024 * 1024;
 const FALLBACK_STORAGE_BUCKET = 'fos-workspace';
+
+class UploadStepError extends Error {
+  constructor(
+    readonly step: 'initiate' | 'binary' | 'confirm',
+    readonly originalError: unknown
+  ) {
+    super(`Document upload failed during ${step}.`);
+  }
+}
 
 @Component({
   selector: 'app-documents',
@@ -176,6 +185,10 @@ export class DocumentsComponent implements OnInit, OnDestroy {
   }
 
   protected onFilesSelected(files: File[]): void {
+    if (this.uploadBusy) {
+      return;
+    }
+
     void this.uploadFilesThroughBackend(files);
   }
 
@@ -351,24 +364,10 @@ export class DocumentsComponent implements OnInit, OnDestroy {
         const file = files[index];
         const uploadMetadata = this.buildUploadMetadata(file);
 
-        this.uploadStatusMessage = `Initiating upload ${index + 1}/${files.length}: ${file.name}`;
-        this.uploadProgress = 5;
-        const initiated = await firstValueFrom(this.documentsApi.initiateUpload(uploadMetadata));
+        const initiated = await this.initiateBackendUpload(uploadMetadata, file, index, files.length);
 
         if (!this.shouldSkipBinaryUpload(initiated.uploadUrl)) {
-          this.uploadStatusMessage = `Uploading ${file.name}...`;
-          await firstValueFrom(
-            this.documentsApi.uploadBinary(initiated.uploadUrl, file).pipe(
-              tap((event) => {
-                if (event.type === HttpEventType.UploadProgress && event.total) {
-                  const fileProgress = Math.round((event.loaded / event.total) * 100);
-                  const overallBase = (index / files.length) * 100;
-                  const scaledProgress = Math.round((fileProgress / files.length) + overallBase);
-                  this.uploadProgress = Math.min(95, scaledProgress);
-                }
-              })
-            )
-          );
+          await this.uploadBinaryToPresignedUrl(initiated.uploadUrl, file, index, files.length);
         } else {
           // TODO(storage-noop): noop storage returns a non-routable upload URL by design.
           // Skip binary transfer and continue confirm so local dev can still exercise workflow.
@@ -376,16 +375,7 @@ export class DocumentsComponent implements OnInit, OnDestroy {
           this.uploadProgress = 70;
         }
 
-        this.uploadStatusMessage = `Confirming upload ${index + 1}/${files.length}: ${file.name}`;
-        this.uploadProgress = 90;
-        const confirmPayload: BackendConfirmUploadRequest = {
-          ...uploadMetadata,
-          documentId: initiated.documentId,
-          storageObjectKey: initiated.objectKey,
-          storageBucket: this.resolveStorageBucket(initiated.uploadUrl)
-        };
-
-        await firstValueFrom(this.documentsApi.confirmUpload(confirmPayload));
+        await this.confirmBackendUpload(initiated.documentId, initiated.objectKey, initiated.uploadUrl, uploadMetadata, file, index, files.length);
         uploadedCount += 1;
         this.uploadProgress = Math.round((uploadedCount / files.length) * 100);
       }
@@ -491,6 +481,90 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     };
   }
 
+  private async initiateBackendUpload(
+    uploadMetadata: BackendInitiateUploadRequest,
+    file: File,
+    index: number,
+    totalFiles: number
+  ) {
+    this.uploadStatusMessage = `Initiating upload ${index + 1}/${totalFiles}: ${file.name}`;
+    this.uploadProgress = 5;
+
+    try {
+      return await firstValueFrom(this.documentsApi.initiateUpload(uploadMetadata));
+    } catch (error) {
+      console.error('Failed to initiate upload', {
+        fileName: file.name,
+        uploadMetadata,
+        error
+      });
+      throw new UploadStepError('initiate', error);
+    }
+  }
+
+  private async uploadBinaryToPresignedUrl(
+    uploadUrl: string,
+    file: File,
+    index: number,
+    totalFiles: number
+  ): Promise<void> {
+    this.uploadStatusMessage = `Uploading ${file.name}...`;
+
+    try {
+      await firstValueFrom(
+        this.documentsApi.uploadBinary(uploadUrl, file).pipe(
+          tap((event) => {
+            if (event.type === HttpEventType.UploadProgress && event.total) {
+              const fileProgress = Math.round((event.loaded / event.total) * 100);
+              const overallBase = (index / totalFiles) * 100;
+              const scaledProgress = Math.round((fileProgress / totalFiles) + overallBase);
+              this.uploadProgress = Math.min(95, scaledProgress);
+            }
+          }),
+          filter((event: HttpEvent<unknown>) => event.type === HttpEventType.Response)
+        )
+      );
+    } catch (error) {
+      console.error('Failed to upload file binary to presigned URL', {
+        fileName: file.name,
+        uploadUrl,
+        error
+      });
+      throw new UploadStepError('binary', error);
+    }
+  }
+
+  private async confirmBackendUpload(
+    documentId: string,
+    objectKey: string,
+    uploadUrl: string,
+    uploadMetadata: BackendInitiateUploadRequest,
+    file: File,
+    index: number,
+    totalFiles: number
+  ): Promise<void> {
+    this.uploadStatusMessage = `Confirming upload ${index + 1}/${totalFiles}: ${file.name}`;
+    this.uploadProgress = 90;
+
+    const confirmPayload: BackendConfirmUploadRequest = {
+      ...uploadMetadata,
+      documentId,
+      storageObjectKey: objectKey,
+      storageBucket: this.resolveStorageBucket(uploadUrl)
+    };
+
+    try {
+      await firstValueFrom(this.documentsApi.confirmUpload(confirmPayload));
+    } catch (error) {
+      console.error('Failed to confirm upload', {
+        fileName: file.name,
+        confirmPayload,
+        error
+      });
+      throw new UploadStepError('confirm', error);
+    }
+  }
+
   private shouldSkipBinaryUpload(uploadUrl: string): boolean {
     try {
       const parsed = new URL(uploadUrl);
@@ -516,6 +590,14 @@ export class DocumentsComponent implements OnInit, OnDestroy {
   }
 
   private mapUploadError(error: unknown): string {
+    if (error instanceof UploadStepError) {
+      if (error.step === 'binary') {
+        return 'File upload failed before confirmation. Please try again.';
+      }
+
+      return this.mapUploadError(error.originalError);
+    }
+
     if (error instanceof HttpErrorResponse) {
       if (error.status === 0) {
         return 'Cannot reach gateway or upload URL.';

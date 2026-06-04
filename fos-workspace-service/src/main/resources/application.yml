@@ -102,7 +102,9 @@ fos:
     provider: ${STORAGE_PROVIDER:noop}
   onlyoffice:
     # Public URL returned to the browser for loading OnlyOffice api.js.
-    document-server-url: ${ONLYOFFICE_PUBLIC_URL:${ONLYOFFICE_URL:http://localhost:8084}}
+    document-server-url: ${ONLYOFFICE_DOCUMENT_SERVER_URL:${ONLYOFFICE_PUBLIC_URL:${ONLYOFFICE_URL:http://localhost:8084}}}
+    # URL that the OnlyOffice Document Server uses to download document bytes from backend.
+    backend-public-url: ${ONLYOFFICE_BACKEND_PUBLIC_URL:${ONLYOFFICE_CALLBACK_BASE_URL:http://host.docker.internal:8080}}
     # Internal Docker URL reserved for backend-side Document Server calls.
     internal-url: ${ONLYOFFICE_INTERNAL_URL:http://onlyoffice-documentserver}
     # Base URL used in editorConfig.callbackUrl. In local Docker this should be

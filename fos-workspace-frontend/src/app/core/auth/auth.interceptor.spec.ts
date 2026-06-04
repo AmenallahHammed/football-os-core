@@ -49,13 +49,19 @@ describe('AuthInterceptor', () => {
   it('does not attach bearer token to static assets or unrelated hosts', () => {
     http.get('assets/ball.png').subscribe();
     http.get('https://cdn.example.com/file.json').subscribe();
+    http.put('http://localhost:9000/fos-workspace/documents/test.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256', 'file').subscribe();
 
     const assetRequest = httpTesting.expectOne('assets/ball.png');
     const cdnRequest = httpTesting.expectOne('https://cdn.example.com/file.json');
+    const presignedRequest = httpTesting.expectOne(
+      'http://localhost:9000/fos-workspace/documents/test.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256'
+    );
     expect(assetRequest.request.headers.has('Authorization')).toBeFalse();
     expect(cdnRequest.request.headers.has('Authorization')).toBeFalse();
+    expect(presignedRequest.request.headers.has('Authorization')).toBeFalse();
     assetRequest.flush('');
     cdnRequest.flush({});
+    presignedRequest.flush('');
   });
 
   it('clears local auth state on gateway 401 responses', () => {

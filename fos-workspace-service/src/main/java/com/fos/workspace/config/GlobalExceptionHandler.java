@@ -43,6 +43,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleConflict(IllegalStateException ex) {
+        log.warn("Returning 409 Conflict for IllegalStateException: {}", ex.getMessage(), ex);
         return ErrorResponse.of("CONFLICT", ex.getMessage(), RequestContext.get());
     }
 

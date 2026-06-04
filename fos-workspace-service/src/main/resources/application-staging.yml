@@ -27,13 +27,15 @@ fos:
   canonical:
     service-url: ${GOVERNANCE_URL}
   onlyoffice:
-    document-server-url: ${ONLYOFFICE_PUBLIC_URL:${ONLYOFFICE_URL}}
+    document-server-url: ${ONLYOFFICE_DOCUMENT_SERVER_URL:${ONLYOFFICE_PUBLIC_URL:${ONLYOFFICE_URL}}}
+    backend-public-url: ${ONLYOFFICE_BACKEND_PUBLIC_URL:${ONLYOFFICE_CALLBACK_BASE_URL}}
     internal-url: ${ONLYOFFICE_INTERNAL_URL}
     callback-base-url: ${ONLYOFFICE_CALLBACK_BASE_URL}
     jwt-secret: ${ONLYOFFICE_JWT_SECRET}
     jwt-enabled: ${ONLYOFFICE_JWT_ENABLED:true}
     jwt-header: ${ONLYOFFICE_JWT_HEADER:Authorization}
     jwt-in-body: ${ONLYOFFICE_JWT_IN_BODY:true}
+    token-expiry-minutes: 60
 
 minio:
   endpoint: ${MINIO_ENDPOINT}

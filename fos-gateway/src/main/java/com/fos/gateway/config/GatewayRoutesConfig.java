@@ -5,6 +5,7 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 
 /**
  * Centrally defined routing for the FOS ecosystem.
@@ -29,6 +30,12 @@ public class GatewayRoutesConfig {
                               "/api/v1/signals/**",
                               "/api/v1/identity/**")
                         .uri(governanceUrl))
+                .route("fos-workspace-onlyoffice-public", r -> r
+                        .path("/api/v1/onlyoffice/download/**",
+                              "/api/v1/onlyoffice/callback/**",
+                              "/api/v1/onlyoffice/health")
+                        .filters(f -> f.removeRequestHeader(HttpHeaders.AUTHORIZATION))
+                        .uri(workspaceUrl))
                 .route("fos-workspace", r -> r
                         .path("/api/v1/documents/**",
                               "/api/v1/events/**",

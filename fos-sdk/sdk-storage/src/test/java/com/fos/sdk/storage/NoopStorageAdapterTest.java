@@ -31,4 +31,11 @@ class NoopStorageAdapterTest {
         assertThatCode(() -> adapter.confirmUpload("bucket", "key")).doesNotThrowAnyException();
         assertThatCode(() -> adapter.deleteObject("bucket", "key")).doesNotThrowAnyException();
     }
+
+    @Test
+    void should_fail_when_binary_download_is_requested_from_noop_storage() {
+        assertThatThrownBy(() -> adapter.getObject("bucket", "key"))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("noop storage");
+    }
 }

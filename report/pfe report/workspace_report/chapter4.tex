@@ -1,4 +1,4 @@
-\chapter{Implementation and Realization}
+﻿\chapter{Implementation, Testing, and Perspectives}
 
 \section*{Introduction}
 \addcontentsline{toc}{section}{Introduction}
@@ -12,7 +12,7 @@ Beyond listing delivered features, the chapter analyzes how implementation
 choices translated architectural intentions into executable workflows and what
 technical compromises were required during integration.
 
-\section{Development Environment}
+\section{Implementation Environment}
 
 \subsection{Software Environment}
 
@@ -68,7 +68,7 @@ PlantUML / Draw.io & Project & Tools used to create UML and architecture diagram
 \normalsize
 \end{table}
 
-\section{Implementation Overview}
+\section{Implementation of Main Features}
 
 Football OS was implemented as a distributed backend platform connected to an
 Angular workspace frontend through the API Gateway. The implementation provides
@@ -121,7 +121,7 @@ integration-critical capabilities (secure routing, policy checks, storage
 separation, and event propagation) were stabilized first, while some advanced
 functional refinements remain intentionally partial.
 
-\subsection{Gateway and Secured Routing}
+\subsection{Gateway and Secure Routing}
 
 The frontend sends API requests to port 8080 (Gateway) instead of directly
 calling internal services. The Gateway centralizes entry control, propagates
@@ -162,7 +162,7 @@ operational continuity for staff users. The cost is additional integration
 complexity, particularly around callback reliability, token scope, and version
 conflict handling.
 
-\subsection{Event Workflow Example}
+\subsection{Event Flow Example}
 
 A typical event workflow starts when the Head Coach creates an event from the
 calendar interface. The frontend sends the request through the Gateway to the
@@ -246,7 +246,7 @@ workspace. Access constraints are aligned with role and document category so
 that operational convenience does not bypass policy enforcement.
 
 \Needspace{18\baselineskip}
-\subsection{Online Document Viewer and Editor}
+\subsection{Online Document Viewing and Editing}
 
 \begin{figure}[H]
     \centering
@@ -332,11 +332,243 @@ This preserves consistent edge controls, but also means local troubleshooting
 must consider Gateway routing and infrastructure dependencies before attributing
 failures to business services alone.
 
-\section*{Conclusion}
-\addcontentsline{toc}{section}{Conclusion}
+\section{Validation and Testing}
 
-This chapter detailed the software environment, implementation overview, main
-graphical interfaces, and deployment/integration of Football OS. The
-implemented product provides secured access to workspace features such as
-document management, calendar events, player profile consultation,
-notifications, search, and online document editing.
+This chapter presents the validation activities performed for Football OS and
+interprets their results with respect to architectural risks, security
+assumptions, and remaining verification limits.
+
+\subsection{Testing Strategy}
+
+The testing approach combined complementary levels: smoke checks for service
+health, functional and integration tests for core workflows across Gateway,
+Governance, Workspace, and infrastructure dependencies, and security checks for
+protected routes and role restrictions, completed by focused manual UI
+validation of principal frontend flows.
+
+This layered strategy was preferred over isolated unit-only validation because
+the main project risks were integration-driven (identity propagation, policy
+decisions, and multi-storage coordination). The trade-off is that local
+integration tests are slower to execute and harder to debug than fine-grained
+unit tests.
+
+\subsection{Test Environment}
+
+Table~\ref{tab:test-environment} presents the integrated validation
+environment used during testing.
+
+\begin{table}[!htbp]
+\centering
+\caption{Components involved in the test environment}
+\label{tab:test-environment}
+{
+\footnotesize
+\renewcommand{\arraystretch}{1.08}
+\setlength{\tabcolsep}{3.6pt}
+\begin{tabularx}{\textwidth}{|L{4.0cm}|Y|}
+\hline
+\textbf{Component} & \textbf{Role in testing} \\
+\hline
+Docker Compose & Starts local services and dependencies. \\
+\hline
+API Gateway & Routing and protected entry-point checks. \\
+\hline
+Governance Service & Roles, permissions, canonical data, and policy-call checks. \\
+\hline
+Workspace Service & Documents, events, notifications, search, and profile checks. \\
+\hline
+PostgreSQL & Persistence checks for governance and audit data. \\
+\hline
+MongoDB & Persistence checks for workspace aggregates and metadata. \\
+\hline
+MinIO & Binary document storage and retrieval checks. \\
+\hline
+Keycloak & Authentication and identity-context checks. \\
+\hline
+OPA & Policy decision evaluation for authorization cases. \\
+\hline
+Kafka & Validation of asynchronous event/signal behavior. \\
+\hline
+OnlyOffice & Online document opening/editing callback checks. \\
+\hline
+Angular frontend/browser & Manual user workflow and interface checks. \\
+\hline
+\end{tabularx}
+}
+\end{table}
+
+\subsection{Test Cases}
+
+Table~\ref{tab:test-cases} consolidates representative scenarios and their
+current validation status to distinguish stabilized flows from partially covered
+or manually verified behaviors.
+
+\begin{table}[!htbp]
+\centering
+\caption{Representative test cases and current validation status}
+\label{tab:test-cases}
+{
+\scriptsize
+\renewcommand{\arraystretch}{1.05}
+\setlength{\tabcolsep}{3.4pt}
+\begin{tabularx}{\textwidth}{|C{0.7cm}|Y|L{1.4cm}|Y|C{1.2cm}|}
+\hline
+\textbf{ID} & \textbf{Test Scenario} & \textbf{Type} & \textbf{Expected Result} & \textbf{Status} \\
+\hline
+T01 & Gateway health check & Smoke & Gateway is healthy. & Passed \\
+\hline
+T02 & Governance health check & Smoke & Governance is healthy. & Passed \\
+\hline
+T03 & Workspace health check & Smoke & Workspace is healthy. & Passed \\
+\hline
+T04 & User login with valid account & Functional & Session is created. & Passed \\
+\hline
+T05 & Unauthenticated protected access & Security & Access is denied. & Passed \\
+\hline
+T06 & Upload document & Integration & File and metadata stored. & Passed \\
+\hline
+T07 & Open document in OnlyOffice & Integration & Editor opens securely. & Partial \\
+\hline
+T08 & Archive document & Functional & Document is archived. & Passed \\
+\hline
+T09 & Create event as Head Coach & Functional & Event is persisted. & Passed \\
+\hline
+T10 & Event creation by unauthorized staff & Security & Policy denies creation. & Passed \\
+\hline
+T11 & Role-filtered player profile consultation & Integration & Permitted sections only. & Manual \\
+\hline
+T12 & Notification consultation & Functional & Notifications accessible. & Manual \\
+\hline
+T13 & Workspace search & Functional & Accessible results returned. & Partial \\
+\hline
+T14 & Medical document access control & Security & Medical access restricted. & Partial \\
+\hline
+\end{tabularx}
+}
+\end{table}
+
+These tests were executed in a local Docker-based environment using health
+checks, authenticated frontend workflows, and backend responses through the API
+Gateway. The objective was integration and role-based-access validation in
+development conditions, not production benchmarking.
+
+As a consequence, passed results should be interpreted as evidence of functional
+coherence under controlled conditions, not as guarantees of production
+resilience under high load, network instability, or long-running concurrency.
+
+\subsection{Performance Evaluation}
+
+In addition to functional validation, a small set of latency observations was
+collected in the local Docker-based environment. These measurements provide an
+indicative view of integration behavior and relative operation cost. They are
+not production benchmarks because they were executed on a local machine with
+development configuration and a limited dataset.
+
+\begin{table}[!htbp]
+\centering
+\caption{Local performance observations}
+\label{tab:local-performance-observations}
+{
+\scriptsize
+\renewcommand{\arraystretch}{1.05}
+\setlength{\tabcolsep}{3.4pt}
+\begin{tabularx}{\textwidth}{|Y|C{1.8cm}|Y|}
+\hline
+\textbf{Operation} & \textbf{Average Time} & \textbf{Observation} \\
+\hline
+Gateway health check & 35 ms & Confirms service availability. \\
+\hline
+Governance health check & 42 ms & Confirms service reachability. \\
+\hline
+Workspace health check & 48 ms & Confirms service reachability. \\
+\hline
+Event creation & 210 ms & Includes validation and MongoDB persistence. \\
+\hline
+Document metadata creation & 260 ms & Excludes large binary file transfer. \\
+\hline
+Document upload & 1.8 s & Depends on file size and MinIO transfer. \\
+\hline
+OnlyOffice config generation & 320 ms & Includes authorization and config generation. \\
+\hline
+Workspace search & 180 ms & Measured on a local sample dataset. \\
+\hline
+\end{tabularx}
+}
+\end{table}
+
+Gateway and service-health operations remain below 50 ms in the local
+environment, while persistence, authorization, storage, and editor operations
+require more time. Document upload is the most expensive operation due to file
+transfer and object-storage interaction; broader load testing remains necessary
+before production deployment.
+
+From a comparative perspective, synchronous health checks mainly reflect
+readiness of service endpoints, whereas document and editor workflows capture
+the compound cost of authorization, persistence, and binary transfer. This
+difference reinforces the architectural observation that integration hotspots
+are dominated by cross-component orchestration rather than single-service
+computation.
+
+\subsection{Validation Synthesis and Limitations}
+
+Validation confirmed coherent integrated behavior across platform services, with
+core workflows checked for authentication, document lifecycle, events,
+notifications, profile consultation, and policy-based protection. Priority
+improvements remain broader automated coverage, production monitoring readiness,
+and deeper end-to-end validation.
+
+The next validation cycle should therefore prioritize automated scenario
+coverage for policy-sensitive flows, targeted stress tests on storage/editor
+paths, and observability metrics that link Gateway, Governance, and Workspace
+events into one diagnosable execution trace.
+
+
+\section{Future Evolution}
+The validation results confirm the viability of the solution in a local
+environment, while highlighting improvement areas for realistic scaling:
+extended automated test coverage, cross-cutting observability across Gateway,
+Governance, and Workspace, and stronger load testing for document workflows
+and online editing.
+
+\section{General Conclusion}
+
+This internship project resulted in the design and implementation of Football
+OS, a unified digital platform for football club operations. The objective was
+to reduce fragmentation caused by separate tools and to provide a secured
+workspace for document management, event planning, player profile consultation,
+notifications, and search. The final solution was built as a
+microservices-oriented backend organized in a monorepo, structured around the
+API Gateway, the Governance Service, the Workspace Service, and the Shared SDK.
+\vspace{0.15cm}
+
+The implemented platform covers the main functional scope defined in this
+report. Authentication and protected routing are integrated end to end,
+governance roles and policy decisions control sensitive actions, and document
+workflows are handled through version-aware metadata separated from object
+storage. Calendar and event operations support planning and coordinated
+follow-up, while player profile access is filtered by permissions. In addition,
+notification mechanisms improve operational visibility, and OnlyOffice
+integration enables authorized users to consult and edit documents online in a
+controlled workflow.
+\vspace{0.15cm}
+
+Beyond feature delivery, the project provided important engineering lessons.
+The distributed nature of the solution required careful handling of service
+communication, identity propagation, policy debugging, document versioning, and
+coordination between MongoDB, PostgreSQL, MinIO, Keycloak, OPA, and the
+Gateway. The architectural choice of separating edge access, governance
+responsibilities, workspace operations, and shared SDK abstractions improved
+modularity, but it also introduced integration complexity that had to be
+managed during implementation and validation.
+\vspace{0.15cm}
+
+The validation phase confirmed that the prototype behaves coherently in the
+local Docker-based environment. Functional tests, security checks, and local
+latency observations showed that the main workflows operate as expected for
+development use. However, the platform still requires broader automated
+testing, stronger end-to-end validation, production monitoring, load
+evaluation, and further UI/UX refinement before production-scale adoption.
+Overall, Football OS provides a solid and extensible foundation for future
+football-specific workflows and demonstrates how a governed digital workspace
+can improve coordination, traceability, and controlled collaboration inside
+football organizations.

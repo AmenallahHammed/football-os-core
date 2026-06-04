@@ -1,7 +1,7 @@
 PWD D:\fos-sdk\report\pfe report\workspace_report
 INPUT C:\Users\DELL\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
 INPUT main.tex
-OUTPUT main.log
+OUTPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.log
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\base\report.cls
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\base\report.cls
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\base\size12.clo
@@ -335,10 +335,10 @@ INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\t1ntxtlf.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\t1ntxtlf.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-t1.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\graphics\color.sty
-INPUT .\main.aux
-INPUT .\main.aux
-INPUT main.aux
-OUTPUT main.aux
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.aux
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.aux
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.aux
+OUTPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.aux
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\omlntxmi.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\omlntxmi.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\omlntxmi.fd
@@ -367,14 +367,14 @@ INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\pdflscape\pdflscape-
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\pdflscape\pdflscape-nometadata.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\graphics\lscape.sty
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\graphics\lscape.sty
-INPUT .\main.out
-INPUT .\main.out
-INPUT main.out
-INPUT main.out
-OUTPUT main.pdf
-INPUT .\main.out
-INPUT .\main.out
-OUTPUT main.out
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.out
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.out
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.out
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.out
+OUTPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.pdf
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.out
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.out
+OUTPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.out
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-ptm.cfg
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-ptm.cfg
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\microtype\mt-ptm.cfg
@@ -418,9 +418,9 @@ INPUT AbstractResumeKeywords.tex
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Regular-tlf-t1.tfm
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Bold-tlf-t1.tfm
-INPUT .\main.toc
-INPUT .\main.toc
-INPUT main.toc
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.toc
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.toc
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.toc
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ot1minntx.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ot1minntx.fd
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\newtx\ot1minntx.fd
@@ -481,15 +481,15 @@ INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\tex\latex\jknappen\ursfs.fd
 INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
 INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs10.tfm
 INPUT C:\Users\DELL\AppData\Local\MiKTeX\fonts\tfm\public\rsfs\rsfs7.tfm
-OUTPUT main.toc
-INPUT .\main.lof
-INPUT .\main.lof
-INPUT main.lof
-OUTPUT main.lof
-INPUT .\main.lot
-INPUT .\main.lot
-INPUT main.lot
-OUTPUT main.lot
+OUTPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.toc
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.lof
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.lof
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.lof
+OUTPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.lof
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.lot
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.lot
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.lot
+OUTPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.lot
 INPUT .\Abbreviations.tex
 INPUT .\Abbreviations.tex
 INPUT .\Abbreviations.tex
@@ -759,9 +759,9 @@ INPUT .\BibliographyWebography.tex
 INPUT .\BibliographyWebography.tex
 INPUT BibliographyWebography.tex
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\tfm\public\newtx\ntx-Italic-tlf-t1.tfm
-INPUT main.aux
-INPUT .\main.out
-INPUT .\main.out
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.aux
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.out
+INPUT D:\fos-sdk\report\pfe report\workspace_report\build_check\main.out
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\type1\public\tex-gyre\qtmr.pfb
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\type1\public\tex-gyre\qtmr.pfb
 INPUT C:\Users\DELL\AppData\Local\Programs\MiKTeX\fonts\type1\public\txfonts\t1xtt.pfb

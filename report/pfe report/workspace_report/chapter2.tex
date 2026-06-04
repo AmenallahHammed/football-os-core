@@ -1,393 +1,447 @@
-\chapter{Specification of Needs}
+﻿% !TeX root = main.tex
+\chapter{Functional Analysis and System Architecture}
 
 \section*{Introduction}
 \addcontentsline{toc}{section}{Introduction}
 
-This chapter formalizes the needs of Football OS through measurable
-requirements, actor definitions, and use-case models. The focus is on expected
-system behavior and access rules, independently from implementation details.
+This chapter presents the architectural analysis of Football OS and relates the
+functional constraints to service decomposition, inter-module communication,
+and the security strategy.
 
-% =====================================================
-\section{Functional Requirements}
+\section{Functional Analysis Synthesis}
+The business needs and use cases detailed in Chapter~1 are translated here
+into architectural decisions: centralized access through the Gateway,
+separation between Governance and Workspace responsibilities, and controlled
+externalization of authorization policies.
 
-Functional requirements are summarized in
-Table~\ref{tab:functional-requirements}, with identifiers, actors, priorities,
-and delivery status in the current project scope.
+\section{Global System Architecture}
 
-\begin{table}[ht]
-\centering
-\caption{Functional requirements of Football OS}
-\label{tab:functional-requirements}
-\begingroup
-\small
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.12}
-\begin{tabularx}{\textwidth}{|C{1.3cm}|Y|L{2.6cm}|C{1.4cm}|C{2.3cm}|}
-\hline
-\textbf{ID} & \textbf{Requirement} & \textbf{Main Actor} & \textbf{Priority} & \textbf{Status} \\
-\hline
-FR-01 & Authenticate through an external identity provider and enforce protected access. & All platform users & High & Implemented \\
-\hline
-FR-02 & Manage users and roles for administrative governance. & Club Administrator & High & Partial \\
-\hline
-FR-03 & Manage canonical club data (players and teams) with controlled updates. & Club Administrator & High & Partial \\
-\hline
-FR-04 & Upload, consult, and archive documents under authorization rules. & Authorized staff & High & Implemented \\
-\hline
-FR-05 & Support document versioning and online viewing or editing. & Authorized staff & High & Implemented \\
-\hline
-FR-06 & Manage calendar events, attendees, and task coordination. & Head Coach / Club Administrator & High & Implemented \\
-\hline
-FR-07 & Consult player profiles with role-based filtering. & Authorized staff & High & Partial \\
-\hline
-FR-08 & Generate and consult notifications for operational updates. & Authorized staff & Medium & Implemented \\
-\hline
-FR-09 & Search workspace resources with permission filtering. & Authorized staff & Medium & Implemented \\
-\hline
-FR-10 & Enforce access control and activity tracking for accountability. & Backend services & High & Implemented \\
-\hline
-\end{tabularx}
-\endgroup
-\end{table}
+\subsection{Architectural Style and Decision Analysis}
 
-The status distribution in Table~\ref{tab:functional-requirements} reflects an
-intentional prioritization: security-critical and workflow-critical functions
-were completed first, while some advanced governance and profile capabilities
-remain partially implemented.
+Football OS adopts a microservices-oriented architecture organized inside a
+monorepo. The system is not implemented as a single monolithic backend: the
+API Gateway, Governance Service, and Workspace Service are separated as
+distinct backend applications with their own responsibilities, runtime
+configuration, and persistence concerns. The monorepo structure was kept to
+simplify development, dependency management, and Shared SDK evolution during
+the internship.
 
-% =====================================================
-\section{Non-Functional Requirements}
+This choice provides a compromise between a simple monolith and a fully
+distributed multi-repository microservices ecosystem. A monolith would have
+reduced deployment complexity but would have mixed governance, workspace
+operations, authorization, and document workflows inside one application. A
+fully independent multi-repository microservices organization would have
+increased operational overhead, CI/CD complexity, and version-management cost.
+The selected architecture keeps clear service boundaries while remaining
+manageable for a small-team academic project.
 
-Non-functional requirements are formalized in
-Table~\ref{tab:non-functional-requirements} to clarify quality expectations and
-their validation approach.
+Classic SOA is retained in this report only as a comparison baseline, while the
+implemented backend aligns with a microservices-oriented monorepo model
+\cite{soa-erl,microservices-newman}. Backend service internals still follow
+Onion/Clean Architecture layering to keep domain logic isolated from technical
+adapters \cite{clean-arch}.
 
 \begin{table}[ht]
 \centering
-\caption{Non-functional requirements of Football OS}
-\label{tab:non-functional-requirements}
-\begingroup
+\caption{Architecture decision matrix}
+\label{tab:architecture-decision-matrix}
 \small
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.12}
-\begin{tabularx}{\textwidth}{|C{1.4cm}|L{2.4cm}|Y|Y|}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.08}
+\begin{tabularx}{\textwidth}{|L{3.0cm}|C{1.8cm}|C{1.8cm}|C{2.5cm}|Y|}
 \hline
-\textbf{ID} & \textbf{Quality Attribute} & \textbf{Requirement} & \textbf{Validation Method} \\
+\textbf{Criterion} & \textbf{Monolith} & \textbf{Classic SOA} & \makecell[c]{\textbf{Multi-repository}\\\textbf{Microservices}} & \makecell[c]{\textbf{Selected}\\\textbf{Microservices Monorepo}} \\
 \hline
-NFR-01 & Security & Enforce authenticated access, role-based authorization, and protected sensitive exchanges. & Security tests, policy checks, and access-control cases. \\
+Maintainability & Medium & Medium & High & High \\
 \hline
-NFR-02 & Usability & Provide clear daily workflows with understandable user feedback. & UI scenario reviews and user acceptance checks. \\
+\makecell[l]{Deployment\\complexity} & Low & Medium & High & Medium \\
 \hline
-NFR-03 & Performance & Keep response times acceptable for common operations such as documents, events, and search. & Workflow-oriented performance checks. \\
+Domain ownership & Low & Medium & High & High \\
 \hline
-NFR-04 & Maintainability & Preserve modular separation of concerns and reusable cross-service contracts. & Architecture review and module inspections. \\
+Security isolation & Medium & Medium & High & High \\
 \hline
-NFR-05 & Reliability & Maintain consistent behavior and controlled failure handling in normal operations. & Integration and error-handling validation. \\
+\makecell[l]{Team-size\\suitability} & High (small team) & Medium & Low (small team) & High (small team) \\
 \hline
-NFR-06 & Traceability & Record significant operations for audit and accountability. & Audit-log verification and end-to-end trace checks. \\
+Latency overhead & Low & Medium & High & Medium \\
+\hline
+\makecell[l]{Shared code\\management} & \makecell[c]{Simple but\\coupled} & Moderate & \makecell[c]{Difficult\\across repos} & \makecell[c]{Centralized\\and controlled} \\
 \hline
 \end{tabularx}
-\endgroup
+\normalsize
 \end{table}
 
-\subsection{Prioritization Rationale and Trade-offs}
+The selected option is therefore not a classic centralized SOA model, but a
+microservices-oriented monorepo. Gateway owns edge enforcement, Governance owns
+identity/canonical/policy/audit concerns, Workspace owns operational document,
+event, profile, and notification workflows, and the Shared SDK reduces
+duplicated integration code while preserving service-level separation.
 
-The requirement baseline follows a sequencing logic aligned with project risk.
-Security, traceability, and maintainability were treated as structural
-qualities because they condition the reliability of all business features.
-Usability and performance were addressed progressively once secure routing and
-policy enforcement were stable.
+\subsection{Architecture Overview}
 
-This prioritization introduced a predictable trade-off. Focusing early effort
-on architecture and governance reduced late integration risk, but it delayed
-the full maturity of some user-facing capabilities such as profile depth and
-advanced search behavior. The resulting scope remains coherent for a PFE
-prototype and provides a controlled base for incremental evolution.
+The architecture diagram below situates how frontend requests are funneled
+through the Gateway and then distributed across governance and workspace
+responsibilities, while shared SDK modules and infrastructure services provide
+cross-cutting technical support.
 
-% =====================================================
-\section{Use Case Modeling}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/architecture-logique.png}
+    \caption{Global architecture of the Football OS platform}
+    \label{fig:global-architecture}
+\end{figure}
 
-The use-case and actor models in this chapter follow UML notation conventions
-for behavioral modeling and diagram semantics \cite{uml-spec}.
+Figure~\ref{fig:global-architecture} highlights a deliberate boundary: client
+applications are decoupled from internal service topology. Routing and edge
+controls are centralized at the Gateway, while Governance and Workspace evolve
+behind stable API contracts. This decision reduced frontend-backend coupling at
+the price of adding an intermediate network hop and stronger dependency on
+Gateway availability.
 
-\subsection{Actor Model}
+The infrastructure layer supports persistence, messaging, policy evaluation,
+storage, and document editing. Asynchronous exchanges were introduced where
+traceability and propagation mattered more than immediate synchronous response
+time, in line with event-driven integration principles \cite{eda-fowler}.
 
-Actors are consolidated in Table~\ref{tab:actor-model}.
-
-\begin{table}[H]
+\begin{table}[ht]
 \centering
-\caption{Actor model of Football OS}
-\label{tab:actor-model}
+\caption{Default local entry points used during development}
+\label{tab:local-entry-points}
+\begin{tabular}{|p{4.5cm}|p{3cm}|p{6.5cm}|}
+\hline
+\textbf{Component} & \textbf{Port} & \textbf{Access role} \\
+\hline
+Workspace Frontend & 4200 & User web interface. \\
+\hline
+API Gateway & 8080 & Public backend entry point for frontend API calls. \\
+\hline
+Governance Service & 8081 & Internal/backend endpoint behind Gateway routing. \\
+\hline
+Workspace Service & 8082 & Internal/backend endpoint behind Gateway routing. \\
+\hline
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:local-entry-points} clarifies that frontend API traffic goes
+through the Gateway rather than directly to internal services.
+
+\subsection{Main Components}
+
+\begin{table}[ht]
+\centering
+\caption{Main components of the Football OS architecture}
+\label{tab:main-components}
 \small
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.10}
-\begin{tabularx}{\textwidth}{|L{3.0cm}|C{1.9cm}|Y|}
+\begin{tabularx}{\textwidth}{|L{3.7cm}|Y|L{3.3cm}|}
 \hline
-\textbf{Actor} & \textbf{Type} & \textbf{Role in the system} \\
+\textbf{Component} & \textbf{Responsibility} & \textbf{Main Technology} \\
 \hline
-Club Administrator & Human & Manages users, roles, governance data, and high-level operational permissions. \\
+Frontend Workspace Application & User interface for workspace operations and platform access. & Angular + Tailwind CSS \\
 \hline
-Head Coach & Human & Manages events and operational coordination for football activities. \\
+API Gateway & Entry point of backend APIs; routes requests and enforces secure access flow. & Spring Boot (Gateway layer) \\
 \hline
-Coaching Staff & Human & Consults events, documents, and player-related operational information. \\
+Governance Service & Manages users, roles, permissions, canonical players/teams, policy decisions, and audit tracking. & Spring Boot + PostgreSQL + OPA \\
 \hline
-Medical Staff & Human & Accesses authorized medical and player-related information. \\
+Workspace Service & Manages documents, calendar/events, notifications, search, and player profile aggregation. & Spring Boot + MongoDB + MinIO \\
 \hline
-Identity Provider & Technical & Authenticates users and provides identity/session context. \\
+Shared SDK & Shared foundation/library used by backend services; provides reusable abstractions and common integration mechanisms. & Java multi-module SDK \\
 \hline
-Document Editor & Technical & Supports online document viewing and editing workflows. \\
+Keycloak / Identity Provider & Authenticates users and provides identity context. & Keycloak (OIDC/JWKS) \\
 \hline
-Object Storage Provider & Technical & Stores document binary content and file versions. \\
+OPA Policy Engine & Evaluates authorization rules for protected actions and resources. & Open Policy Agent \\
 \hline
-Governance Policy Service & Technical & Evaluates authorization decisions for protected actions. \\
+Kafka & Supports asynchronous event messaging and notification propagation. & Apache Kafka \\
 \hline
-Canonical Player Data Provider & Technical & Provides canonical player identity references used by workspace features. \\
+PostgreSQL & Stores governance structured data such as actors, roles, players, teams, and audit logs. & PostgreSQL \\
+\hline
+MongoDB & Stores workspace aggregates and document metadata/version references, including documents, events, and notifications. & MongoDB \\
+\hline
+MinIO & Stores the actual document file content and file versions. & MinIO Object Storage \\
+\hline
+Redis & Supports Gateway-level rate limiting and request throttling. & Redis \\
+\hline
+OnlyOffice & Enables online document viewing and editing workflows. & OnlyOffice Docs \\
 \hline
 \end{tabularx}
 \normalsize
 \end{table}
 
-\subsection{Global Platform Use Case Diagram}
+The component matrix makes explicit that each subsystem is mapped to a dominant
+responsibility domain, which improves maintainability and ownership clarity.
+The same decomposition also introduces integration overhead, especially where
+authorization, identity context, and cross-store references intersect.
 
-The global platform use-case diagram provides a high-level view of the
-interactions between Football OS and its actors. Figure~\ref{fig:global-usecase}
-presents the global use-case view of Football OS. Human actors are represented
-as primary users of the platform, while technical actors represent external
-systems involved in authentication, policy evaluation, document editing, object
-storage, and canonical player data retrieval. The diagram summarizes the main
-services offered by the platform without exposing internal implementation
-details, since detailed processing flows are presented later in the design
-chapter.
+\section{Backend Module Design}
 
-\begin{figure}[H]
-    \centering
-    \captionsetup{skip=4pt}
-    \makebox[\textwidth][c]{%
-        \includegraphics[width=0.90\textwidth]{images/usecase/footballosgeneralusecase.drawio (1).png}%
-    }
-    \caption{General use case diagram of the Football OS platform}
-    \label{fig:global-usecase}
-\end{figure}
+\subsection{API Gateway}
 
-The use-case descriptions below formalize the principal operational flows in
-the current scope. They are written as behavioral contracts so that design and
-implementation choices can later be validated against explicit preconditions,
-access rules, and postconditions.
+The API Gateway is the backend entry point. It validates token context, applies
+edge controls, and routes requests to Governance and Workspace without exposing
+internal service addresses.
 
-%\subsubsection*{Access Football OS Platform}
-\small
+Compared with direct client-to-service exposure, this Gateway-mediated model
+improves policy consistency and request normalization. The trade-off is that
+the Gateway becomes a critical dependency that must be monitored and configured
+carefully to avoid becoming a bottleneck.
+
+\subsection{Governance Service}
+
+The Governance Service owns actor/role management, canonical players/teams,
+policy decision support through OPA, and audit traceability data.
+
+This separation was chosen to keep authorization and identity logic outside
+feature modules. It simplifies compliance reasoning and avoids scattered access
+rules, but it also increases inter-service calls whenever Workspace operations
+require policy checks or canonical references.
+
+\subsection{Workspace Service}
+
+The Workspace Service owns operational modules (documents, events,
+notifications, search, and profile aggregation), persists workspace aggregates
+in MongoDB, and integrates with Governance, MinIO, Kafka, and OnlyOffice.
+
+The module boundary favors business-flow cohesion: operational features evolve
+in one service while governance remains externalized. The main limitation is
+coordination complexity for workflows that span metadata, policy, storage, and
+messaging components.
+
+\subsection{Shared SDK}
+
+The Shared SDK is not a user-facing module. It is reused by backend services to
+avoid duplicated technical plumbing. It provides shared security context,
+policy client, canonical resolver, storage port abstraction, event contracts,
+audit hooks, and test utilities.
+
+In implementation terms, the SDK is structured as real backend submodules
+rather than a generic helper package. Table~\ref{tab:sdk-submodules} outlines
+the modules used by Governance and Workspace services.
+
 \begin{table}[H]
 \centering
-\caption{Use-case description: Access Football OS Platform}
-\label{tab:uc-access-platform}
-\begin{tabular}{|p{4.0cm}|p{10.0cm}|}
-\hline
-\textbf{Use Case} & Access Football OS Platform \\
-\hline
-\textbf{Primary Actor} & Club Administrator / Head Coach / Coaching Staff / Medical Staff \\
-\hline
-\textbf{Secondary Actor} & Identity Provider \\
-\hline
-\textbf{Objective} & Authenticate the user and grant access to authorized platform features. \\
-\hline
-\textbf{Preconditions} & User account exists and identity provider is reachable. \\
-\hline
-\textbf{Main Scenario} &
-\begin{enumerate}
-    \item The user opens the platform.
-    \item The system redirects authentication to the identity provider.
-    \item The user authenticates successfully.
-    \item The system resolves role context and grants authorized access.
-\end{enumerate}
-\\
-\hline
-\textbf{Alternative / Exception Scenario} & Authentication failure or invalid token; access is denied and the user remains outside protected features. \\
-\hline
-\textbf{Business Rules / Access Rules} & Protected features require authenticated identity. Visible modules depend on role permissions. \\
-\hline
-\textbf{Postconditions} & Authenticated session is established with role-scoped access rights. \\
-\hline
-\end{tabular}
-\end{table}
-Table~\ref{tab:uc-access-platform} specifies the authentication-oriented
-platform-access use case.
-\normalsize
-
-\subsection{Calendar and Event Management}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.92\textwidth, height=0.30\textheight, keepaspectratio]{images/usecase/Calendar and Event Management.png}
-\caption{Calendar and event management use case diagram}
-\label{fig:calendar-usecase}
-\end{figure}
-
-Figure~\ref{fig:calendar-usecase} illustrates the actor interactions for event
-planning, consultation, and archive operations.
-
+\caption{Shared SDK submodules and engineering roles}
+\label{tab:sdk-submodules}
 \small
-\renewcommand{\arraystretch}{1.05}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\begin{tabularx}{\textwidth}{|L{2.7cm}|Y|}
+\hline
+\textbf{Submodule} & \textbf{Role in the platform} \\
+\hline
+\texttt{sdk-core} & Shared primitives, base entities/documents, lifecycle states, and common response models. \\
+\hline
+\texttt{sdk-events} & Signal envelope, Kafka topics, producer/consumer patterns, and correlation context contracts. \\
+\hline
+\texttt{sdk-security} & Authenticated actor context, role extraction, JWT-related helpers, and audit hooks. \\
+\hline
+\texttt{sdk-storage} & Storage abstraction layer that decouples services from MinIO-specific details and supports future provider evolution. \\
+\hline
+\texttt{sdk-canonical} & Canonical player/team references and resolver/client mechanisms used by workspace workflows. \\
+\hline
+\texttt{sdk-policy} & Policy request/result contracts, policy client integration, and method-level guard support. \\
+\hline
+\texttt{sdk-test} & Reusable integration-test utilities and shared test support components. \\
+\hline
+\end{tabularx}
+\normalsize
+\end{table}
+
+Using a shared SDK reduced repeated integration code and aligned conventions
+across services. The associated risk is version coupling: service teams must
+coordinate SDK evolution to avoid incompatible upgrades.
+
+\subsection{Service Responsibility Summary}
+
+\begin{table}[ht]
+\centering
+\caption{Service boundary summary}
+\label{tab:module-responsibility}
+\small
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\begin{tabularx}{\textwidth}{|L{2.8cm}|Y|L{2.2cm}|Y|}
+\hline
+\textbf{Service / Module} & \textbf{Ownership} & \textbf{Persistence} & \textbf{Main integrations} \\
+\hline
+API Gateway & Edge security, request enrichment, rate limiting, and routing to backend services. & No business DB & Keycloak JWKS, Redis, Governance Service, Workspace Service \\
+\hline
+Governance Service & Actors, roles, canonical players/teams, policy evaluation flow, and audit ownership. & PostgreSQL & OPA, Kafka, Keycloak, Shared SDK \\
+\hline
+Workspace Service & Documents, events, profiles, notifications, search, and OnlyOffice-related workflows. & MongoDB + MinIO & Governance policy/canonical APIs, Kafka, OnlyOffice \\
+\hline
+Shared SDK & Shared contracts and reusable adapters for security, policy, canonical, storage, events, and tests. & No business DB & Security, policy, canonical, storage, events, tests \\
+\hline
+\end{tabularx}
+\normalsize
+\end{table}
+Table~\ref{tab:module-responsibility} consolidates the separation of
+responsibilities across backend modules.
+
+\subsection{API Summary}
+
+Table~\ref{tab:api-summary} provides a compact overview of representative
+endpoint families used by the platform.
+
 \begin{table}[H]
 \centering
-\caption{Use-case description: Calendar and Event Management}
-\label{tab:uc-calendar-events}
-\begin{tabular}{|p{4.0cm}|p{9.8cm}|}
-\hline
-\textbf{Use Case} & Calendar and Event Management \\
-\hline
-\textbf{Primary Actor} & Head Coach / Club Administrator (management), authorized staff (consultation) \\
-\hline
-\textbf{Objective} & Plan, update, consult, and archive operational events and related assignments. \\
-\hline
-\textbf{Preconditions} & User is authenticated and has calendar access rights. \\
-\hline
-\textbf{Main Scenario} &
-\begin{enumerate}
-    \item The user opens the calendar module.
-    \item The user creates, updates, consults, or archives an event.
-    \item The system validates permissions and persists the operation.
-    \item The system updates related attendees, tasks, and notifications when applicable.
-\end{enumerate}
-\\
-\hline
-\textbf{Alternative / Exception Scenario} & Unauthorized update request, invalid event data, or unavailable service causes rejection with error feedback. \\
-\hline
-\textbf{Business Rules / Access Rules} & Event management actions are restricted to authorized roles. Delete behavior is treated as archive action, not hard deletion. \\
-\hline
-\textbf{Postconditions} & Event state is updated according to the accepted operation and authorized users are notified when required. \\
-\hline
-\end{tabular}
-\end{table}
-Table~\ref{tab:uc-calendar-events} formalizes the calendar and event use-case
-contract.
-\normalsize
-\renewcommand{\arraystretch}{1}
-
-\subsection{Document Management}
-
-This subsection defines document-management behavior and integration points
-through its use-case contract.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.92\textwidth, height=0.30\textheight, keepaspectratio]{images/usecase/documentManagment.drawio (1).png}
-\caption{Document management use case diagram}
-\label{fig:document-management-usecase}
-\end{figure}
-
-\noindent Figure~\ref{fig:document-management-usecase} illustrates the main
-actor interactions for document upload, consultation, editing, versioning, and
-archiving operations.
-
+\caption{API endpoint family summary}
+\label{tab:api-summary}
 \small
-\renewcommand{\arraystretch}{1.05}
-\begin{table}[H]
-\centering
-\caption{Use-case description: Document Management}
-\label{tab:uc-document-management}
-\begin{tabular}{|p{4.0cm}|p{9.8cm}|}
+\renewcommand{\arraystretch}{1.10}
+\setlength{\tabcolsep}{4pt}
+\begin{tabularx}{\textwidth}{|L{2.4cm}|L{3.8cm}|Y|}
 \hline
-\textbf{Use Case} & Document Management \\
+\textbf{Module} & \textbf{Endpoint family} & \textbf{Purpose} \\
 \hline
-\textbf{Primary Actor} & Club Administrator / Head Coach / Coaching Staff / Medical Staff \\
+Workspace & \makecell[l]{\texttt{/api/v1/}\\\texttt{documents}} & Document upload, consultation, categorization, and lifecycle operations. \\
 \hline
-\textbf{Secondary Actors} & Object Storage Provider / Document Editor \\
+Workspace & \makecell[l]{\texttt{/api/v1/}\\\texttt{events}} & Event creation, consultation, update, and archive workflows. \\
 \hline
-\textbf{Objective} & Manage document upload, consultation, versioning, editing, and archiving under controlled access. \\
+Workspace & \makecell[l]{\texttt{/api/v1/}\\\texttt{profiles}} & Role-filtered player profile consultation and aggregation. \\
 \hline
-\textbf{Preconditions} & User is authenticated and authorized for the requested document action. \\
+Workspace & \makecell[l]{\texttt{/api/v1/}\\\texttt{notifications}} & Notification generation, retrieval, and state updates. \\
 \hline
-\textbf{Main Scenario} &
-\begin{enumerate}
-    \item The user opens the document module and selects an action.
-    \item The system validates permissions and applies business rules.
-    \item The system stores or retrieves document metadata and versions.
-    \item The system invokes online editor integration when editing is requested.
-\end{enumerate}
-\\
+Workspace & \makecell[l]{\texttt{/api/v1/}\\\texttt{search}} & Search across workspace resources with access filtering. \\
 \hline
-\textbf{Alternative / Exception Scenario} & Upload failure, editor unavailability, or unauthorized access attempt triggers a controlled error response. \\
+Workspace & \makecell[l]{\texttt{/api/v1/}\\\texttt{onlyoffice}} & Online document editor integration and callback-related actions. \\
 \hline
-\textbf{Business Rules / Access Rules} & Document visibility depends on role and category. Medical documents are restricted to medical staff and explicitly authorized roles. \\
+Governance & \makecell[l]{\texttt{/api/v1/}\\\texttt{actors}} & Actor management and actor-role relationship management. \\
 \hline
-\textbf{Postconditions} & Document state and version history are updated according to authorized operations. \\
+Governance & \makecell[l]{\texttt{/api/v1/}\\\texttt{players}} & Canonical player data operations and references. \\
 \hline
-\end{tabular}
-\end{table}
-Table~\ref{tab:uc-document-management} defines the detailed scenarios and
-access constraints of document management.
+Governance & \makecell[l]{\texttt{/api/v1/}\\\texttt{teams}} & Canonical team data operations and references. \\
+\hline
+Governance & \makecell[l]{\texttt{/api/v1/}\\\texttt{policy}} & Authorization decision endpoints for protected actions. \\
+\hline
+\end{tabularx}
 \normalsize
-\renewcommand{\arraystretch}{1}
-
-\subsection{Player Profile Consultation}
-
-Player profile consultation requires policy-driven visibility because sensitive
-medical and administrative information must remain restricted by role.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.92\textwidth, height=0.30\textheight, keepaspectratio]{images/usecase/player-profile-consultation-use-case.png}
-\caption{Player profile consultation use case diagram}
-\label{fig:player-profile-usecase}
-\end{figure}
-
-\small
-\renewcommand{\arraystretch}{1.05}
-\begin{table}[H]
-\centering
-\caption{Use-case description: Consult Player Profile}
-\label{tab:uc-player-profile}
-\begin{tabular}{|p{4.0cm}|p{9.8cm}|}
-\hline
-\textbf{Use Case} & Consult Player Profile \\
-\hline
-\textbf{Primary Actor} & Club Administrator / Head Coach / Coaching Staff / Medical Staff \\
-\hline
-\textbf{Secondary Actors} & Canonical Player Data Provider / Governance Policy Service \\
-\hline
-\textbf{Objective} & Display player profile sections according to user permissions and available data. \\
-\hline
-\textbf{Preconditions} & User is authenticated and the selected player exists in reference data. \\
-\hline
-\textbf{Main Scenario} &
-\begin{enumerate}
-    \item The user selects a player profile.
-    \item The system retrieves canonical and workspace-linked information.
-    \item The system evaluates section-level permissions.
-    \item The system displays only authorized profile sections.
-\end{enumerate}
-\\
-\hline
-\textbf{Alternative / Exception Scenario} & Unknown player, unavailable linked data, or insufficient permission leads to partial display or access rejection. \\
-\hline
-\textbf{Business Rules / Access Rules} & Sensitive profile content, especially medical information, is visible only to authorized roles. \\
-\hline
-\textbf{Postconditions} & User receives a role-filtered profile view consistent with policy decisions. \\
-\hline
-\end{tabular}
+\setlength{\tabcolsep}{6pt}
 \end{table}
-Table~\ref{tab:uc-player-profile} specifies the profile-consultation behavior
-under role-based restrictions.
+
+Rather than exposing database structures, these interfaces are organized around
+business actions (document lifecycle, event coordination, profile consultation,
+policy evaluation). This orientation improves API stability and limits
+frontend dependence on persistence internals.
+
+\subsection{Critical Review of Service Decomposition}
+
+The decomposition solved a practical project constraint: maintaining clear
+ownership while delivering heterogeneous workflows in a limited internship
+timeline. Compared with a monolith, this approach improved modularity and
+change isolation. Compared with fully independent repositories, it reduced
+coordination overhead through a shared codebase and SDK.
+
+The remaining constraint is operational complexity. Service boundaries are
+useful only if integration contracts, failure handling, and deployment
+discipline remain explicit; these points represent the principal engineering
+workload for future iterations.
+
+
+
+\section{Security and Authorization Architecture}
+
+Football OS combines identity-provider authentication, Gateway-level token
+validation, policy-based authorization, and backend-side access checks. The
+security model is designed so that the frontend improves usability but does not
+become the final enforcement point for protected resources
+\cite{keycloak-doc,oauth2-rfc6749,oidc-core,rbac-sandhu,opa-doc}.
+
+\subsection{Security Implementation Details}
+
+\begin{table}[!htbp]
+\centering
+\caption{Security implementation choices}
+\label{tab:security-implementation-choices}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.14}
+\begin{tabularx}{\textwidth}{|L{3.2cm}|Y|}
+\hline
+\textbf{Security concern} & \textbf{Implementation choice} \\
+\hline
+Authentication & Keycloak with OIDC and JWT-based access tokens. \\
+\hline
+Token validation & API Gateway validates access tokens using Keycloak JWKS through the resource-server security configuration. \\
+\hline
+Session model & Backend services remain stateless and rely on token-based authentication context. \\
+\hline
+Token propagation & The frontend sends a bearer token to the Gateway; the Gateway enriches/forwards actor context to downstream services. \\
+\hline
+Authorization & Workspace calls the Governance policy endpoint, which relies on OPA-backed decisions. \\
+\hline
+Rate limiting & Gateway-level Redis-backed rate limiting protects backend entry points from excessive requests. \\
+\hline
+File access & Document metadata and category are checked by policy before storage or editor access is generated. \\
+\hline
+Upload protection & Upload actions are constrained by authorization rules, document category, and role-based visibility. \\
+\hline
+CSRF exposure & Exposure is reduced because API calls use bearer-token authorization rather than cookie-based backend sessions. \\
+\hline
+CORS policy & In deployment, allowed origins should be restricted to the configured frontend origin. \\
+\hline
+\end{tabularx}
 \normalsize
-\renewcommand{\arraystretch}{1}
+\end{table}
 
-\section{Engineering Reading of the Specification}
+This design keeps security enforcement on the server side. Hidden buttons and
+role-based interface states improve the user experience, but protected actions
+are still checked by backend services before data, storage URLs, or editor
+configurations are returned.
 
-Taken together, the requirement tables and use-case contracts show that Football
-OS is governed less by isolated CRUD operations than by controlled interactions
-between identity, policy, and operational data. This is why the specification
-emphasizes access conditions and audit consequences alongside functional goals.
+The choice of externalized policy evaluation through OPA was preferred over
+hardcoded authorization checks scattered across services. This improves policy
+traceability and change control, but introduces dependency on policy
+availability and policy-model synchronization between governance and consuming
+services.
 
-Compared with a purely user-story-oriented specification, the selected approach
-is more explicit about authorization boundaries and exception paths, which
-improves downstream architectural traceability. Its limitation is higher
-documentation density; however, that cost is justified by the security and
-accountability constraints of the targeted domain.
+\begin{table}[ht]
+\centering
+\caption{Access-control matrix for core platform actions}
+\label{tab:access-control-matrix}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.14}
+\begin{tabularx}{\textwidth}{|Y|C{2.1cm}|C{2.1cm}|C{2.1cm}|C{2.1cm}|}
+\hline
+\textbf{Resource / Action} & \textbf{Club Administrator} & \textbf{Head Coach} & \textbf{Coaching Staff} & \textbf{Medical Staff} \\
+\hline
+Manage users and roles & Allowed & Denied & Denied & Denied \\
+\hline
+Manage canonical players/teams & Allowed & Policy & Denied & Denied \\
+\hline
+Create/update/archive events & Denied & Allowed & Policy & Denied \\
+\hline
+Consult events & Allowed & Allowed & Allowed & Policy \\
+\hline
+Upload normal documents & Allowed & Allowed & Policy & Policy \\
+\hline
+Consult normal documents & Allowed & Allowed & Policy & Policy \\
+\hline
+Access medical documents & Restricted & Denied & Denied & Allowed \\
+\hline
+Access admin/contract documents & Allowed & Denied & Denied & Denied \\
+\hline
+Consult player profiles & Allowed & Allowed & Policy & Restricted \\
+\hline
+Receive notifications & Allowed & Allowed & Allowed & Allowed \\
+\hline
+\end{tabularx}
+\normalsize
+\end{table}
+
+The access-control matrix captures the nominal role posture used as a policy
+baseline. In operational execution, final authorization remains policy-based on
+the backend.
+
+Overall, the security design addresses the main project constraint of
+centralized, auditable authorization across heterogeneous workflows. Its
+principal limitation is operational: policy and Gateway layers require robust
+observability and fallback handling to remain reliable under failure conditions.
+
+
 
 \section*{Conclusion}
 \addcontentsline{toc}{section}{Conclusion}
 
-This chapter defined functional and non-functional requirements, actor
-responsibilities, and principal use-case behaviors of Football OS. These
-specifications form the baseline for the architectural and design decisions in
-the next chapter.
+This architecture ensures a clear separation of responsibilities and preserves
+security and governance coherence across the platform workflows.

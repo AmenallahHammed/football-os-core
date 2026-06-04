@@ -1,91 +1,94 @@
 \babel@toc {english}{}\relax 
-\contentsline {chapter}{Abstract}{III}{chapter*.1}%
-\contentsline {chapter}{List of Figures}{VII}{chapter*.3}%
-\contentsline {chapter}{List of Tables}{VIII}{chapter*.4}%
-\contentsline {chapter}{List of Abbreviations}{IX}{chapter*.5}%
-\contentsline {chapter}{General Introduction}{1}{chapter*.6}%
-\contentsline {chapter}{\numberline {1}Internship Framework Presentation}{3}{chapter.1}%
-\contentsline {section}{\numberline {1.1}Company Presentation}{3}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Existing Operational Environment Analysis}{3}{section.1.2}%
-\contentsline {subsection}{\numberline {1.2.1}Current Environment}{3}{subsection.1.2.1}%
-\contentsline {subsection}{\numberline {1.2.2}Comparative View of Existing Solutions}{4}{subsection.1.2.2}%
-\contentsline {section}{\numberline {1.3}Development Methodology}{4}{section.1.3}%
-\contentsline {section}{\numberline {1.4}Proposed Solution Positioning}{5}{section.1.4}%
-\contentsline {section}{Conclusion}{6}{section.1.4}%
-\contentsline {chapter}{\numberline {2}Specification of Needs}{7}{chapter.2}%
-\contentsline {section}{Introduction}{7}{section*.10}%
-\contentsline {section}{\numberline {2.1}Functional Requirements}{7}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Non-Functional Requirements}{8}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Prioritization Rationale and Trade-offs}{8}{subsection.2.2.1}%
-\contentsline {section}{\numberline {2.3}Use Case Modeling}{8}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}Actor Model}{9}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}Global Platform Use Case Diagram}{9}{subsection.2.3.2}%
-\contentsline {subsection}{\numberline {2.3.3}Calendar and Event Management}{11}{subsection.2.3.3}%
-\contentsline {subsection}{\numberline {2.3.4}Document Management}{12}{subsection.2.3.4}%
-\contentsline {subsection}{\numberline {2.3.5}Player Profile Consultation}{14}{subsection.2.3.5}%
-\contentsline {section}{\numberline {2.4}Engineering Reading of the Specification}{15}{section.2.4}%
-\contentsline {section}{Conclusion}{15}{section.2.4}%
-\contentsline {chapter}{\numberline {3}Design}{16}{chapter.3}%
-\contentsline {section}{Introduction}{16}{section*.22}%
-\contentsline {section}{\numberline {3.1}Global Architecture Design}{16}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}Architectural Style and Decision Analysis}{16}{subsection.3.1.1}%
-\contentsline {subsection}{\numberline {3.1.2}General Architecture}{17}{subsection.3.1.2}%
-\contentsline {subsection}{\numberline {3.1.3}Main Components}{18}{subsection.3.1.3}%
-\contentsline {section}{\numberline {3.2}Backend Module Design}{18}{section.3.2}%
-\contentsline {subsection}{\numberline {3.2.1}API Gateway}{18}{subsection.3.2.1}%
-\contentsline {subsection}{\numberline {3.2.2}Governance Service}{18}{subsection.3.2.2}%
-\contentsline {subsection}{\numberline {3.2.3}Workspace Service}{19}{subsection.3.2.3}%
-\contentsline {subsection}{\numberline {3.2.4}Shared SDK}{19}{subsection.3.2.4}%
-\contentsline {subsection}{\numberline {3.2.5}Service Boundary Summary}{20}{subsection.3.2.5}%
-\contentsline {subsection}{\numberline {3.2.6}API Summary}{21}{subsection.3.2.6}%
-\contentsline {subsection}{\numberline {3.2.7}Design Reflection on Service Decomposition}{21}{subsection.3.2.7}%
-\contentsline {section}{\numberline {3.3}Data Design}{22}{section.3.3}%
-\contentsline {subsection}{\numberline {3.3.1}Main Data Models}{22}{subsection.3.3.1}%
-\contentsline {subsection}{\numberline {3.3.2}Governance Relational Entities (PostgreSQL)}{22}{subsection.3.3.2}%
-\contentsline {subsection}{\numberline {3.3.3}Workspace Collections (MongoDB)}{22}{subsection.3.3.3}%
-\contentsline {subsection}{\numberline {3.3.4}Comparative Rationale for Data Persistence Choices}{23}{subsection.3.3.4}%
-\contentsline {subsection}{\numberline {3.3.5}Indexing and Consistency Strategy}{23}{subsection.3.3.5}%
-\contentsline {subsection}{\numberline {3.3.6}Governance Service Design}{24}{subsection.3.3.6}%
-\contentsline {subsubsection}{Governance Service Package Dependency Diagram}{24}{subsection.3.3.6}%
-\contentsline {subsubsection}{Policy Package Class Diagram}{25}{figure.caption.33}%
-\contentsline {subsubsection}{Signal Package Class Diagram}{26}{figure.caption.34}%
-\contentsline {subsubsection}{Identity Package Class Diagram}{27}{figure.caption.35}%
-\contentsline {subsection}{\numberline {3.3.7}Document Management Class Diagram}{28}{subsection.3.3.7}%
-\contentsline {subsection}{\numberline {3.3.8}Calendar and Event Class Diagram}{29}{subsection.3.3.8}%
-\contentsline {subsection}{\numberline {3.3.9}Storage Mapping}{31}{subsection.3.3.9}%
-\contentsline {section}{\numberline {3.4}Processing Design}{31}{section.3.4}%
-\contentsline {subsection}{\numberline {3.4.1}Authentication Process Flow}{31}{subsection.3.4.1}%
-\contentsline {subsection}{\numberline {3.4.2}Document Management Flow}{32}{subsection.3.4.2}%
-\contentsline {subsection}{\numberline {3.4.3}Calendar and Event Management Flow}{33}{subsection.3.4.3}%
-\contentsline {subsection}{\numberline {3.4.4}Player Profile Consultation Flow}{34}{subsection.3.4.4}%
-\contentsline {section}{\numberline {3.5}Security and Authorization Design}{35}{section.3.5}%
-\contentsline {subsection}{\numberline {3.5.1}Security Implementation Details}{35}{subsection.3.5.1}%
-\contentsline {section}{Conclusion}{36}{table.caption.45}%
-\contentsline {chapter}{\numberline {4}Implementation and Realization}{37}{chapter.4}%
-\contentsline {section}{Introduction}{37}{section*.46}%
-\contentsline {section}{\numberline {4.1}Development Environment}{37}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Software Environment}{37}{subsection.4.1.1}%
-\contentsline {section}{\numberline {4.2}Implementation Overview}{37}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Gateway and Secured Routing}{37}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}Document Storage and Versioning}{39}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}OnlyOffice Integration}{40}{subsection.4.2.3}%
-\contentsline {subsection}{\numberline {4.2.4}Event Workflow Example}{40}{subsection.4.2.4}%
-\contentsline {subsection}{\numberline {4.2.5}Technical Challenges Encountered}{40}{subsection.4.2.5}%
-\contentsline {section}{\numberline {4.3}Main Graphical Interfaces}{42}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}Authentication Interface}{42}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}Document Management Interface}{42}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {4.3.3}Online Document Viewer and Editor}{43}{subsection.4.3.3}%
-\contentsline {subsection}{\numberline {4.3.4}Calendar Interface}{43}{subsection.4.3.4}%
-\contentsline {subsection}{\numberline {4.3.5}Player Profile and Notifications}{43}{subsection.4.3.5}%
-\contentsline {section}{\numberline {4.4}Deployment and Integration}{44}{section.4.4}%
-\contentsline {section}{Conclusion}{44}{table.caption.54}%
-\contentsline {chapter}{\numberline {5}Testing and Validation}{45}{chapter.5}%
-\contentsline {section}{Introduction}{45}{section*.55}%
-\contentsline {section}{\numberline {5.1}Testing Strategy}{45}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Test Environment}{45}{section.5.2}%
-\contentsline {section}{\numberline {5.3}Test Cases}{46}{section.5.3}%
-\contentsline {section}{\numberline {5.4}Performance Evaluation}{46}{section.5.4}%
-\contentsline {section}{\numberline {5.5}Validation Summary}{47}{section.5.5}%
-\contentsline {chapter}{General Conclusion}{48}{chapter*.59}%
-\contentsline {chapter}{Bibliography}{49}{chapter*.60}%
-\contentsline {chapter}{Webography}{50}{chapter*.61}%
+\contentsline {chapter}{Abstract}{IV}{chapter*.1}%
+\contentsline {chapter}{List of Figures}{VIII}{section*.2}%
+\contentsline {chapter}{List of Tables}{IX}{section*.3}%
+\contentsline {chapter}{List of Abbreviations}{X}{chapter*.4}%
+\contentsline {chapter}{General Introduction}{1}{chapter*.5}%
+\contentsline {chapter}{\numberline {1}General Context and Preliminary Study}{3}{chapter.1}%
+\contentsline {section}{Introduction}{3}{section*.6}%
+\contentsline {section}{\numberline {1.1}Host Organization Presentation}{3}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Study of Existing Solutions}{3}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Previous Internal Tool}{3}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Limitations of the Previous Internal Tool}{4}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Synthesis}{5}{subsection.1.2.3}%
+\contentsline {section}{\numberline {1.3}Work Methodology}{5}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Proposed Solution and Positioning}{6}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Requirements Specification}{6}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Functional Requirements}{6}{section.1.6}%
+\contentsline {section}{\numberline {1.7}Non-functional Requirements}{6}{section.1.7}%
+\contentsline {subsection}{\numberline {1.7.1}Prioritization Rationale and Trade-offs}{7}{subsection.1.7.1}%
+\contentsline {section}{\numberline {1.8}Use Case Modeling}{7}{section.1.8}%
+\contentsline {subsection}{\numberline {1.8.1}Actor Model}{8}{subsection.1.8.1}%
+\contentsline {subsection}{\numberline {1.8.2}Global Use Case Diagram}{9}{subsection.1.8.2}%
+\contentsline {subsection}{\numberline {1.8.3}Calendar and Event Management}{10}{subsection.1.8.3}%
+\contentsline {subsection}{\numberline {1.8.4}Document Management}{11}{subsection.1.8.4}%
+\contentsline {subsection}{\numberline {1.8.5}Player Profile Consultation}{13}{subsection.1.8.5}%
+\contentsline {section}{\numberline {1.9}Engineering Analysis of the Specification}{14}{section.1.9}%
+\contentsline {section}{Conclusion}{14}{section.1.9}%
+\contentsline {chapter}{\numberline {2}Functional Analysis and System Architecture}{15}{chapter.2}%
+\contentsline {section}{Introduction}{15}{section*.21}%
+\contentsline {section}{\numberline {2.1}Functional Analysis Synthesis}{15}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Global System Architecture}{15}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Architectural Style and Decision Analysis}{15}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Architecture Overview}{16}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Main Components}{17}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Backend Module Design}{17}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}API Gateway}{17}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Governance Service}{17}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Workspace Service}{18}{subsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.3.4}Shared SDK}{19}{subsection.2.3.4}%
+\contentsline {subsection}{\numberline {2.3.5}Service Responsibility Summary}{19}{subsection.2.3.5}%
+\contentsline {subsection}{\numberline {2.3.6}API Summary}{19}{subsection.2.3.6}%
+\contentsline {subsection}{\numberline {2.3.7}Critical Review of Service Decomposition}{21}{subsection.2.3.7}%
+\contentsline {section}{\numberline {2.4}Security and Authorization Architecture}{21}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Security Implementation Details}{21}{subsection.2.4.1}%
+\contentsline {section}{Conclusion}{22}{table.caption.30}%
+\contentsline {chapter}{\numberline {3}Data Modeling and Detailed Design}{23}{chapter.3}%
+\contentsline {section}{Introduction}{23}{section*.31}%
+\contentsline {section}{\numberline {3.1}Data Modeling}{23}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Main Data Models}{23}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}PostgreSQL Governance Relational Entities}{23}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.3}Workspace MongoDB Collections}{24}{subsection.3.1.3}%
+\contentsline {subsection}{\numberline {3.1.4}Comparative Justification of Persistence Choices}{25}{subsection.3.1.4}%
+\contentsline {subsection}{\numberline {3.1.5}Indexing and Consistency Strategy}{25}{subsection.3.1.5}%
+\contentsline {subsection}{\numberline {3.1.6}Detailed Design of the Governance Service}{26}{subsection.3.1.6}%
+\contentsline {subsubsection}{Governance Service Package Dependency Diagram}{26}{subsection.3.1.6}%
+\contentsline {subsubsection}{Policy Package Class Diagram}{27}{figure.caption.36}%
+\contentsline {subsubsection}{Signal Package Class Diagram}{28}{figure.caption.37}%
+\contentsline {subsubsection}{Identity Package Class Diagram}{29}{figure.caption.38}%
+\contentsline {subsection}{\numberline {3.1.7}Document Management Class Diagram}{30}{subsection.3.1.7}%
+\contentsline {subsection}{\numberline {3.1.8}Calendar and Event Class Diagram}{31}{subsection.3.1.8}%
+\contentsline {subsection}{\numberline {3.1.9}Storage Mapping}{33}{subsection.3.1.9}%
+\contentsline {section}{\numberline {3.2}Processing Flow Design}{33}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Authentication Flow}{33}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Document Management Flow}{34}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Calendar and Event Management Flow}{35}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Player Profile Consultation Flow}{36}{subsection.3.2.4}%
+\contentsline {section}{Conclusion}{37}{Item.41}%
+\contentsline {chapter}{\numberline {4}Implementation, Testing, and Perspectives}{38}{chapter.4}%
+\contentsline {section}{Introduction}{38}{section*.47}%
+\contentsline {section}{\numberline {4.1}Implementation Environment}{38}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Software Environment}{38}{subsection.4.1.1}%
+\contentsline {section}{\numberline {4.2}Implementation of Main Features}{38}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Gateway and Secure Routing}{38}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Document Storage and Versioning}{40}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}OnlyOffice Integration}{41}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}Event Flow Example}{41}{subsection.4.2.4}%
+\contentsline {subsection}{\numberline {4.2.5}Technical Challenges Encountered}{41}{subsection.4.2.5}%
+\contentsline {section}{\numberline {4.3}Main Graphical Interfaces}{43}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Authentication Interface}{43}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Document Management Interface}{43}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Online Document Viewing and Editing}{44}{subsection.4.3.3}%
+\contentsline {subsection}{\numberline {4.3.4}Calendar Interface}{44}{subsection.4.3.4}%
+\contentsline {subsection}{\numberline {4.3.5}Player Profile and Notifications}{44}{subsection.4.3.5}%
+\contentsline {section}{\numberline {4.4}Deployment and Integration}{45}{section.4.4}%
+\contentsline {section}{\numberline {4.5}Validation and Testing}{45}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Testing Strategy}{45}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}Test Environment}{46}{subsection.4.5.2}%
+\contentsline {subsection}{\numberline {4.5.3}Test Cases}{46}{subsection.4.5.3}%
+\contentsline {subsection}{\numberline {4.5.4}Performance Evaluation}{47}{subsection.4.5.4}%
+\contentsline {subsection}{\numberline {4.5.5}Validation Synthesis and Limitations}{47}{subsection.4.5.5}%
+\contentsline {section}{\numberline {4.6}Future Evolution}{47}{section.4.6}%
+\contentsline {section}{\numberline {4.7}General Conclusion}{48}{section.4.7}%
+\contentsline {chapter}{Bibliography}{49}{chapter*.59}%
+\contentsline {chapter}{Webography}{50}{chapter*.60}%

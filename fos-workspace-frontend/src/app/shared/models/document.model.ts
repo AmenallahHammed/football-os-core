@@ -10,6 +10,7 @@ export interface WorkspaceDocument {
   id: string;
   name: string;
   fileType: string;
+  category?: string;
   uploadedAt: string;
   status: DocumentStatus;
   folderId: string | null;

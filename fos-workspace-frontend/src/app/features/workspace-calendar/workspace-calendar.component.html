@@ -502,7 +502,7 @@
 
           <label class="create-type-select">
             <span class="sr-only">Event type</span>
-            <select [(ngModel)]="draftEventType" aria-label="Event type">
+            <select [(ngModel)]="draftEventType" aria-label="Event type" [disabled]="isEditMode">
               @for (type of eventTypes; track type.value) {
                 <option [value]="type.value">{{ type.label }}</option>
               }
@@ -551,7 +551,7 @@
                 <span class="attendee-chip">
                   <span class="avatar-badge">{{ initialsFor(attendee.name) }}</span>
                   <span>{{ attendee.name }}</span>
-                  <button type="button" [attr.aria-label]="'Remove ' + attendee.name" (click)="removeAttendee(attendee.id)">
+                  <button type="button" [attr.aria-label]="'Remove ' + attendee.name" [disabled]="isEditMode" (click)="removeAttendee(attendee.id)">
                     <app-workspace-calendar-icon class="inline-icon" name="x" [size]="12"></app-workspace-calendar-icon>
                   </button>
                 </span>
@@ -568,6 +568,7 @@
                 [attr.aria-expanded]="attendeeDropdownOpen"
                 [attr.aria-controls]="attendeeDropdownOpen ? 'attendee-suggestions' : null"
                 [attr.aria-activedescendant]="focusedAttendeeSuggestionId"
+                [disabled]="isEditMode"
                 (focus)="openAttendeeSuggestions()"
                 (input)="onAttendeeInput()"
                 (keydown)="handleAttendeeInputKeydown($event)"
@@ -651,7 +652,7 @@
                 <span>Required documents</span>
               </div>
 
-              <button type="button" class="secondary-btn" (click)="addRequiredDocumentRow()">
+              <button type="button" class="secondary-btn" [disabled]="isEditMode" (click)="addRequiredDocumentRow()">
                 <span class="button-label">
                   <app-workspace-calendar-icon class="control-icon" name="plus" [size]="18"></app-workspace-calendar-icon>
                   Add row
@@ -662,8 +663,8 @@
             <div class="doc-rows">
               @for (document of requiredDocumentDrafts; track document.id) {
                 <div class="doc-row">
-                  <input type="text" [(ngModel)]="document.name" placeholder="Document name" />
-                  <select [(ngModel)]="document.assignedToActorId">
+                  <input type="text" [(ngModel)]="document.name" placeholder="Document name" [disabled]="isEditMode" />
+                  <select [(ngModel)]="document.assignedToActorId" [disabled]="isEditMode">
                     <option value="">Responsible staff</option>
                     @for (person of peopleDirectory; track person.id) {
                       <option [value]="person.id">{{ person.name }}</option>
@@ -673,6 +674,7 @@
                     type="button"
                     class="icon-btn menu-danger doc-remove-btn"
                     aria-label="Delete required document row"
+                    [disabled]="isEditMode"
                     (click)="removeRequiredDocumentRow(document.id)"
                   >
                     <app-workspace-calendar-icon class="control-icon" name="trash" [size]="18"></app-workspace-calendar-icon>
@@ -800,9 +802,32 @@
       tabindex="-1"
     >
       <header class="drawer-head">
-        <div>
+        <div class="drawer-head-copy">
           <p class="section-kicker">{{ eventItem.start | date: 'EEEE, MMMM d' }}</p>
           <h3 id="event-drawer-title">{{ eventItem.title }}</h3>
+
+          @if (canModifySelectedEvent) {
+            <div class="drawer-header-actions">
+              <button
+                type="button"
+                class="primary-btn drawer-action-btn drawer-action-edit"
+                aria-label="Edit event"
+                [disabled]="deleteDialogOpen || isDeletingEvent"
+                (click)="editSelectedEvent($event.currentTarget)"
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                class="secondary-btn danger-btn drawer-action-btn"
+                aria-label="Delete event"
+                [disabled]="deleteDialogOpen || isDeletingEvent"
+                (click)="requestDeleteSelectedEvent($event.currentTarget)"
+              >
+                Delete
+              </button>
+            </div>
+          }
         </div>
 
         <button type="button" class="icon-btn" aria-label="Close event drawer" (click)="closeDrawer()">
@@ -817,23 +842,6 @@
               <span class="type-chip">{{ eventTypeLabel(eventItem.type) }}</span>
               <h4>{{ eventItem.title }}</h4>
             </div>
-
-            @if (canModifySelectedEvent) {
-              <div class="drawer-event-actions">
-                <button type="button" class="secondary-btn edit-session-btn" (click)="editSelectedEvent($event.currentTarget)">
-                  <span class="button-label">
-                    <app-workspace-calendar-icon class="inline-icon" name="settings" [size]="16"></app-workspace-calendar-icon>
-                    Edit Session
-                  </span>
-                </button>
-                <button type="button" class="danger-link" (click)="deleteSelectedEvent()">
-                  <span class="button-label">
-                    <app-workspace-calendar-icon class="inline-icon" name="trash" [size]="16"></app-workspace-calendar-icon>
-                    Delete Session
-                  </span>
-                </button>
-              </div>
-            }
           </div>
 
           @if (drawerError) {
@@ -912,6 +920,38 @@
             </div>
           </section>
         }
+      </div>
+    </aside>
+  }
+
+  @if (deleteDialogOpen && selectedEvent) {
+    <button type="button" class="overlay-scrim" aria-label="Close delete confirmation" (click)="cancelDeleteConfirmation()"></button>
+
+    <aside
+      #deleteConfirmDialog
+      class="overlay-panel confirm-dialog"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="delete-event-title"
+      aria-describedby="delete-event-message"
+      (keydown)="handleDeleteDialogKeydown($event)"
+      tabindex="-1"
+    >
+      <div class="confirm-dialog-copy">
+        <h3 id="delete-event-title">Delete event</h3>
+        <p id="delete-event-message">Are you sure you want to delete this event? This action cannot be undone.</p>
+        @if (drawerError) {
+          <p class="create-error" role="alert">{{ drawerError }}</p>
+        }
+      </div>
+
+      <div class="confirm-dialog-actions">
+        <button type="button" class="secondary-btn" data-autofocus [disabled]="isDeletingEvent" (click)="cancelDeleteConfirmation()">
+          Cancel
+        </button>
+        <button type="button" class="secondary-btn danger-btn" [disabled]="isDeletingEvent" (click)="confirmDeleteSelectedEvent()">
+          {{ isDeletingEvent ? 'Deleting...' : 'Delete event' }}
+        </button>
       </div>
     </aside>
   }

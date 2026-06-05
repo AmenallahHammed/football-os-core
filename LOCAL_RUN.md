@@ -46,21 +46,28 @@ mvn clean install -DskipTests
 6. Run governance:
 
 ```powershell
-mvn -pl fos-governance-service -am spring-boot:run
+mvn -pl fos-governance-service -am -DskipTests install
+mvn "-Dspring-boot.run.arguments=--spring.profiles.active=dev" -f fos-governance-service/pom.xml spring-boot:run
 ```
 
 7. Run workspace:
 
 ```powershell
-mvn -pl fos-workspace-service -am spring-boot:run
+mvn -pl fos-workspace-service -am -DskipTests install
+mvn "-Dspring-boot.run.arguments=--spring.profiles.active=dev" -f fos-workspace-service/pom.xml spring-boot:run
 ```
 
 8. Run gateway:
 
 ```powershell
-mvn -pl fos-gateway -am spring-boot:run
-```
+mvn -pl fos-gateway -am -DskipTests install
+mvn "-Dspring-boot.run.arguments=--spring.profiles.active=dev" -f fos-gateway/pom.xml spring-boot:run
 
+```
+specifically the gateway can take a few seconds to bind to port 8080, so if you see a "port already in use" error, check for the old process and stop it:
+
+```powershell
+Stop-Process -Id 4960
 9. Run frontend:
 
 ```powershell
@@ -92,6 +99,8 @@ Use `npm ci` instead of `npm install` when you want a clean lockfile-based insta
 - The workspace service uses `MINIO_ENDPOINT=http://localhost:9000`.
 - The governance service uses `OPA_URL=http://localhost:8181`.
 - The root `.env` is imported by the Spring Boot apps at startup, so you do not need a separate `.env.dev`.
+- The helper scripts use `mvn ... install` before `spring-boot:run` so local SDK snapshot changes are visible to module-level runs.
+- The helper scripts launch Spring Boot with the `dev` profile for readable console logs and local debug-friendly settings.
 - MinIO bucket creation is handled by the application code on first use.
 
 ## Troubleshooting

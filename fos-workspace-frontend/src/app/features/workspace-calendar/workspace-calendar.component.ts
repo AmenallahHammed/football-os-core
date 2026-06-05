@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, ElementRef, HostListener, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { finalize } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/auth/auth.service';
 import { EventParticipant } from '../../shared/models/event.model';
@@ -199,6 +200,7 @@ export class WorkspaceCalendarComponent {
   @ViewChild('moreOptionsTrigger') private moreOptionsTrigger?: ElementRef<HTMLButtonElement>;
   @ViewChild('attendeePicker') private attendeePicker?: ElementRef<HTMLElement>;
   @ViewChild('attendeeInput') private attendeeInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('deleteConfirmDialog') private deleteConfirmDialog?: ElementRef<HTMLElement>;
 
   private readonly authService = environment.auth.enabled ? inject(AuthService) : null;
   private readonly calendarApi = inject(WorkspaceCalendarApiService);
@@ -239,11 +241,14 @@ export class WorkspaceCalendarComponent {
   protected selectedEvent: CalendarEventView | null = null;
   protected drawerOpen = false;
   protected drawerError = '';
+  protected deleteDialogOpen = false;
+  protected isDeletingEvent = false;
   protected createPopover: CreatePopoverState | null = null;
   protected createDrawerOpen = false;
   protected createError = '';
   protected editorMode: 'create' | 'edit' = 'create';
   protected editingEventId: string | null = null;
+  protected isSubmittingEvent = false;
 
   protected toastMessage = '';
   protected toastTone: ToastTone = 'info';
@@ -304,6 +309,12 @@ export class WorkspaceCalendarComponent {
       return;
     }
 
+    if (this.deleteDialogOpen) {
+      event.preventDefault();
+      this.cancelDeleteConfirmation();
+      return;
+    }
+
     if (this.attendeeSuggestionsOpen) {
       event.preventDefault();
       this.closeAttendeeSuggestions();
@@ -341,12 +352,11 @@ export class WorkspaceCalendarComponent {
   }
 
   protected get currentRole(): CalendarRole {
-    const claims = this.authService?.tokenClaims() ?? null;
-    if (!environment.auth.enabled && !claims) {
+    if (!environment.auth.enabled && !this.authService) {
       return TEMP_DISABLED_AUTH_ROLE;
     }
 
-    return this.hasHeadCoachRole(claims?.roles ?? []) ? 'head-coach' : 'staff';
+    return this.authService?.isHeadCoach() ? 'head-coach' : 'staff';
   }
 
   protected get pageTitle(): string {
@@ -520,7 +530,7 @@ export class WorkspaceCalendarComponent {
   }
 
   protected get createDisabled(): boolean {
-    return !this.draftEventName.trim() || !this.hasCompleteCreateDateTime;
+    return this.isSubmittingEvent || !this.draftEventName.trim() || !this.hasCompleteCreateDateTime;
   }
 
   protected get hasCompleteCreateDateTime(): boolean {
@@ -854,6 +864,7 @@ export class WorkspaceCalendarComponent {
     this.createError = '';
     this.editorMode = 'create';
     this.editingEventId = null;
+    this.isSubmittingEvent = false;
 
     if (eventIdToReopen) {
       const eventToReopen = this.events.find((event) => event.id === eventIdToReopen) ?? null;
@@ -1014,6 +1025,10 @@ export class WorkspaceCalendarComponent {
   }
 
   protected createEvent(): void {
+    if (this.isSubmittingEvent) {
+      return;
+    }
+
     if (this.createDisabled) {
       this.createError = 'Title, start, and end are required.';
       return;
@@ -1043,19 +1058,23 @@ export class WorkspaceCalendarComponent {
       };
 
       const eventId = this.editingEventId;
-      this.calendarApi.updateEvent(eventId, request).subscribe({
-        next: (eventResponse) => {
-          this.createDrawerOpen = false;
-          this.createError = '';
-          this.editorMode = 'create';
-          this.editingEventId = null;
-          this.showToast('Event updated', 'success');
-          this.loadEvents(eventResponse.eventId);
-        },
-        error: () => {
-          this.createError = 'Unable to update the event.';
-        }
-      });
+      this.isSubmittingEvent = true;
+      this.calendarApi
+        .updateEvent(eventId, request)
+        .pipe(finalize(() => (this.isSubmittingEvent = false)))
+        .subscribe({
+          next: (eventResponse) => {
+            this.createDrawerOpen = false;
+            this.createError = '';
+            this.editorMode = 'create';
+            this.editingEventId = null;
+            this.showToast('Event updated', 'success');
+            this.loadEvents(eventResponse.eventId);
+          },
+          error: () => {
+            this.createError = 'Unable to update the event.';
+          }
+        });
 
       return;
     }
@@ -1095,19 +1114,23 @@ export class WorkspaceCalendarComponent {
       tasks: tasksPayload
     };
 
-    this.calendarApi.createEvent(request).subscribe({
-      next: (eventResponse) => {
-        this.closeCreateDrawer();
-        this.showToast(
-          tasksPayload.length > 0 ? 'Session created. Assigned staff will be notified.' : 'Event created',
-          'success'
-        );
-        this.loadEvents(eventResponse.eventId);
-      },
-      error: () => {
-        this.createError = 'Unable to create the event.';
-      }
-    });
+    this.isSubmittingEvent = true;
+    this.calendarApi
+      .createEvent(request)
+      .pipe(finalize(() => (this.isSubmittingEvent = false)))
+      .subscribe({
+        next: (eventResponse) => {
+          this.closeCreateDrawer();
+          this.showToast(
+            tasksPayload.length > 0 ? 'Session created. Assigned staff will be notified.' : 'Event created',
+            'success'
+          );
+          this.loadEvents(eventResponse.eventId);
+        },
+        error: () => {
+          this.createError = 'Unable to create the event.';
+        }
+      });
   }
 
   protected openEvent(eventItem: CalendarEventView, trigger?: EventTarget | null): void {
@@ -1129,6 +1152,8 @@ export class WorkspaceCalendarComponent {
   protected closeDrawer(): void {
     this.drawerOpen = false;
     this.drawerError = '';
+    this.deleteDialogOpen = false;
+    this.isDeletingEvent = false;
     this.selectedEvent = null;
     this.restoreFocus();
   }
@@ -1141,28 +1166,50 @@ export class WorkspaceCalendarComponent {
     this.openEditDrawer(this.selectedEvent, trigger);
   }
 
-  protected deleteSelectedEvent(): void {
+  protected requestDeleteSelectedEvent(trigger?: EventTarget | null): void {
     if (!this.selectedEvent || !this.canModifyEvent(this.selectedEvent)) {
       return;
     }
 
-    const confirmed = window.confirm(`Delete "${this.selectedEvent.title}"?`);
-    if (!confirmed) {
+    if (trigger instanceof HTMLElement) {
+      this.rememberTrigger(trigger);
+    }
+
+    this.drawerError = '';
+    this.deleteDialogOpen = true;
+    window.setTimeout(() => this.focusOverlay(this.deleteConfirmDialog?.nativeElement), 0);
+  }
+
+  protected cancelDeleteConfirmation(): void {
+    this.deleteDialogOpen = false;
+    this.isDeletingEvent = false;
+    this.restoreFocus();
+  }
+
+  protected confirmDeleteSelectedEvent(): void {
+    if (!this.selectedEvent || !this.canModifyEvent(this.selectedEvent) || this.isDeletingEvent) {
       return;
     }
 
     const eventId = this.selectedEvent.id;
     this.drawerError = '';
-    this.calendarApi.archiveEvent(eventId).subscribe({
-      next: () => {
-        this.closeDrawer();
-        this.showToast('Event deleted', 'success');
-        this.loadEvents();
-      },
-      error: () => {
-        this.drawerError = 'Unable to delete the event.';
-      }
-    });
+    this.isDeletingEvent = true;
+    this.calendarApi
+      .archiveEvent(eventId)
+      .pipe(finalize(() => (this.isDeletingEvent = false)))
+      .subscribe({
+        next: () => {
+          this.deleteDialogOpen = false;
+          this.events = this.events.filter((event) => event.id !== eventId);
+          this.lastFocusTrigger = null;
+          this.closeDrawer();
+          this.showToast('Event deleted', 'success');
+          this.loadEvents();
+        },
+        error: () => {
+          this.drawerError = 'Unable to delete the event.';
+        }
+      });
   }
 
   protected closeToast(): void {
@@ -1326,24 +1373,24 @@ export class WorkspaceCalendarComponent {
       return;
     }
 
-    const focusable = this.focusableElements(container);
-    if (focusable.length === 0) {
+    this.trapFocusWithin(container, event);
+  }
+
+  protected handleDeleteDialogKeydown(event: KeyboardEvent): void {
+    const container = event.currentTarget as HTMLElement;
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      this.cancelDeleteConfirmation();
       return;
     }
 
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    const active = document.activeElement as HTMLElement | null;
-
-    if (event.shiftKey && active === first) {
-      event.preventDefault();
-      last.focus();
+    if (event.key !== 'Tab') {
+      return;
     }
 
-    if (!event.shiftKey && active === last) {
-      event.preventDefault();
-      first.focus();
-    }
+    this.trapFocusWithin(container, event);
   }
 
   protected eventCardLabel(eventItem: CalendarEventView): string {
@@ -1474,38 +1521,12 @@ export class WorkspaceCalendarComponent {
     return this.personById(actorId)?.name ?? 'Unassigned';
   }
 
-  private hasHeadCoachRole(roles: string[]): boolean {
-    return roles.some((role) => {
-      const normalizedRole = role
-        .trim()
-        .toLowerCase()
-        .replace(/^role[-_:\s]?/, '')
-        .replace(/[\s_]+/g, '-');
-
-      return normalizedRole === 'head-coach' || normalizedRole === 'headcoach';
-    });
-  }
-
   private eventsForDate(date: Date): CalendarEventView[] {
     return this.visibleEvents.filter((event) => this.sameDay(event.start, date)).sort((left, right) => left.start.getTime() - right.start.getTime());
   }
 
   private canModifyEvent(eventItem: CalendarEventView | null): boolean {
-    if (!eventItem || !this.canManageEvents) {
-      return false;
-    }
-
-    const creatorId = eventItem.createdByActorId;
-    if (!creatorId) {
-      return true;
-    }
-
-    const currentActorId = this.authService?.currentActorId() ?? null;
-    if (!currentActorId) {
-      return true;
-    }
-
-    return creatorId === currentActorId || creatorId === this.currentUser.id;
+    return Boolean(eventItem && this.canManageEvents);
   }
 
   private buildMonthCells(anchorDate: Date): CalendarDayCell[] {
@@ -1679,7 +1700,9 @@ export class WorkspaceCalendarComponent {
   }
 
   private restoreFocus(): void {
-    this.lastFocusTrigger?.focus();
+    if (this.lastFocusTrigger?.isConnected) {
+      this.lastFocusTrigger.focus();
+    }
     this.lastFocusTrigger = null;
   }
 
@@ -1699,6 +1722,27 @@ export class WorkspaceCalendarComponent {
         'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
       )
     );
+  }
+
+  private trapFocusWithin(container: HTMLElement, event: KeyboardEvent): void {
+    const focusable = this.focusableElements(container);
+    if (focusable.length === 0) {
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement as HTMLElement | null;
+
+    if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus();
+    }
+
+    if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 
   private showToast(message: string, tone: ToastTone): void {

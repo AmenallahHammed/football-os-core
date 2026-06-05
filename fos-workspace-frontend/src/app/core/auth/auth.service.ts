@@ -145,6 +145,10 @@ export class AuthService {
     return this.roles().includes(this.normalizeRole(role));
   }
 
+  isHeadCoach(): boolean {
+    return this.hasRole('HEAD_COACH');
+  }
+
   currentActorId(): string | null {
     return this.tokenClaimsState()?.sub ?? null;
   }

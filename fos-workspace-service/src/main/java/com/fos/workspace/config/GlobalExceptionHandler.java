@@ -2,6 +2,7 @@ package com.fos.workspace.config;
 
 import com.fos.sdk.core.ErrorResponse;
 import com.fos.sdk.events.RequestContext;
+import com.fos.sdk.storage.StorageOperationException;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +41,18 @@ public class GlobalExceptionHandler {
         return ErrorResponse.of("VALIDATION_FAILED", "Request validation failed", details, RequestContext.get());
     }
 
-    @ExceptionHandler(IllegalStateException.class)
+    @ExceptionHandler(ConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleConflict(IllegalStateException ex) {
-        log.warn("Returning 409 Conflict for IllegalStateException: {}", ex.getMessage(), ex);
+    public ErrorResponse handleConflict(ConflictException ex) {
+        log.warn("Returning 409 Conflict: {}", ex.getMessage(), ex);
         return ErrorResponse.of("CONFLICT", ex.getMessage(), RequestContext.get());
+    }
+
+    @ExceptionHandler(StorageOperationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleStorageFailure(StorageOperationException ex) {
+        log.error("Returning 500 Internal Server Error for storage failure: {}", ex.getMessage(), ex);
+        return ErrorResponse.of("STORAGE_ERROR", ex.getMessage(), RequestContext.get());
     }
 
     @ExceptionHandler(HttpClientErrorException.Unauthorized.class)

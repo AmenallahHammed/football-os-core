@@ -14,6 +14,7 @@ import com.fos.sdk.policy.PolicyResult;
 import com.fos.sdk.security.FosSecurityContext;
 import com.fos.sdk.storage.PresignedUploadUrl;
 import com.fos.sdk.storage.StoragePort;
+import com.fos.workspace.config.ConflictException;
 import com.fos.workspace.document.api.ConfirmUploadRequest;
 import com.fos.workspace.document.api.DocumentResponse;
 import com.fos.workspace.document.api.InitiateUploadRequest;
@@ -30,8 +31,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.text.Normalizer;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -41,6 +44,7 @@ public class DocumentService {
     private static final Logger log = LoggerFactory.getLogger(DocumentService.class);
     private static final Duration DOWNLOAD_URL_EXPIRY = Duration.ofHours(1);
     private static final Duration UPLOAD_URL_EXPIRY = Duration.ofMinutes(15);
+    public static final String DUPLICATE_UPLOAD_CONFIRMATION_MESSAGE = "Upload was already confirmed for this document.";
     // Local no-auth development fallback values only.
     private static final UUID LOCAL_NOAUTH_FALLBACK_ACTOR_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
     private static final UUID LOCAL_NOAUTH_FALLBACK_CLUB_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
@@ -93,7 +97,7 @@ public class DocumentService {
                 request.tags());
 
         WorkspaceDocument saved = documentRepository.save(document);
-        String objectKey = objectKeyFor(saved.getResourceId(), saved.nextVersionNumber(), request.originalFilename());
+        String objectKey = objectKeyFor(clubId, saved.getResourceId(), saved.nextVersionNumber(), request.originalFilename());
         PresignedUploadUrl uploadUrl;
         try {
             uploadUrl = storagePort.generateUploadUrl(
@@ -102,6 +106,8 @@ public class DocumentService {
                     request.contentType(),
                     UPLOAD_URL_EXPIRY);
         } catch (RuntimeException ex) {
+            log.warn("Upload initiation failed before presigned URL generation completed: documentId={} category={} actor={} objectKey={} reason={}",
+                    saved.getResourceId(), request.category(), actorId, objectKey, ex.getMessage());
             cleanupFailedDraft(saved, actorId, request.category(), ex);
             throw ex;
         }
@@ -119,7 +125,8 @@ public class DocumentService {
                 )))
                 .build());
 
-        log.info("Initiated upload: documentId={} category={} actor={}", saved.getResourceId(), request.category(), actorId);
+        log.info("Initiated upload: documentId={} category={} actor={} objectKey={}",
+                saved.getResourceId(), request.category(), actorId, objectKey);
         return new UploadInitiationResult(saved.getResourceId(), uploadUrl.uploadUrl(), objectKey);
     }
 
@@ -128,8 +135,11 @@ public class DocumentService {
         UUID clubId = currentClubId();
 
         WorkspaceDocument document = loadDocument(request.documentId(), clubId);
+        if (document.currentVersion() != null || document.getState() == ResourceState.ACTIVE) {
+            throw new ConflictException(DUPLICATE_UPLOAD_CONFIRMATION_MESSAGE);
+        }
         if (document.getState() == ResourceState.ARCHIVED) {
-            throw new IllegalStateException("Cannot confirm upload for archived document: " + request.documentId());
+            throw new ConflictException("Cannot confirm upload for archived document: " + request.documentId());
         }
 
         storagePort.confirmUpload(request.storageBucket(), request.storageObjectKey());
@@ -293,8 +303,58 @@ public class DocumentService {
         return "workspace.document." + category.name().toLowerCase() + "." + operation;
     }
 
-    private String objectKeyFor(UUID documentId, int versionNumber, String originalFilename) {
-        return "documents/" + documentId + "/v" + versionNumber + "_" + originalFilename;
+    private String objectKeyFor(UUID clubId, UUID documentId, int versionNumber, String originalFilename) {
+        String extension = extensionForStorage(originalFilename);
+        String sanitizedBaseName = sanitizeFilenameForStorage(baseName(originalFilename));
+        String uniqueSegment = UUID.randomUUID().toString();
+
+        return "documents/"
+                + clubId
+                + "/"
+                + documentId
+                + "/"
+                + sanitizedBaseName
+                + "-v"
+                + versionNumber
+                + "-"
+                + uniqueSegment
+                + extension;
+    }
+
+    private String baseName(String originalFilename) {
+        String trimmed = originalFilename == null ? "" : originalFilename.trim();
+        int dotIndex = trimmed.lastIndexOf('.');
+        if (dotIndex <= 0) {
+            return trimmed;
+        }
+        return trimmed.substring(0, dotIndex);
+    }
+
+    private String extensionForStorage(String originalFilename) {
+        String trimmed = originalFilename == null ? "" : originalFilename.trim();
+        int dotIndex = trimmed.lastIndexOf('.');
+        if (dotIndex <= 0 || dotIndex == trimmed.length() - 1) {
+            return "";
+        }
+
+        String extension = trimmed.substring(dotIndex + 1)
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("[^a-z0-9]+", "");
+        return extension.isBlank() ? "" : "." + extension;
+    }
+
+    private String sanitizeFilenameForStorage(String originalFilename) {
+        String normalized = Normalizer.normalize(originalFilename == null ? "" : originalFilename, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}+", "");
+        String sanitized = normalized
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("['`]+", "-")
+                .replaceAll("[^a-z0-9]+", "-")
+                .replaceAll("-{2,}", "-")
+                .replaceAll("^-+", "")
+                .replaceAll("-+$", "");
+
+        return sanitized.isBlank() ? "document" : sanitized;
     }
 
     private String generateDownloadUrl(WorkspaceDocument document) {

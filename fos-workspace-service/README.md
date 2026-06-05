@@ -196,7 +196,19 @@ Common environment variables:
 Run from repository root:
 
 ```bash
-mvn -pl fos-workspace-service -am spring-boot:run
+mvn -pl fos-workspace-service -am -DskipTests install
+mvn "-Dspring-boot.run.arguments=--spring.profiles.active=dev" -f fos-workspace-service/pom.xml spring-boot:run
+```
+
+Do not use `mvn -pl fos-workspace-service -am spring-boot:run` in this monorepo.
+That form also selects the root aggregator project, and Maven tries to execute
+`spring-boot:run` on `football-os-core`, which has no main class.
+
+If `8082` is already occupied by another local workspace instance, stop that
+process first or override the port for a second instance:
+
+```bash
+mvn "-Dspring-boot.run.arguments=--spring.profiles.active=dev --server.port=8083" -f fos-workspace-service/pom.xml spring-boot:run
 ```
 
 Run tests:

@@ -17,5 +17,7 @@ fi
 # Print a clear startup message for the developer.
 echo "Starting ${SERVICE_NAME} on http://localhost:${PORT}"
 
-# Run the target module and build required local dependencies on clean machines.
-mvn "-Dspring-boot.run.arguments=--server.port=${PORT}" -pl "${MODULE}" -am spring-boot:run
+# Install the target module with its local dependencies so spring-boot:run
+# resolves the latest SDK snapshots from the local Maven repository.
+mvn -pl "${MODULE}" -am -DskipTests install
+mvn "-Dspring-boot.run.arguments=--server.port=${PORT} --spring.profiles.active=dev" -f "${MODULE}/pom.xml" spring-boot:run

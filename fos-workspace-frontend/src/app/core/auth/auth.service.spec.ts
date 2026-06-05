@@ -93,6 +93,7 @@ describe('AuthService', () => {
     });
     expect(service.roles()).toEqual(['HEAD_COACH', 'REALM_ADMIN', 'CLIENT_ROLE']);
     expect(service.hasRole('ROLE_HEAD_COACH')).toBeTrue();
+    expect(service.isHeadCoach()).toBeTrue();
     expect(service.currentActorId()).toBe('11111111-1111-1111-1111-111111111101');
     expect(service.currentClubId()).toBe('00000000-0000-0000-0000-000000000001');
   });

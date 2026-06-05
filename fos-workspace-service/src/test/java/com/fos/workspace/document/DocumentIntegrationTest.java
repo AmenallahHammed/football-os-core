@@ -6,8 +6,10 @@ import com.fos.workspace.document.api.DocumentController;
 import com.fos.workspace.document.api.DocumentResponse;
 import com.fos.workspace.document.api.InitiateUploadRequest;
 import com.fos.workspace.document.application.DocumentService;
+import com.fos.workspace.document.domain.DocumentVersion;
 import com.fos.workspace.document.domain.DocumentCategory;
 import com.fos.workspace.document.domain.DocumentVisibility;
+import com.fos.workspace.document.domain.WorkspaceDocument;
 import com.fos.workspace.document.infrastructure.persistence.WorkspaceDocumentRepository;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
@@ -15,6 +17,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -32,6 +36,7 @@ import org.testcontainers.utility.DockerImageName;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -44,6 +49,8 @@ import static org.assertj.core.api.Assertions.assertThat;
         "fos.security.enabled=false"
 })
 class DocumentIntegrationTest extends FosTestContainersBase {
+
+    private static final UUID LOCAL_NOAUTH_CLUB_ID = UUID.fromString("00000000-0000-0000-0000-000000000001");
 
     private static final MongoDBContainer MONGO =
             new MongoDBContainer(DockerImageName.parse("mongo:7.0.12")).withReuse(true);
@@ -109,6 +116,16 @@ class DocumentIntegrationTest extends FosTestContainersBase {
                 .willReturn(okJson("{\"decision\":\"ALLOW\",\"reason\":\"allowed\"}")));
     }
 
+    private static Stream<String> specialFilenames() {
+        return Stream.of(
+                "normal.pdf",
+                "SEANCE D'ENTRAINEMENT MARDI LE 19 MAI 2026 NUM 212.pdf",
+                "player medical report.pdf",
+                "r\u00E9sum\u00E9 m\u00E9dical.pdf",
+                "file (final) #1.pdf",
+                "name_with_underscores.docx");
+    }
+
     @Test
     void shouldInitiateUploadAndReturn201() {
         InitiateUploadRequest initiateRequest = new InitiateUploadRequest(
@@ -133,6 +150,71 @@ class DocumentIntegrationTest extends FosTestContainersBase {
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().documentId()).isNotNull();
         assertThat(response.getBody().uploadUrl()).startsWith("https://noop.fos.local/upload/");
+    }
+
+    @ParameterizedTest
+    @MethodSource("specialFilenames")
+    void shouldInitiateAndConfirmUploadForSpecialCharacterFilenames(String originalFilename) {
+        InitiateUploadRequest initiateRequest = new InitiateUploadRequest(
+                "Test Document",
+                "Description",
+                DocumentCategory.GENERAL,
+                DocumentVisibility.CLUB_WIDE,
+                originalFilename,
+                contentTypeFor(originalFilename),
+                1024L,
+                null,
+                null,
+                List.of("test"),
+                null);
+
+        ResponseEntity<DocumentService.UploadInitiationResult> initiateResponse = restTemplate.postForEntity(
+                "/api/v1/documents/upload/initiate",
+                initiateRequest,
+                DocumentService.UploadInitiationResult.class);
+
+        assertThat(initiateResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(initiateResponse.getBody()).isNotNull();
+
+        DocumentService.UploadInitiationResult initResult = initiateResponse.getBody();
+        assertThat(initResult.objectKey()).startsWith("documents/" + LOCAL_NOAUTH_CLUB_ID + "/" + initResult.documentId() + "/");
+        assertThat(initResult.objectKey()).endsWith(extensionSuffix(originalFilename));
+        assertThat(initResult.objectKey()).doesNotContain(" ", "'", "\"", "(", ")", "#", "\u00E9", "?", "%", "&", "\\");
+
+        DocumentController.ConfirmUploadWithMetadata confirmRequest = new DocumentController.ConfirmUploadWithMetadata(
+                initResult.documentId(),
+                initResult.objectKey(),
+                "fos-workspace",
+                "Test Document",
+                "Description",
+                DocumentCategory.GENERAL,
+                DocumentVisibility.CLUB_WIDE,
+                originalFilename,
+                contentTypeFor(originalFilename),
+                1024L,
+                null,
+                null,
+                List.of("test"),
+                null);
+
+        ResponseEntity<DocumentResponse> confirmResponse = restTemplate.postForEntity(
+                "/api/v1/documents/upload/confirm",
+                confirmRequest,
+                DocumentResponse.class);
+
+        assertThat(confirmResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(confirmResponse.getBody()).isNotNull();
+        assertThat(confirmResponse.getBody().currentVersion()).isNotNull();
+        assertThat(confirmResponse.getBody().currentVersion().originalFilename()).isEqualTo(originalFilename);
+
+        WorkspaceDocument persisted = repository.findByResourceIdAndOwnerRefId(initResult.documentId(), LOCAL_NOAUTH_CLUB_ID)
+                .orElseThrow();
+        DocumentVersion version = persisted.currentVersion();
+
+        assertThat(version).isNotNull();
+        assertThat(version.getOriginalFilename()).isEqualTo(originalFilename);
+        assertThat(version.getStorageObjectKey()).isEqualTo(initResult.objectKey());
+        assertThat(version.getStorageObjectKey()).doesNotContain(" ", "'", "\"", "(", ")", "#", "\u00E9", "?", "%", "&", "\\");
     }
 
     @Test
@@ -234,5 +316,98 @@ class DocumentIntegrationTest extends FosTestContainersBase {
                 "/api/v1/documents/" + initResult.documentId(),
                 DocumentResponse.class);
         assertThat(fetched.state().name()).isEqualTo("ARCHIVED");
+    }
+
+    @Test
+    void shouldReturn409WhenUploadIsConfirmedTwiceForSameDocument() {
+        InitiateUploadRequest initiateRequest = new InitiateUploadRequest(
+                "Duplicate Confirm",
+                null,
+                DocumentCategory.GENERAL,
+                DocumentVisibility.CLUB_WIDE,
+                "duplicate-confirm.pdf",
+                "application/pdf",
+                1024L,
+                null,
+                null,
+                null,
+                null);
+
+        DocumentService.UploadInitiationResult initResult = restTemplate.postForObject(
+                "/api/v1/documents/upload/initiate",
+                initiateRequest,
+                DocumentService.UploadInitiationResult.class);
+
+        DocumentController.ConfirmUploadWithMetadata confirmRequest = new DocumentController.ConfirmUploadWithMetadata(
+                initResult.documentId(),
+                initResult.objectKey(),
+                "fos-workspace",
+                "Duplicate Confirm",
+                null,
+                DocumentCategory.GENERAL,
+                DocumentVisibility.CLUB_WIDE,
+                "duplicate-confirm.pdf",
+                "application/pdf",
+                1024L,
+                null,
+                null,
+                null,
+                null);
+
+        ResponseEntity<DocumentResponse> firstConfirm = restTemplate.postForEntity(
+                "/api/v1/documents/upload/confirm",
+                confirmRequest,
+                DocumentResponse.class);
+        ResponseEntity<String> duplicateConfirm = restTemplate.postForEntity(
+                "/api/v1/documents/upload/confirm",
+                confirmRequest,
+                String.class);
+
+        assertThat(firstConfirm.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(duplicateConfirm.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
+        assertThat(duplicateConfirm.getBody()).contains(DocumentService.DUPLICATE_UPLOAD_CONFIRMATION_MESSAGE);
+    }
+
+    @Test
+    void shouldGenerateDistinctObjectKeysForRepeatedUploadsWithSameFilename() {
+        InitiateUploadRequest request = new InitiateUploadRequest(
+                "Repeated Upload",
+                null,
+                DocumentCategory.GENERAL,
+                DocumentVisibility.CLUB_WIDE,
+                "file (final) #1.pdf",
+                "application/pdf",
+                1024L,
+                null,
+                null,
+                null,
+                null);
+
+        DocumentService.UploadInitiationResult first = restTemplate.postForObject(
+                "/api/v1/documents/upload/initiate",
+                request,
+                DocumentService.UploadInitiationResult.class);
+        DocumentService.UploadInitiationResult second = restTemplate.postForObject(
+                "/api/v1/documents/upload/initiate",
+                request,
+                DocumentService.UploadInitiationResult.class);
+
+        assertThat(first).isNotNull();
+        assertThat(second).isNotNull();
+        assertThat(first.objectKey()).isNotEqualTo(second.objectKey());
+        assertThat(first.objectKey()).endsWith(".pdf");
+        assertThat(second.objectKey()).endsWith(".pdf");
+    }
+
+    private String contentTypeFor(String originalFilename) {
+        return originalFilename.toLowerCase().endsWith(".docx")
+                ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                : "application/pdf";
+    }
+
+    private String extensionSuffix(String originalFilename) {
+        String normalized = originalFilename.toLowerCase();
+        int dotIndex = normalized.lastIndexOf('.');
+        return dotIndex < 0 ? "" : normalized.substring(dotIndex);
     }
 }

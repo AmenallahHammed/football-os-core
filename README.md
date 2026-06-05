@@ -87,9 +87,12 @@ Quick commands:
 ```bash
 docker compose up -d
 mvn clean install -DskipTests
-mvn -pl fos-governance-service -am spring-boot:run
-mvn -pl fos-workspace-service -am spring-boot:run
-mvn -pl fos-gateway -am spring-boot:run
+mvn -pl fos-governance-service -am -DskipTests install
+mvn "-Dspring-boot.run.arguments=--spring.profiles.active=dev" -f fos-governance-service/pom.xml spring-boot:run
+mvn -pl fos-workspace-service -am -DskipTests install
+mvn "-Dspring-boot.run.arguments=--spring.profiles.active=dev" -f fos-workspace-service/pom.xml spring-boot:run
+mvn -pl fos-gateway -am -DskipTests install
+mvn "-Dspring-boot.run.arguments=--spring.profiles.active=dev" -f fos-gateway/pom.xml spring-boot:run
 cd fos-workspace-frontend && npm start
 ```
 

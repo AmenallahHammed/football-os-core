@@ -79,6 +79,17 @@ class FosSecurityContextTest {
     }
 
     @Test
+    void should_normalize_unprefixed_application_roles() {
+        setUpSecurityContextWithClaims("actor-001", List.of(),
+                java.util.Map.of(
+                        "fos_club_id", "club-001",
+                        "realm_access", java.util.Map.of("roles", List.of("HEAD_COACH", "ANALYST", "default-roles-fos"))));
+
+        assertThat(context.roles()).contains("HEAD_COACH", "ROLE_HEAD_COACH", "ANALYST", "ROLE_ANALYST", "default-roles-fos");
+        assertThat(context.getRole()).isEqualTo("ROLE_HEAD_COACH");
+    }
+
+    @Test
     void should_prefer_application_role_when_keycloak_emits_default_roles_first() {
         setUpSecurityContextWithClaims("actor-001", List.of(),
                 java.util.Map.of(

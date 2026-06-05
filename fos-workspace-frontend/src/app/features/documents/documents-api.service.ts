@@ -61,7 +61,11 @@ export interface BackendDocumentResponse {
 }
 
 export interface BackendPageResponse<T> {
-  content: T[];
+  content?: T[];
+  data?: T[];
+  items?: T[];
+  documents?: T[];
+  results?: T[];
 }
 
 @Injectable({

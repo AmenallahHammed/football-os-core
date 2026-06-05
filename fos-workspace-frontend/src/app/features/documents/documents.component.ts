@@ -23,6 +23,7 @@ import {
   BackendDocumentResponse,
   BackendDocumentVisibility,
   BackendInitiateUploadRequest,
+  BackendPageResponse,
   DocumentsApiService
 } from './documents-api.service';
 
@@ -36,6 +37,8 @@ const SUPPORTED_UPLOAD_EXTENSIONS = new Set([
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const MAX_UPLOAD_SIZE_BYTES = 25 * 1024 * 1024;
 const FALLBACK_STORAGE_BUCKET = 'fos-workspace';
+const DUPLICATE_UPLOAD_CONFIRMATION_MESSAGE = 'Upload was already confirmed for this document.';
+const DUPLICATE_UPLOAD_CONFLICT_MESSAGE = 'A document with this name or upload session already exists.';
 
 class UploadStepError extends Error {
   constructor(
@@ -44,6 +47,18 @@ class UploadStepError extends Error {
   ) {
     super(`Document upload failed during ${step}.`);
   }
+}
+
+class DuplicateUploadConfirmationError extends Error {
+  constructor() {
+    super(DUPLICATE_UPLOAD_CONFIRMATION_MESSAGE);
+  }
+}
+
+interface BackendErrorBody {
+  code?: string;
+  message?: string;
+  details?: string[];
 }
 
 @Component({
@@ -72,6 +87,8 @@ export class DocumentsComponent implements OnInit, OnDestroy {
 
   private readonly subscriptions = new Subscription();
   private backendDocuments: WorkspaceDocument[] = [];
+  private readonly confirmedUploadSessionIds = new Set<string>();
+  private readonly confirmingUploadSessionIds = new Set<string>();
 
   protected searchTerm = '';
   protected selectedFileType = 'all';
@@ -130,7 +147,7 @@ export class DocumentsComponent implements OnInit, OnDestroy {
   }
 
   protected get fileTypes(): string[] {
-    return [...new Set(this.documentSource.map((doc) => doc.fileType))].sort();
+    return [...new Set(this.documentSource.map((doc) => this.documentTypeLabel(doc)))].sort();
   }
 
   protected get breadcrumbSegments(): BreadcrumbSegment[] {
@@ -158,7 +175,7 @@ export class DocumentsComponent implements OnInit, OnDestroy {
 
     return this.documentSource
       .filter((doc) => !this.selectedFolderId || doc.folderId === this.selectedFolderId)
-      .filter((doc) => this.selectedFileType === 'all' || doc.fileType === this.selectedFileType)
+      .filter((doc) => this.selectedFileType === 'all' || this.documentTypeLabel(doc) === this.selectedFileType)
       .filter((doc) => this.selectedStatus === 'all' || doc.status === this.selectedStatus)
       .filter((doc) => !this.selectedDate || doc.uploadedAt === this.selectedDate)
       .filter((doc) => !query || doc.name.toLowerCase().includes(query));
@@ -178,6 +195,10 @@ export class DocumentsComponent implements OnInit, OnDestroy {
 
   protected childFolders(parentId: string | null) {
     return this.folders.filter((folder) => folder.parentId === parentId);
+  }
+
+  protected documentTypeLabel(document: WorkspaceDocument): string {
+    return document.category?.trim() || document.fileType;
   }
 
   protected onBreadcrumbSelected(segment: BreadcrumbSegment): void {
@@ -339,35 +360,39 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     this.uploadStatusMessage = '';
     this.uploadProgress = 0;
 
-    if (!files.length) {
+    const uniqueFiles = this.uniqueFiles(files);
+
+    if (!uniqueFiles.length) {
       this.uploadError = 'No file selected.';
       return;
     }
 
-    const unsupportedFile = files.find((file) => !this.isSupportedUploadFile(file));
+    const unsupportedFile = uniqueFiles.find((file) => !this.isSupportedUploadFile(file));
     if (unsupportedFile) {
       this.uploadError = `Unsupported file type for ${unsupportedFile.name}.`;
       return;
     }
 
-    const oversizedFile = files.find((file) => file.size > MAX_UPLOAD_SIZE_BYTES);
+    const oversizedFile = uniqueFiles.find((file) => file.size > MAX_UPLOAD_SIZE_BYTES);
     if (oversizedFile) {
       this.uploadError = `${oversizedFile.name} exceeds the 25MB limit.`;
       return;
     }
 
     this.uploadBusy = true;
+    this.confirmedUploadSessionIds.clear();
+    this.confirmingUploadSessionIds.clear();
     let uploadedCount = 0;
 
     try {
-      for (let index = 0; index < files.length; index += 1) {
-        const file = files[index];
+      for (let index = 0; index < uniqueFiles.length; index += 1) {
+        const file = uniqueFiles[index];
         const uploadMetadata = this.buildUploadMetadata(file);
 
-        const initiated = await this.initiateBackendUpload(uploadMetadata, file, index, files.length);
+        const initiated = await this.initiateBackendUpload(uploadMetadata, file, index, uniqueFiles.length);
 
         if (!this.shouldSkipBinaryUpload(initiated.uploadUrl)) {
-          await this.uploadBinaryToPresignedUrl(initiated.uploadUrl, file, index, files.length);
+          await this.uploadBinaryToPresignedUrl(initiated.uploadUrl, file, index, uniqueFiles.length);
         } else {
           // TODO(storage-noop): noop storage returns a non-routable upload URL by design.
           // Skip binary transfer and continue confirm so local dev can still exercise workflow.
@@ -375,9 +400,17 @@ export class DocumentsComponent implements OnInit, OnDestroy {
           this.uploadProgress = 70;
         }
 
-        await this.confirmBackendUpload(initiated.documentId, initiated.objectKey, initiated.uploadUrl, uploadMetadata, file, index, files.length);
+        await this.confirmBackendUpload(
+          initiated.documentId,
+          initiated.objectKey,
+          initiated.uploadUrl,
+          uploadMetadata,
+          file,
+          index,
+          uniqueFiles.length
+        );
         uploadedCount += 1;
-        this.uploadProgress = Math.round((uploadedCount / files.length) * 100);
+        this.uploadProgress = Math.round((uploadedCount / uniqueFiles.length) * 100);
       }
 
       this.uploadStatusMessage = '';
@@ -386,10 +419,18 @@ export class DocumentsComponent implements OnInit, OnDestroy {
       this.loadBackendDocuments();
     } catch (error) {
       this.uploadStatusMessage = '';
-      this.uploadError = this.mapUploadError(error);
+      if (error instanceof DuplicateUploadConfirmationError) {
+        this.uploadInfo = 'This upload was already confirmed once. The document list has been refreshed.';
+        this.showDropzone = false;
+        this.loadBackendDocuments();
+      } else {
+        this.uploadError = this.mapUploadError(error);
+      }
     } finally {
       this.uploadBusy = false;
       this.uploadProgress = 0;
+      this.confirmedUploadSessionIds.clear();
+      this.confirmingUploadSessionIds.clear();
     }
   }
 
@@ -398,9 +439,9 @@ export class DocumentsComponent implements OnInit, OnDestroy {
 
     const requests = this.allowedBackendCategories('read').map((category) =>
       this.documentsApi.listDocumentsByCategory(category).pipe(
-        catchError(() => {
-          this.backendLoadError = 'Some protected document categories could not be loaded.';
-          return of({ content: [] });
+        catchError((error: unknown) => {
+          this.backendLoadError = this.mapBackendLoadError(error);
+          return of({ content: [] } satisfies BackendPageResponse<BackendDocumentResponse>);
         })
       )
     );
@@ -408,7 +449,7 @@ export class DocumentsComponent implements OnInit, OnDestroy {
       forkJoin(requests).subscribe({
         next: (responses) => {
           const mapped = responses
-            .flatMap((page) => page.content ?? [])
+            .flatMap((page) => this.extractBackendDocuments(page))
             .map((documentItem) => this.mapBackendDocument(documentItem));
 
           this.backendDocuments = this.uniqueById(mapped);
@@ -543,6 +584,10 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     index: number,
     totalFiles: number
   ): Promise<void> {
+    if (this.confirmedUploadSessionIds.has(documentId) || this.confirmingUploadSessionIds.has(documentId)) {
+      return;
+    }
+
     this.uploadStatusMessage = `Confirming upload ${index + 1}/${totalFiles}: ${file.name}`;
     this.uploadProgress = 90;
 
@@ -553,15 +598,24 @@ export class DocumentsComponent implements OnInit, OnDestroy {
       storageBucket: this.resolveStorageBucket(uploadUrl)
     };
 
+    this.confirmingUploadSessionIds.add(documentId);
+
     try {
       await firstValueFrom(this.documentsApi.confirmUpload(confirmPayload));
+      this.confirmedUploadSessionIds.add(documentId);
     } catch (error) {
+      if (this.isDuplicateUploadConfirmationConflict(error)) {
+        this.confirmedUploadSessionIds.add(documentId);
+        throw new DuplicateUploadConfirmationError();
+      }
       console.error('Failed to confirm upload', {
         fileName: file.name,
         confirmPayload,
         error
       });
       throw new UploadStepError('confirm', error);
+    } finally {
+      this.confirmingUploadSessionIds.delete(documentId);
     }
   }
 
@@ -591,6 +645,13 @@ export class DocumentsComponent implements OnInit, OnDestroy {
 
   private mapUploadError(error: unknown): string {
     if (error instanceof UploadStepError) {
+      if (error.step === 'confirm') {
+        if (this.isDuplicateUploadConflict(error.originalError)) {
+          return DUPLICATE_UPLOAD_CONFLICT_MESSAGE;
+        }
+        return 'File uploaded to storage, but document registration failed. Please retry.';
+      }
+
       if (error.step === 'binary') {
         return 'File upload failed before confirmation. Please try again.';
       }
@@ -604,6 +665,13 @@ export class DocumentsComponent implements OnInit, OnDestroy {
       }
       if (error.status === 400) {
         return 'Upload request rejected by backend.';
+      }
+      if (error.status === 409) {
+        if (this.isDuplicateUploadConflict(error)) {
+          return DUPLICATE_UPLOAD_CONFLICT_MESSAGE;
+        }
+        const backendMessage = this.extractBackendMessage(error);
+        return backendMessage || 'Upload request conflicted with an existing document state.';
       }
       if (error.status === 401 || error.status === 403) {
         return 'You are not authorized to upload this document.';
@@ -624,12 +692,43 @@ export class DocumentsComponent implements OnInit, OnDestroy {
     return 'Upload failed due to an unexpected error.';
   }
 
+  private uniqueFiles(files: File[]): File[] {
+    const seen = new Set<string>();
+    return files.filter((file) => {
+      const key = [file.name.trim().toLowerCase(), file.size, file.lastModified, file.type.trim().toLowerCase()].join('::');
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+  }
+
   private uniqueById(documents: WorkspaceDocument[]): WorkspaceDocument[] {
     const byId = new Map<string, WorkspaceDocument>();
     for (const documentItem of documents) {
       byId.set(documentItem.id, documentItem);
     }
     return [...byId.values()];
+  }
+
+  private extractBackendDocuments(page: BackendPageResponse<BackendDocumentResponse>): BackendDocumentResponse[] {
+    if (Array.isArray(page.content)) {
+      return page.content;
+    }
+    if (Array.isArray(page.data)) {
+      return page.data;
+    }
+    if (Array.isArray(page.items)) {
+      return page.items;
+    }
+    if (Array.isArray(page.documents)) {
+      return page.documents;
+    }
+    if (Array.isArray(page.results)) {
+      return page.results;
+    }
+    return [];
   }
 
   private mapBackendDocument(documentItem: BackendDocumentResponse): WorkspaceDocument {
@@ -639,11 +738,59 @@ export class DocumentsComponent implements OnInit, OnDestroy {
       id: documentItem.documentId,
       name: documentItem.name,
       fileType: extension || 'FILE',
+      category: this.formatCategory(documentItem.category),
       uploadedAt: this.dateOnlyValue(documentItem.currentVersion?.uploadedAt ?? documentItem.createdAt),
       status: this.mapStatus(documentItem.state),
       folderId: null,
       icon: this.iconForExtension(extension)
     };
+  }
+
+  private mapBackendLoadError(error: unknown): string {
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 401) {
+        return 'Document categories could not be loaded because your session is no longer authorized. Sign out and sign back in, then retry.';
+      }
+      if (error.status === 403) {
+        return 'Document categories could not be loaded because the backend denied this session. If your role should have access, sign out and sign back in to refresh the token.';
+      }
+      if (error.status === 0) {
+        return 'Document categories could not be loaded because the gateway is unreachable.';
+      }
+      return `Document categories could not be loaded through backend API (status ${error.status}).`;
+    }
+
+    return 'Some protected document categories could not be loaded.';
+  }
+
+  private isDuplicateUploadConflict(error: unknown): boolean {
+    if (!(error instanceof HttpErrorResponse) || error.status !== 409) {
+      return false;
+    }
+
+    const backendMessage = this.extractBackendMessage(error).toLowerCase();
+    return backendMessage.includes('already exists') || backendMessage.includes('already confirmed');
+  }
+
+  private isDuplicateUploadConfirmationConflict(error: unknown): boolean {
+    if (!(error instanceof HttpErrorResponse) || error.status !== 409) {
+      return false;
+    }
+
+    return this.extractBackendMessage(error).includes(DUPLICATE_UPLOAD_CONFIRMATION_MESSAGE);
+  }
+
+  private extractBackendMessage(error: HttpErrorResponse): string {
+    const body = error.error as BackendErrorBody | string | null | undefined;
+    if (!body) {
+      return '';
+    }
+
+    if (typeof body === 'string') {
+      return body;
+    }
+
+    return typeof body.message === 'string' ? body.message : '';
   }
 
   private extensionFromBackend(documentItem: BackendDocumentResponse): string {
@@ -687,6 +834,11 @@ export class DocumentsComponent implements OnInit, OnDestroy {
       return 'Draft';
     }
     return 'Active';
+  }
+
+  private formatCategory(category: BackendDocumentCategory): string {
+    const normalized = category.trim().toUpperCase();
+    return normalized.charAt(0) + normalized.slice(1).toLowerCase();
   }
 
   private iconForExtension(extension: string): string {

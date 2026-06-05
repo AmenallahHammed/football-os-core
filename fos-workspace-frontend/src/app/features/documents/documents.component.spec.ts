@@ -15,11 +15,16 @@ import {
 describe('DocumentsComponent upload flow', () => {
   let fixture: ComponentFixture<DocumentsComponent>;
   let component: DocumentsComponent;
+  let authService: jasmine.SpyObj<Pick<AuthService, 'roles'>>;
   let documentsApi: jasmine.SpyObj<
     Pick<DocumentsApiService, 'initiateUpload' | 'uploadBinary' | 'confirmUpload' | 'listDocumentsByCategory'>
   >;
 
   beforeEach(async () => {
+    const workspaceDataService = jasmine.createSpyObj('WorkspaceDataService', ['getFolders', 'getParticipants', 'createFolder']);
+    workspaceDataService.getFolders.and.returnValue([]);
+    workspaceDataService.getParticipants.and.returnValue([]);
+
     documentsApi = jasmine.createSpyObj('DocumentsApiService', [
       'initiateUpload',
       'uploadBinary',
@@ -27,13 +32,15 @@ describe('DocumentsComponent upload flow', () => {
       'listDocumentsByCategory'
     ]);
     documentsApi.listDocumentsByCategory.and.returnValue(of({ content: [] }));
+    authService = jasmine.createSpyObj('AuthService', ['roles']);
+    authService.roles.and.returnValue(['HEAD_COACH']);
 
     await TestBed.configureTestingModule({
       imports: [DocumentsComponent],
       providers: [
         {
           provide: WorkspaceDataService,
-          useValue: jasmine.createSpyObj('WorkspaceDataService', ['getFolders', 'getParticipants', 'createFolder'])
+          useValue: workspaceDataService
         },
         {
           provide: Router,
@@ -41,7 +48,7 @@ describe('DocumentsComponent upload flow', () => {
         },
         {
           provide: AuthService,
-          useValue: jasmine.createSpyObj('AuthService', ['roles'])
+          useValue: authService
         },
         {
           provide: DocumentsApiService,
@@ -130,12 +137,105 @@ describe('DocumentsComponent upload flow', () => {
     expect(component['uploadError']).toBe('File upload failed before confirmation. Please try again.');
   });
 
+  it('shows a registration error when storage upload succeeds but confirm fails', async () => {
+    const file = new File(['resume'], 'attestation.pdf', { type: 'application/pdf' });
+
+    documentsApi.initiateUpload.and.returnValue(
+      of({
+        documentId: '11111111-1111-4111-8111-111111111111',
+        uploadUrl: 'http://localhost:9000/fos-workspace/documents/test.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256',
+        objectKey: 'documents/test.pdf'
+      })
+    );
+    documentsApi.uploadBinary.and.returnValue(of(new HttpResponse({ status: 204, body: '' })));
+    documentsApi.confirmUpload.and.returnValue(
+      throwError(() => new HttpErrorResponse({ status: 500, statusText: 'Server Error' }))
+    );
+
+    await component['uploadFilesThroughBackend']([file]);
+
+    expect(component['uploadError']).toBe('File uploaded to storage, but document registration failed. Please retry.');
+  });
+
+  it('deduplicates the same file within one selection before initiating upload', async () => {
+    const file = new File(['resume'], 'attestation.pdf', { type: 'application/pdf', lastModified: 1717581600000 });
+
+    documentsApi.initiateUpload.and.returnValue(
+      of({
+        documentId: '11111111-1111-4111-8111-111111111111',
+        uploadUrl: 'http://localhost:9000/fos-workspace/documents/test.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256',
+        objectKey: 'documents/test.pdf'
+      })
+    );
+    documentsApi.uploadBinary.and.returnValue(of(new HttpResponse({ status: 204, body: '' })));
+    documentsApi.confirmUpload.and.returnValue(of(mockDocumentResponse()));
+
+    await component['uploadFilesThroughBackend']([file, file]);
+
+    expect(documentsApi.initiateUpload).toHaveBeenCalledTimes(1);
+    expect(documentsApi.confirmUpload).toHaveBeenCalledTimes(1);
+  });
+
+  it('treats a duplicate confirm 409 as an already-completed upload and refreshes documents', async () => {
+    const file = new File(['resume'], 'attestation.pdf', { type: 'application/pdf' });
+
+    documentsApi.initiateUpload.and.returnValue(
+      of({
+        documentId: '11111111-1111-4111-8111-111111111111',
+        uploadUrl: 'http://localhost:9000/fos-workspace/documents/test.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256',
+        objectKey: 'documents/test.pdf'
+      })
+    );
+    documentsApi.uploadBinary.and.returnValue(of(new HttpResponse({ status: 204, body: '' })));
+    documentsApi.confirmUpload.and.returnValue(
+      throwError(() =>
+        new HttpErrorResponse({
+          status: 409,
+          statusText: 'Conflict',
+          error: { code: 'CONFLICT', message: 'Upload was already confirmed for this document.' }
+        })
+      )
+    );
+
+    await component['uploadFilesThroughBackend']([file]);
+
+    expect(component['uploadError']).toBe('');
+    expect(component['uploadInfo']).toBe('This upload was already confirmed once. The document list has been refreshed.');
+  });
+
+  it('shows a clear conflict message when backend rejects a duplicate upload', async () => {
+    const file = new File(['resume'], 'attestation.pdf', { type: 'application/pdf' });
+
+    documentsApi.initiateUpload.and.returnValue(
+      throwError(() =>
+        new HttpErrorResponse({
+          status: 409,
+          statusText: 'Conflict',
+          error: { code: 'CONFLICT', message: 'A document with this name already exists.' }
+        })
+      )
+    );
+
+    await component['uploadFilesThroughBackend']([file]);
+
+    expect(component['uploadError']).toBe('A document with this name or upload session already exists.');
+  });
+
   it('ignores a new file selection while an upload is already running', () => {
     component['uploadBusy'] = true;
 
     component['onFilesSelected']([new File(['resume'], 'attestation.pdf', { type: 'application/pdf' })]);
 
     expect(documentsApi.initiateUpload).not.toHaveBeenCalled();
+  });
+
+  it('accepts alternate backend page payload keys when loading documents', () => {
+    documentsApi.listDocumentsByCategory.and.returnValue(of({ documents: [mockDocumentResponse()] }));
+
+    fixture.detectChanges();
+
+    expect(component['visibleDocuments'].length).toBe(1);
+    expect(component['visibleDocuments'][0].category).toBe('General');
   });
 
   function mockDocumentResponse(): BackendDocumentResponse {

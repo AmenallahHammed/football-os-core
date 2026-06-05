@@ -2,6 +2,7 @@ package com.fos.sdk.storage.adapter;
 
 import com.fos.sdk.storage.PresignedUploadUrl;
 import com.fos.sdk.storage.StoragePort;
+import com.fos.sdk.storage.StorageOperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -35,7 +36,7 @@ public class NoopStorageAdapter implements StoragePort {
 
     @Override
     public byte[] getObject(String bucket, String objectKey) {
-        throw new IllegalStateException("[NOOP-STORAGE] getObject is unavailable because noop storage does not persist binary content");
+        throw new StorageOperationException("[NOOP-STORAGE] getObject is unavailable because noop storage does not persist binary content");
     }
 
     @Override

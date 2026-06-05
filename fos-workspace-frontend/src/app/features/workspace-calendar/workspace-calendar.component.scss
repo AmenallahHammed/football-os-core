@@ -278,6 +278,19 @@ app-workspace-calendar-icon,
   align-items: flex-start;
 }
 
+.drawer-head-copy {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.drawer-header-actions,
+.confirm-dialog-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
 .danger-link,
 .secondary-btn,
 .primary-btn,
@@ -349,7 +362,8 @@ app-workspace-calendar-icon,
   border-color: var(--color-brand-primary-hover);
 }
 
-.primary-btn:disabled {
+.primary-btn:disabled,
+.secondary-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
@@ -366,6 +380,22 @@ app-workspace-calendar-icon,
 .danger-link,
 .menu-danger {
   color: var(--color-error);
+}
+
+.danger-btn {
+  border-color: rgba(222, 0, 0, 0.24);
+  color: #de0000;
+}
+
+.danger-btn:hover {
+  background: var(--color-error-bg);
+  border-color: #de0000;
+}
+
+.danger-btn:focus-visible,
+.drawer-action-edit:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
 
 .rail-toggle {
@@ -1151,6 +1181,21 @@ textarea {
   animation: drawer-slide-in var(--calendar-motion-drawer) var(--ease-out);
 }
 
+.drawer-action-btn {
+  min-width: 88px;
+}
+
+.drawer-action-edit {
+  background: #0061ff;
+  border-color: #0061ff;
+  color: #ffffff;
+}
+
+.drawer-action-edit:hover {
+  background: #0050d6;
+  border-color: #0050d6;
+}
+
 .drawer-event-card {
   border: 1px solid var(--color-border-subtle);
   border-left: 3px solid var(--calendar-event-training-accent);
@@ -1201,6 +1246,26 @@ textarea {
 
 .doc-remove-btn:hover {
   background: var(--color-error-bg);
+}
+
+.confirm-dialog {
+  top: 50%;
+  left: 50%;
+  width: min(420px, calc(100vw - 32px));
+  padding: var(--space-5);
+  display: grid;
+  gap: var(--space-4);
+  transform: translate(-50%, -50%);
+}
+
+.confirm-dialog-copy {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.confirm-dialog-copy h3,
+.confirm-dialog-copy p {
+  margin: 0;
 }
 
 @keyframes drawer-slide-in {

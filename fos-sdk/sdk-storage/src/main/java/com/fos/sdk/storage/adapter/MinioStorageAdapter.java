@@ -2,6 +2,7 @@ package com.fos.sdk.storage.adapter;
 
 import com.fos.sdk.storage.PresignedUploadUrl;
 import com.fos.sdk.storage.StoragePort;
+import com.fos.sdk.storage.StorageOperationException;
 import io.minio.*;
 import io.minio.http.Method;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -45,7 +46,7 @@ public class MinioStorageAdapter implements StoragePort {
                     .expiry((int) expiry.toSeconds(), TimeUnit.SECONDS).build());
             return new PresignedUploadUrl(url, objectKey, Instant.now().plus(expiry));
         } catch (Exception e) {
-            throw new IllegalStateException("MinIO upload URL generation failed for: " + objectKey, e);
+            throw new StorageOperationException("MinIO upload URL generation failed for objectKey=" + objectKey, e);
         }
     }
 
@@ -57,7 +58,7 @@ public class MinioStorageAdapter implements StoragePort {
                     .method(Method.GET).bucket(bucket).object(objectKey)
                     .expiry((int) expiry.toSeconds(), TimeUnit.SECONDS).build());
         } catch (Exception e) {
-            throw new IllegalStateException("MinIO download URL generation failed for: " + objectKey, e);
+            throw new StorageOperationException("MinIO download URL generation failed for objectKey=" + objectKey, e);
         }
     }
 
@@ -69,7 +70,7 @@ public class MinioStorageAdapter implements StoragePort {
             response.transferTo(output);
             return output.toByteArray();
         } catch (Exception e) {
-            throw new IllegalStateException("MinIO download failed for: " + objectKey, e);
+            throw new StorageOperationException("MinIO download failed for objectKey=" + objectKey, e);
         }
     }
 
@@ -90,7 +91,7 @@ public class MinioStorageAdapter implements StoragePort {
 
             minioClient.putObject(args.build());
         } catch (Exception e) {
-            throw new IllegalStateException("MinIO upload failed for: " + objectKey, e);
+            throw new StorageOperationException("MinIO upload failed for objectKey=" + objectKey, e);
         }
     }
 
@@ -99,7 +100,7 @@ public class MinioStorageAdapter implements StoragePort {
         try {
             minioClient.statObject(StatObjectArgs.builder().bucket(bucket).object(objectKey).build());
         } catch (Exception e) {
-            throw new IllegalStateException("MinIO object does not exist for confirmed upload: " + objectKey, e);
+            throw new StorageOperationException("MinIO object does not exist for confirmed upload: objectKey=" + objectKey, e);
         }
     }
 
@@ -108,7 +109,7 @@ public class MinioStorageAdapter implements StoragePort {
         try {
             minioClient.removeObject(RemoveObjectArgs.builder().bucket(bucket).object(objectKey).build());
         } catch (Exception e) {
-            throw new IllegalStateException("MinIO delete failed for: " + objectKey, e);
+            throw new StorageOperationException("MinIO delete failed for objectKey=" + objectKey, e);
         }
     }
 

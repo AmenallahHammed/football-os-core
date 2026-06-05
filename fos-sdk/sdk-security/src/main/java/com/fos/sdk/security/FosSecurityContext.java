@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 @Component
 public class FosSecurityContext {
     private static final Pattern CANONICAL_CLUB_REF_PATTERN = Pattern.compile("^club:([0-9a-fA-F-]{36})$");
+    private static final Pattern APPLICATION_ROLE_PATTERN = Pattern.compile("^[A-Z][A-Z0-9_]*$");
 
     public java.util.UUID getActorId() {
         return java.util.UUID.fromString(jwt().getSubject());
@@ -94,9 +95,28 @@ public class FosSecurityContext {
         }
         for (Object role : claimRoles) {
             if (role instanceof String roleValue) {
-                roles.add(roleValue);
+                String trimmed = roleValue.trim();
+                if (trimmed.isEmpty()) {
+                    continue;
+                }
+                roles.add(trimmed);
+
+                String normalized = normalizeApplicationRole(trimmed);
+                if (!normalized.equals(trimmed)) {
+                    roles.add(normalized);
+                }
             }
         }
+    }
+
+    private String normalizeApplicationRole(String role) {
+        if (role.startsWith("ROLE_")) {
+            return role;
+        }
+        if (!APPLICATION_ROLE_PATTERN.matcher(role).matches()) {
+            return role;
+        }
+        return "ROLE_" + role;
     }
 
     private String normalizeClubClaim(String value) {

@@ -72,7 +72,12 @@
 
         <input class="feature-control" type="date" [(ngModel)]="selectedDate" />
 
-        <button type="button" class="feature-button feature-button--primary" (click)="showDropzone = !showDropzone">
+        <button
+          type="button"
+          class="feature-button feature-button--primary"
+          [disabled]="uploadBusy"
+          (click)="showDropzone = !showDropzone"
+        >
           {{ showDropzone ? 'Hide Upload' : 'Upload' }}
         </button>
       </div>
@@ -125,7 +130,7 @@
                 <td>
                   <span class="doc-title">{{ document.icon }} {{ document.name }}</span>
                 </td>
-                <td>{{ document.fileType }}</td>
+                <td>{{ documentTypeLabel(document) }}</td>
                 <td>{{ document.uploadedAt | date: 'mediumDate' }}</td>
                 <td><app-status-badge [status]="document.status"></app-status-badge></td>
               </tr>

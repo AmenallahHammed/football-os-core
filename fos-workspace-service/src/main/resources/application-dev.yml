@@ -8,6 +8,12 @@
 #   - Mongock logs every migration step
 # ----------------------------------------------------------------------------
 
+spring:
+  config:
+    import:
+      - optional:file:../.env[.properties]
+      - optional:file:.env[.properties]
+
 mongock:
   migration-scan-package: com.fos.workspace.db.migration
   enabled: true

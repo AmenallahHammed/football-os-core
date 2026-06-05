@@ -98,7 +98,7 @@ Use `npm ci` instead of `npm install` when you want a clean lockfile-based insta
 - OnlyOffice config is requested through the gateway, but the document download and callback URLs intentionally target the host-run workspace service through `http://host.docker.internal:8082`.
 - The workspace service uses `MINIO_ENDPOINT=http://localhost:9000`.
 - The governance service uses `OPA_URL=http://localhost:8181`.
-- The root `.env` is imported by the Spring Boot apps at startup, so you do not need a separate `.env.dev`.
+- The local Spring Boot `dev` profiles import the repository-root `.env` even when a service is launched from its module directory, so you do not need a separate `.env.dev`.
 - The helper scripts use `mvn ... install` before `spring-boot:run` so local SDK snapshot changes are visible to module-level runs.
 - The helper scripts launch Spring Boot with the `dev` profile for readable console logs and local debug-friendly settings.
 - MinIO bucket creation is handled by the application code on first use.

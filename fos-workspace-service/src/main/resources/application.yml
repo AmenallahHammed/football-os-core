@@ -4,11 +4,11 @@
 # ----------------------------------------------------------------------------
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
+
   application:
     name: fos-workspace-service
-
-  profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
 
   # -- MongoDB ----------------------------------------------------------------
   data:
@@ -95,21 +95,21 @@ fos:
     service-url: ${GOVERNANCE_URL:http://localhost:8081}
   storage:
     # Controls which StoragePort adapter is active.
-    # noop    = NoopStorageAdapter (returns fake URLs, no MinIO needed) - use in dev/tests
+    # noop    = NoopStorageAdapter (returns fake URLs, no MinIO needed)
     # minio   = MinioStorageAdapter (real MinIO container or server)
     # s3      = S3StorageAdapter (AWS S3)
     # azure   = AzureBlobStorageAdapter
-    provider: ${STORAGE_PROVIDER:noop}
+    provider: ${STORAGE_PROVIDER:minio}
   onlyoffice:
     # Public URL returned to the browser for loading OnlyOffice api.js.
     document-server-url: ${ONLYOFFICE_DOCUMENT_SERVER_URL:${ONLYOFFICE_PUBLIC_URL:${ONLYOFFICE_URL:http://localhost:8084}}}
     # URL that the OnlyOffice Document Server uses to download document bytes from backend.
-    backend-public-url: ${ONLYOFFICE_BACKEND_PUBLIC_URL:${ONLYOFFICE_CALLBACK_BASE_URL:http://host.docker.internal:8080}}
-    # Internal Docker URL reserved for backend-side Document Server calls.
-    internal-url: ${ONLYOFFICE_INTERNAL_URL:http://onlyoffice-documentserver}
-    # Base URL used in editorConfig.callbackUrl. In local Docker this should be
-    # reachable from inside the OnlyOffice container and normally points to the gateway.
-    callback-base-url: ${ONLYOFFICE_CALLBACK_BASE_URL:http://host.docker.internal:8080}
+    backend-public-url: ${ONLYOFFICE_BACKEND_PUBLIC_URL:${ONLYOFFICE_CALLBACK_BASE_URL:http://host.docker.internal:8082}}
+    # Host-run workspace talks to the Document Server through the published local port.
+    internal-url: ${ONLYOFFICE_INTERNAL_URL:http://localhost:8084}
+    # Base URL used in editorConfig.callbackUrl. For the local demo this points
+    # directly at the host-run workspace service so the OnlyOffice container can call back.
+    callback-base-url: ${ONLYOFFICE_CALLBACK_BASE_URL:http://host.docker.internal:8082}
     # Secret shared between this service and OnlyOffice Document Server.
     # Used to sign JWT configs so OnlyOffice accepts them.
     jwt-secret: ${ONLYOFFICE_JWT_SECRET:change-this-in-production}
@@ -121,7 +121,7 @@ fos:
 # -- MinIO connection (only used when fos.storage.provider=minio) ------------
 minio:
   endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
-  public-endpoint: ${MINIO_PUBLIC_ENDPOINT:${MINIO_ENDPOINT:http://localhost:9000}}
+  public-endpoint: ${MINIO_PUBLIC_ENDPOINT:http://localhost:9000}
   access-key: ${MINIO_ACCESS_KEY:minioadmin}
   secret-key: ${MINIO_SECRET_KEY:minioadmin}
   bucket: ${MINIO_BUCKET:fos-workspace}

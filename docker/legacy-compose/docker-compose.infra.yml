@@ -146,6 +146,7 @@ services:
       ALLOW_META_IP_ADDRESS: ${ALLOW_META_IP_ADDRESS:-true}
     extra_hosts:
       - "host.docker.internal:host-gateway"
+      - "football-os.local:host-gateway"
     volumes:
       - fos-onlyoffice-data:/var/www/onlyoffice/Data
     healthcheck:

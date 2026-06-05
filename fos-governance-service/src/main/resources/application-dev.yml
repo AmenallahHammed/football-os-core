@@ -3,8 +3,6 @@
 # DEV PROFILE - local development.
 #
 # Key differences:
-#   - Hardcoded local credentials (Docker container defaults)
-#   - Security disabled
 #   - SQL shown in logs for debugging queries
 #   - Flyway baseline-on-migrate=true (safe for first-time local setup)
 #   - All actuator endpoints exposed
@@ -12,12 +10,6 @@
 # ----------------------------------------------------------------------------
 
 spring:
-  datasource:
-    # Local Docker PostgreSQL - default credentials from docker-compose.yml
-    url: jdbc:postgresql://localhost:5432/fos_governance
-    username: fos
-    password: fos
-
   jpa:
     properties:
       hibernate:
@@ -34,25 +26,6 @@ spring:
     # This is safe for first-time local setup where you have an existing DB
     baseline-on-migrate: true
     baseline-version: 0
-
-  kafka:
-    bootstrap-servers: localhost:9092
-
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://localhost:8180/realms/fos/protocol/openid-connect/certs
-
-fos:
-  security:
-    enabled: false
-  opa:
-    url: http://localhost:8181
-  identity:
-    keycloak:
-      webhook:
-        secret: dev-keycloak-webhook-secret
 
 management:
   endpoints:

@@ -1,25 +1,17 @@
 #!/usr/bin/env bash
-# Start the infra-only Docker stack for hybrid local development and print
-# the native Maven commands for running the three Spring Boot app services.
-set -e
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "${SCRIPT_DIR}"
 
-set -a
-source .env.dev
-set +a
-
-docker compose -f docker-compose.infra.yml up -d
+docker compose up -d
 
 echo ""
-echo "Infrastructure is up. Start app services in separate terminals:"
+echo "Infrastructure is up. Start app services from the repository root in separate terminals:"
 echo ""
-echo "  cd fos-governance-service"
-echo "  mvn \"-Dspring-boot.run.profiles=dev\" spring-boot:run"
+echo "  mvn -pl fos-governance-service -am spring-boot:run"
+echo "  mvn -pl fos-workspace-service -am spring-boot:run"
+echo "  mvn -pl fos-gateway -am spring-boot:run"
 echo ""
-echo "  cd fos-workspace-service"
-echo "  mvn \"-Dspring-boot.run.profiles=dev\" spring-boot:run"
-echo ""
-echo "  cd fos-gateway"
-echo "  mvn \"-Dspring-boot.run.profiles=dev\" spring-boot:run"
+echo "Then start the frontend:"
+echo "  cd fos-workspace-frontend && npm start"

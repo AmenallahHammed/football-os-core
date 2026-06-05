@@ -3,66 +3,21 @@
 # DEV PROFILE - for local development on your machine.
 #
 # Key differences from base:
-#   - Security disabled: no JWT required, all requests pass through
 #   - Rate limiter set to very high values so it never blocks you during dev
 #   - All actuator endpoints exposed so you can inspect beans, env, health
 #   - Full debug logging
 # ----------------------------------------------------------------------------
 
 spring:
-  data:
-    redis:
-      host: localhost
-      port: 6379
-
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          # Points to local Keycloak Docker container.
-          # Not actually used when fos.security.enabled=false,
-          # but Spring needs a value to start without errors.
-          jwk-set-uri: http://localhost:8180/realms/fos/protocol/openid-connect/certs
-
   cloud:
     gateway:
-      globalcors:
-        add-to-simple-url-handler-mapping: true
-        cors-configurations:
-          '[/**]':
-            allowedOrigins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200}
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - PATCH
-              - DELETE
-              - OPTIONS
-            allowedHeaders:
-              - Authorization
-              - Content-Type
-              - X-FOS-Request-Id
-              - X-FOS-Actor-Id
-              - Accept
-              - Origin
-            allowCredentials: true
       default-filters:
         - name: RequestRateLimiter
           args:
             redis-rate-limiter:
-              # Very high in dev so rate limiting never blocks you
               replenishRate: 10000
               burstCapacity: 10000
             key-resolver: "#{@actorKeyResolver}"
-
-fos:
-  security:
-    # CRITICAL: false = no JWT validation. ONLY safe in dev/tests.
-    enabled: false
-  governance:
-    url: http://localhost:8081
-  workspace:
-    url: http://localhost:8082
 
 management:
   endpoints:

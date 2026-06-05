@@ -1,26 +1,32 @@
 $ErrorActionPreference = "Stop"
 
-Write-Host "This script restarts the full local Docker stack and rebuilds images." -ForegroundColor Yellow
-Write-Host "It does not delete volumes or data. Never replace this with 'docker compose down -v'." -ForegroundColor Yellow
+Write-Host "This script restarts the local infrastructure containers for the Monday demo." -ForegroundColor Yellow
+Write-Host "It does not run the Spring Boot apps or frontend for you." -ForegroundColor Yellow
 $confirmation = Read-Host "Continue? Type YES to proceed"
 if ($confirmation -ne "YES") {
   Write-Host "Aborted by user." -ForegroundColor Yellow
   exit 1
 }
 
-Write-Host "[1/4] Stopping existing stack..." -ForegroundColor Cyan
+Write-Host "[1/3] Stopping existing infrastructure..." -ForegroundColor Cyan
 docker compose down
 
-Write-Host "[2/4] Building images (no cache)..." -ForegroundColor Cyan
-docker compose build --no-cache
-
-Write-Host "[3/4] Starting stack in detached mode..." -ForegroundColor Cyan
+Write-Host "[2/3] Starting infrastructure in detached mode..." -ForegroundColor Cyan
 docker compose up -d
 
-Write-Host "[4/4] Services started:" -ForegroundColor Green
-Write-Host "- Gateway:             http://localhost:8080"
-Write-Host "- Governance Service:  http://localhost:8081"
-Write-Host "- Workspace Service:   http://localhost:8082"
+Write-Host "[3/3] Infrastructure started:" -ForegroundColor Green
 Write-Host "- Keycloak:            http://localhost:8180"
+Write-Host "- OPA mock:            http://localhost:8181/v1/data/fos/allow"
+Write-Host "- PostgreSQL:          localhost:5432"
+Write-Host "- MongoDB:             localhost:27017"
+Write-Host "- Redis:               localhost:6379"
+Write-Host "- Kafka:               localhost:9092"
+Write-Host "- MinIO API:           http://localhost:9000"
 Write-Host "- MinIO Console:       http://localhost:9001"
 Write-Host "- OnlyOffice:          http://localhost:8084"
+Write-Host ""
+Write-Host "Next run these from the repository root:" -ForegroundColor Cyan
+Write-Host "  mvn -pl fos-governance-service -am spring-boot:run"
+Write-Host "  mvn -pl fos-workspace-service -am spring-boot:run"
+Write-Host "  mvn -pl fos-gateway -am spring-boot:run"
+Write-Host "  cd fos-workspace-frontend; npm start"

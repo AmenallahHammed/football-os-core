@@ -1,27 +1,27 @@
 services:
-
   postgres:
     image: postgres:16.3
     container_name: fos-postgres
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     environment:
-      POSTGRES_DB: fos_governance
-      POSTGRES_USER: fos
-      POSTGRES_PASSWORD: fos
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - fos-pg-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U fos -d fos_governance"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   mongodb:
     image: mongo:7.0.12
     container_name: fos-mongodb
     ports:
-      - "27017:27017"
+      - "${MONGODB_PORT}:27017"
     volumes:
       - fos-mongo-data:/data/db
     healthcheck:
@@ -29,6 +29,19 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.2.5-alpine
+    container_name: fos-redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.7.0
@@ -36,20 +49,21 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    restart: unless-stopped
 
   kafka:
     image: confluentinc/cp-kafka:7.7.0
     container_name: fos-kafka
     ports:
-      - "9092:9092"
+      - "${KAFKA_PORT}:9092"
     depends_on:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
@@ -57,22 +71,22 @@ services:
       test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
       interval: 15s
       timeout: 10s
-      retries: 5
-    restart: on-failure
+      retries: 10
+    restart: unless-stopped
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.5
     container_name: fos-keycloak
     ports:
-      - "8180:8080"
+      - "${KEYCLOAK_PORT}:8080"
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/fos_governance
-      KC_DB_USERNAME: fos
-      KC_DB_PASSWORD: fos
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
       KC_DB_SCHEMA: public
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:?KEYCLOAK_ADMIN is required}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?KEYCLOAK_ADMIN_PASSWORD is required}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       KC_HOSTNAME_STRICT: "false"
       KC_HTTP_ENABLED: "true"
     command:
@@ -88,16 +102,17 @@ services:
       interval: 15s
       timeout: 10s
       retries: 10
+    restart: unless-stopped
 
   minio:
     image: minio/minio:RELEASE.2024-08-03T04-33-23Z
     container_name: fos-minio
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "${MINIO_PORT}:9000"
+      - "${MINIO_CONSOLE_PORT}:9001"
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     command: server /data --console-address ":9001"
     volumes:
       - fos-minio-data:/data
@@ -106,59 +121,35 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   opa:
-    image: openpolicyagent/opa:0.68.0
+    image: nginx:alpine
     container_name: fos-opa
-    command:
-      - run
-      - --server
-      - --addr=0.0.0.0:8181
-      - /policies
-    volumes:
-      - ./fos-governance-service/src/main/resources/opa:/policies:ro
-
-  opensearch:
-    image: opensearchproject/opensearch:2.16.0
-    container_name: fos-opensearch
     ports:
-      - "9200:9200"
-      - "9600:9600"
-    environment:
-      discovery.type: single-node
-      OPENSEARCH_INITIAL_ADMIN_PASSWORD: ${OPENSEARCH_INITIAL_ADMIN_PASSWORD:?OPENSEARCH_INITIAL_ADMIN_PASSWORD is required}
-      plugins.security.disabled: "true"
+      - "${OPA_PORT}:80"
     volumes:
-      - fos-opensearch-data:/usr/share/opensearch/data
+      - ./opa-mock/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./opa-mock/allow.json:/usr/share/nginx/html/allow.json:ro
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
-      interval: 15s
-      timeout: 10s
-      retries: 5
-
-  redis:
-    image: redis:7.2.5-alpine
-    container_name: fos-redis
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1/v1/data/fos/allow || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   onlyoffice:
     image: onlyoffice/documentserver:9.3.1.2
     container_name: fos-onlyoffice
     ports:
-      - "8084:80"
+      - "${ONLYOFFICE_PORT}:80"
     environment:
-      JWT_ENABLED: ${ONLYOFFICE_JWT_ENABLED:-true}
-      JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:?ONLYOFFICE_JWT_SECRET is required}
-      JWT_HEADER: Authorization
-      JWT_IN_BODY: "true"
-      ALLOW_PRIVATE_IP_ADDRESS: ${ALLOW_PRIVATE_IP_ADDRESS:-true}
-      ALLOW_META_IP_ADDRESS: ${ALLOW_META_IP_ADDRESS:-true}
+      JWT_ENABLED: ${ONLYOFFICE_JWT_ENABLED}
+      JWT_SECRET: ${ONLYOFFICE_JWT_SECRET}
+      JWT_HEADER: ${ONLYOFFICE_JWT_HEADER}
+      JWT_IN_BODY: ${ONLYOFFICE_JWT_IN_BODY}
+      ALLOW_PRIVATE_IP_ADDRESS: ${ALLOW_PRIVATE_IP_ADDRESS}
+      ALLOW_META_IP_ADDRESS: ${ALLOW_META_IP_ADDRESS}
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
@@ -168,148 +159,10 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-    networks:
-      default:
-        aliases:
-          - onlyoffice-documentserver
-
-  fos-governance-service:
-    build:
-      context: .
-      dockerfile: fos-governance-service/Dockerfile
-    container_name: fos-governance-service
-    ports:
-      - "8081:8081"
-    environment:
-      SPRING_PROFILES_ACTIVE: staging
-      SERVER_PORT: 8081
-      POSTGRES_URL: jdbc:postgresql://postgres:5432/fos_governance
-      POSTGRES_USER: ${POSTGRES_USER:-fos}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fos}
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      KEYCLOAK_JWKS_URI: http://keycloak:8080/realms/fos/protocol/openid-connect/certs
-      OPA_URL: http://opa:8181
-      CANONICAL_SERVICE_URL: http://fos-governance-service:8081
-      KEYCLOAK_WEBHOOK_SECRET: ${KEYCLOAK_WEBHOOK_SECRET:?KEYCLOAK_WEBHOOK_SECRET is required}
-    depends_on:
-      postgres:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
-      keycloak:
-        condition: service_healthy
-      opa:
-        condition: service_started
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://localhost:8081/actuator/health || exit 1"]
-      interval: 15s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
-    restart: on-failure
-    networks:
-      - default
-
-  fos-workspace-service:
-    build:
-      context: .
-      dockerfile: fos-workspace-service/Dockerfile
-    container_name: fos-workspace-service
-    ports:
-      - "8082:8082"
-    environment:
-      SPRING_PROFILES_ACTIVE: staging
-      SERVER_PORT: 8082
-      MONGODB_URI: mongodb://mongodb:27017/fos_workspace
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      KEYCLOAK_JWKS_URI: http://keycloak:8080/realms/fos/protocol/openid-connect/certs
-      GOVERNANCE_URL: http://fos-governance-service:8081
-      STORAGE_PROVIDER: minio
-      MINIO_ENDPOINT: http://minio:9000
-      MINIO_PUBLIC_ENDPOINT: ${MINIO_PUBLIC_ENDPOINT:-http://host.docker.internal:9000}
-      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
-      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
-      MINIO_BUCKET: ${MINIO_BUCKET:-fos-workspace}
-      ONLYOFFICE_DOCUMENT_SERVER_URL: ${ONLYOFFICE_DOCUMENT_SERVER_URL:?ONLYOFFICE_DOCUMENT_SERVER_URL is required}
-      ONLYOFFICE_PUBLIC_URL: ${ONLYOFFICE_PUBLIC_URL:?ONLYOFFICE_PUBLIC_URL is required}
-      # CRITICAL: OnlyOffice container downloads files using this URL.
-      # For Docker Desktop: use host.docker.internal (automatic, no env var needed)
-      # For local LAN testing: set ONLYOFFICE_BACKEND_PUBLIC_URL=http://192.168.0.126:8080
-      # For docker-in-docker or custom networks: use internal DNS name=http://fos-gateway:8080
-      ONLYOFFICE_BACKEND_PUBLIC_URL: ${ONLYOFFICE_BACKEND_PUBLIC_URL:-http://host.docker.internal:8080}
-      ONLYOFFICE_URL: ${ONLYOFFICE_URL:?ONLYOFFICE_URL is required}
-      ONLYOFFICE_INTERNAL_URL: ${ONLYOFFICE_INTERNAL_URL:-http://onlyoffice-documentserver}
-      ONLYOFFICE_CALLBACK_BASE_URL: ${ONLYOFFICE_CALLBACK_BASE_URL:-http://host.docker.internal:8080}
-      ONLYOFFICE_JWT_SECRET: ${ONLYOFFICE_JWT_SECRET:?ONLYOFFICE_JWT_SECRET is required}
-      ONLYOFFICE_JWT_ENABLED: ${ONLYOFFICE_JWT_ENABLED:-true}
-      ONLYOFFICE_JWT_HEADER: Authorization
-      ONLYOFFICE_JWT_IN_BODY: "true"
-    depends_on:
-      mongodb:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
-      keycloak:
-        condition: service_healthy
-      minio:
-        condition: service_healthy
-      onlyoffice:
-        condition: service_healthy
-      fos-governance-service:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://localhost:8082/actuator/health || exit 1"]
-      interval: 15s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
-    restart: on-failure
-    networks:
-      - default
-
-  fos-gateway:
-    build:
-      context: .
-      dockerfile: fos-gateway/Dockerfile
-    container_name: fos-gateway
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_PROFILES_ACTIVE: staging
-      SERVER_PORT: 8080
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      KEYCLOAK_JWKS_URI: http://keycloak:8080/realms/fos/protocol/openid-connect/certs
-      GOVERNANCE_URL: http://fos-governance-service:8081
-      WORKSPACE_URL: http://fos-workspace-service:8082
-      FOS_SECURITY_ENABLED: "true"
-    depends_on:
-      redis:
-        condition: service_healthy
-      keycloak:
-        condition: service_healthy
-      fos-governance-service:
-        condition: service_healthy
-      fos-workspace-service:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/actuator/health || exit 1"]
-      interval: 15s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
-    restart: on-failure
-    networks:
-      - default
+    restart: unless-stopped
 
 volumes:
   fos-pg-data:
   fos-mongo-data:
   fos-minio-data:
-  fos-opensearch-data:
   fos-onlyoffice-data:
-
-networks:
-  default:
-    name: fos-net
-    driver: bridge

@@ -3,59 +3,10 @@
 # DEV PROFILE - local development.
 #
 # Key differences:
-#   - Security disabled (no JWT required)
-#   - NoopStorageAdapter (no MinIO container needed)
-#   - Local MongoDB Docker container
 #   - All actuator endpoints exposed
 #   - Full DEBUG logging
 #   - Mongock logs every migration step
 # ----------------------------------------------------------------------------
-
-spring:
-  data:
-    mongodb:
-      # Local Docker MongoDB - started by docker-compose up -d
-      uri: mongodb://localhost:27017/fos_workspace_dev
-
-  kafka:
-    bootstrap-servers: localhost:9092
-
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://localhost:8180/realms/fos/protocol/openid-connect/certs
-
-fos:
-  security:
-    # false = no JWT validation. Your dev API calls work without Keycloak tokens.
-    enabled: false
-  storage:
-    # noop = no real MinIO needed. Upload/download return fake URLs.
-    # Change to 'minio' when you want to test real file uploads locally.
-    provider: ${STORAGE_PROVIDER:noop}
-  policy:
-    service-url: http://localhost:8081
-  canonical:
-    service-url: http://localhost:8081
-  onlyoffice:
-    document-server-url: ${ONLYOFFICE_DOCUMENT_SERVER_URL:${ONLYOFFICE_PUBLIC_URL:${ONLYOFFICE_URL:http://localhost:8084}}}
-    backend-public-url: ${ONLYOFFICE_BACKEND_PUBLIC_URL:${ONLYOFFICE_CALLBACK_BASE_URL:http://host.docker.internal:8080}}
-    internal-url: ${ONLYOFFICE_INTERNAL_URL:http://onlyoffice-documentserver}
-    callback-base-url: ${ONLYOFFICE_CALLBACK_BASE_URL:http://host.docker.internal:8080}
-    # Keep this aligned with the OnlyOffice Docker JWT secret to avoid
-    # "document security token is not correctly formed" / invalid signature.
-    jwt-secret: ${ONLYOFFICE_JWT_SECRET:fos-onlyoffice-secret-key-change-in-production}
-    jwt-enabled: ${ONLYOFFICE_JWT_ENABLED:true}
-    jwt-header: ${ONLYOFFICE_JWT_HEADER:Authorization}
-    jwt-in-body: ${ONLYOFFICE_JWT_IN_BODY:true}
-
-minio:
-  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
-  public-endpoint: ${MINIO_PUBLIC_ENDPOINT:${MINIO_ENDPOINT:http://localhost:9000}}
-  access-key: ${MINIO_ACCESS_KEY:minioadmin}
-  secret-key: ${MINIO_SECRET_KEY:minioadmin}
-  bucket: ${MINIO_BUCKET:fos-workspace-dev}
 
 mongock:
   migration-scan-package: com.fos.workspace.db.migration
@@ -86,7 +37,7 @@ logging:
     com.fos.sdk: DEBUG
     # Spring Web - see every incoming HTTP request
     org.springframework.web: DEBUG
-    # Spring Security - see auth decisions (useful even with security disabled)
+    # Spring Security - see auth decisions
     org.springframework.security: DEBUG
     # Spring Data MongoDB - see every query
     org.springframework.data.mongodb: DEBUG
